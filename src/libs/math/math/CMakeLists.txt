@@ -3,6 +3,7 @@ project(math)
 set(${PROJECT_NAME}_HEADERS
     Angle.h
     Barycentric.h
+    Color.h
     commons.h
     Constants.h
     Matrix.h
