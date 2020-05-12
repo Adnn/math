@@ -38,15 +38,18 @@ public:
 namespace sdr {
 
 
-using Rgb = ::ad::math::Rgb_base<std::uint8_t>;
+    using Rgb = ::ad::math::Rgb_base<std::uint8_t>;
 
 
-constexpr const Rgb gBlack{(std::uint8_t)0,   (std::uint8_t)0,   (std::uint8_t)0};
-constexpr const Rgb gWhite{(std::uint8_t)255, (std::uint8_t)255, (std::uint8_t)255};
+    constexpr const Rgb gBlack{(std::uint8_t)0,   (std::uint8_t)0,   (std::uint8_t)0};
+    constexpr const Rgb gWhite{(std::uint8_t)255, (std::uint8_t)255, (std::uint8_t)255};
 
-constexpr const Rgb gRed  {(std::uint8_t)255, (std::uint8_t)0,   (std::uint8_t)0};
-constexpr const Rgb gGreen{(std::uint8_t)0,   (std::uint8_t)255, (std::uint8_t)0};
-constexpr const Rgb gBlue {(std::uint8_t)0,   (std::uint8_t)0,   (std::uint8_t)255};
+    constexpr const Rgb gRed  {(std::uint8_t)255, (std::uint8_t)0,   (std::uint8_t)0};
+    constexpr const Rgb gGreen{(std::uint8_t)0,   (std::uint8_t)255, (std::uint8_t)0};
+    constexpr const Rgb gBlue {(std::uint8_t)0,   (std::uint8_t)0,   (std::uint8_t)255};
+
+
+    using Grayscale = std::uint8_t;
 
 
 } // namespace sdr
