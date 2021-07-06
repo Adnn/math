@@ -299,7 +299,7 @@ SCENARIO("Specialized vector types can be constant expressions")
         {
             constexpr Matrix<2, 2, int> cMatrix{1, 0, 0, 2};
 
-            constexpr Vec<2, int> cMultiplied = cOffset*cMatrix;
+            constexpr Vec<2, int> cMultiplied = cOffset * cMatrix;
             REQUIRE(std::bool_constant<cMultiplied[0] == 2>::value);
             REQUIRE(std::bool_constant<cMultiplied[1] == 4>::value);
         }

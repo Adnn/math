@@ -53,7 +53,7 @@ template <class T>
 class from_matrix;
 
 template <class T>
-inline constexpr bool from_matrix_v = from_matrix<T>::value;
+constexpr bool from_matrix_v = from_matrix<T>::value;
 
 
 }} // namespace ad::math

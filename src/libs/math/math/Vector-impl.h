@@ -39,7 +39,7 @@ constexpr T_derived & Vector<T_derived, N_dimension, T_number>::operator*=(
 
 template <class T_derived, int N_dimension, class T_number>
 constexpr T_derived operator*(const Vector<T_derived, N_dimension, T_number> aLhs,
-                    const Matrix<N_dimension, N_dimension, T_number> &aRhs)
+                              const Matrix<N_dimension, N_dimension, T_number> &aRhs)
 {
     return multiplyBase<T_derived>(aLhs, aRhs);
 }

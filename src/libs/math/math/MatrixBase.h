@@ -288,22 +288,22 @@ std::ostream & operator<<(std::ostream & os, const MatrixBase<TMA> &aMatrix);
 #include "MatrixBase-impl.h"
 
 
-#undef TMA_RIGHT
-#undef TMA
-#undef TMP
-
-
 namespace detail {
     std::false_type test_matrix_convertible(...);
 
-    template <class T_derived, int N_rows, int N_cols, class T_number>
-    std::true_type test_matrix_convertible(const MatrixBase<T_derived, N_rows, N_cols, T_number> &);
+    template <TMP>
+    std::true_type test_matrix_convertible(const ::ad::math::MatrixBase<TMA> &);
 } // namespace detail
 
 
 template <class T>
 class from_matrix : public decltype(detail::test_matrix_convertible(std::declval<T>()))
 {};
+
+
+#undef TMA_RIGHT
+#undef TMA
+#undef TMP
 
 
 } // namespace math
