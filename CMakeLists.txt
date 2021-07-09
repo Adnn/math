@@ -5,15 +5,7 @@ project(Math)
 # Include cmake_helper submodule
 include("cmake/include.cmake")
 
-# Common build settings
-if(NOT CMAKE_CXX_STANDARD)
-    message(STATUS "Setting the Cpp standard to 17, since no explicit version was provided.")
-    set(CMAKE_CXX_STANDARD 17)
-endif()
-
-if(NOT CMAKE_CXX_EXTENSIONS)
-    set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
+cmc_include_conan_configuration()
 
 include(cmc-install)
 cmc_install_root_component_config()
