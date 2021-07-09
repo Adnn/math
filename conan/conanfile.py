@@ -45,6 +45,10 @@ class MathConan(ConanFile):
         return cmake
 
 
+    def configure(self):
+        tools.check_min_cppstd(self, "14")
+
+
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
