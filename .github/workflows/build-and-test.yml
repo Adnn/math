@@ -8,7 +8,8 @@ env:
 #    branches:
 #      - develop
 jobs:
-  build:
+  build_and_test:
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,4 +17,11 @@ jobs:
           submodules: recursive
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
-      - run: conan create -o math:build_tests=True conan/ 0.0.0@
+      - run: conan create -o math:build_tests=True conan/ math/0.0.0@
+      - name: Prepare virtual run env
+        run: conan install -g virtualrunenv -o math:build_tests=True math/0.0.0@
+      - name: Run tests
+        run: |
+          source activate_run.sh
+          tests
+          source deactivate_run.sh

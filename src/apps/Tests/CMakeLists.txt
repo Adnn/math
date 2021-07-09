@@ -1,4 +1,4 @@
-project(Tests)
+project(tests)
 
 set(${PROJECT_NAME}_HEADERS
     catch.hpp
