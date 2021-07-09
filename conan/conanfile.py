@@ -1,4 +1,6 @@
-from conans import ConanFile, CMake, tools
+from conans import ConanFile, tools
+from conan.tools.cmake import CMake
+
 
 from os import path
 
