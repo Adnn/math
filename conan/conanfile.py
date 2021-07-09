@@ -70,7 +70,3 @@ class MathConan(ConanFile):
     def package(self):
         cmake = self._configure_cmake()
         cmake.install()
-
-
-    def package_info(self):
-        pass
