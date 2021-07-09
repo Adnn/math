@@ -1,0 +1,16 @@
+name: build-and-test
+on: [push]
+#on:
+#  push:
+#    branches:
+#      - develop
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Get Conan
+        uses: turtlebrowser/get-conan@v1.0
+      - run: conan create -o math:build_tests=True conan/ 0.0.0@

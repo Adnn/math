@@ -23,7 +23,7 @@ class MathConan(ConanFile):
         "build_tests": False,
     }
 
-    build_requires = ("cmake_installer/[>=3.16]@conan/stable",)
+    build_requires = ("cmake/3.20.4",)
 
     build_policy = "missing"
     generators = "cmake_paths", "cmake"
