@@ -46,7 +46,7 @@ class MathConan(ConanFile):
 
 
     def configure(self):
-        tools.check_min_cppstd(self, "14")
+        tools.check_min_cppstd(self, "17")
 
 
     def build(self):
