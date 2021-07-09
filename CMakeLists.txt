@@ -7,6 +7,7 @@ include("cmake/include.cmake")
 
 # Common build settings
 if(NOT CMAKE_CXX_STANDARD)
+    message(STATUS "Setting the Cpp standard to 17, since no explicit version was provided.")
     set(CMAKE_CXX_STANDARD 17)
 endif()
 
