@@ -1,0 +1,46 @@
+name: build-and-test
+on: [push]
+env:
+  CONAN_V2_MODE: 1
+  CONAN_SCM_TO_CONANDATA: 1
+#on:
+#  push:
+#    branches:
+#      - develop
+jobs:
+  build_and_test:
+    name: Build and test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - cppstd: 17
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Get Conan
+        uses: turtlebrowser/get-conan@v1.0
+      - run: >
+          conan create
+          -o math:build_tests=True -s compiler.cppstd=${{ matrix.cppstd }}
+          conan/ math/0.0.0@
+      - name: Prepare virtual run env
+        run: >
+          conan install -g virtualrunenv
+          -o math:build_tests=True -s compiler.cppstd=${{ matrix.cppstd }}
+          math/0.0.0@
+      - name: Run tests (bash)
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          source activate_run.sh
+          tests
+          source deactivate_run.sh
+      - name: Run tests (powershell)
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          ./activate_run.ps1
+          tests
+          ./deactivate_run.ps1
