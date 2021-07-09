@@ -11,6 +11,7 @@ namespace math {
 
 
 #define TMP class T_derived, int N_rows, int N_cols, class T_number
+#define TMT class, int, int, class
 #define TMA T_derived, N_rows, N_cols, T_number
 
 #define TMA_RIGHT T_derivedRight, N_rows, N_cols, T_number
@@ -225,7 +226,8 @@ public:
     // e.g. transpose operation
     class UninitializedTag
     {
-        template <class, int, int, class> friend class MatrixBase;
+        template <TMT> friend class MatrixBase;
+        template <int, int, class> friend class Matrix;
         UninitializedTag() = default;
     };
 
@@ -303,6 +305,7 @@ class from_matrix : public decltype(detail::test_matrix_convertible(std::declval
 
 #undef TMA_RIGHT
 #undef TMA
+#undef TMT
 #undef TMP
 
 
