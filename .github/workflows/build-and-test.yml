@@ -1,5 +1,8 @@
 name: build-and-test
 on: [push]
+env:
+  CONAN_V2_MODE: 1
+  CONAN_SCM_TO_CONANDATA: 1
 #on:
 #  push:
 #    branches:
