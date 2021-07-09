@@ -23,5 +23,5 @@ jobs:
       - name: Run tests
         run: |
           source activate_run.sh
-          tests
+          rm noexisto
           source deactivate_run.sh
