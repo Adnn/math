@@ -21,17 +21,23 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Prepare recipe info
+        id: recipe
+        run: echo "::set-output name=reference::${GITHUB_REPOSITORY#*/}/$(echo ${GITHUB_SHA} | cut -c1-7)"
+        shell: bash
+      - name: Output recipe ref
+        run: echo "Recipe reference ${{ steps.recipe.outputs.reference }}"
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
       - run: >
           conan create
           -o math:build_tests=True -s compiler.cppstd=${{ matrix.cppstd }}
-          conan/ math/0.0.0@
+          conan/ ${{ steps.recipe.outputs.reference }}@
       - name: Prepare virtual run env
         run: >
           conan install -g virtualrunenv
           -o math:build_tests=True -s compiler.cppstd=${{ matrix.cppstd }}
-          math/0.0.0@
+          ${{ steps.recipe.outputs.reference }}@
       - name: Run tests (bash)
         if: ${{ runner.os != 'Windows' }}
         run: |
@@ -44,3 +50,11 @@ jobs:
           ./activate_run.ps1
           tests
           ./deactivate_run.ps1
+      - name: Deploy recipe (develop)
+        if: ${{ success() && contains('refs/heads/develop', github.ref) }}
+        run: |
+          conan remote add adnn https://adnn.jfrog.io/artifactory/api/conan/adnn-conan
+          conan user -p ${{ secrets.CONAN_USER_PASSWORD }} -r adnn github-actions
+          conan copy --all ${{ steps.recipe.outputs.reference }} adnn/develop
+          conan upload -r adnn --confirm ${{ steps.recipe.outputs.reference }}@adnn/develop
+
