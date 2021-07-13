@@ -1,8 +1,11 @@
 name: build-and-test
 on: [push]
 env:
+  # Control Conan behaviour
   CONAN_V2_MODE: 1
   CONAN_SCM_TO_CONANDATA: 1
+  # Custom variables used by the workflow
+  CONAN_DEV_USER_CHANNEL: adnn/develop
 #on:
 #  push:
 #    branches:
@@ -23,20 +26,25 @@ jobs:
           submodules: recursive
       - name: Prepare recipe info
         id: recipe
-        run: echo "::set-output name=reference::${GITHUB_REPOSITORY#*/}/$(echo ${GITHUB_SHA} | cut -c1-7)"
+        run: |
+          # That is not the accurate recipe name, this is just by convention.
+          # see: https://github.com/conan-io/conan/issues/9264
+          recipe_name=${GITHUB_REPOSITORY#*/}
+          echo "::set-output name=name::${recipe_name}"
+          echo "::set-output name=reference::${recipe_name}/$(echo ${GITHUB_SHA} | cut -c1-10)"
         shell: bash
-      - name: Output recipe ref
-        run: echo "Recipe reference ${{ steps.recipe.outputs.reference }}"
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
       - run: >
           conan create
-          -o math:build_tests=True -s compiler.cppstd=${{ matrix.cppstd }}
+          -o ${{ steps.recipe.outputs.name }}:build_tests=True
+          -s compiler.cppstd=${{ matrix.cppstd }}
           conan/ ${{ steps.recipe.outputs.reference }}@
       - name: Prepare virtual run env
         run: >
           conan install -g virtualrunenv
-          -o math:build_tests=True -s compiler.cppstd=${{ matrix.cppstd }}
+          -o ${{ steps.recipe.outputs.name }}:build_tests=True
+          -s compiler.cppstd=${{ matrix.cppstd }}
           ${{ steps.recipe.outputs.reference }}@
       - name: Run tests (bash)
         if: ${{ runner.os != 'Windows' }}
@@ -53,8 +61,7 @@ jobs:
       - name: Deploy recipe (develop)
         if: ${{ success() && contains('refs/heads/develop', github.ref) }}
         run: |
-          conan remote add adnn https://adnn.jfrog.io/artifactory/api/conan/adnn-conan
-          conan user -p ${{ secrets.CONAN_USER_PASSWORD }} -r adnn github-actions
-          conan copy --all ${{ steps.recipe.outputs.reference }} adnn/develop
-          conan upload -r adnn --confirm ${{ steps.recipe.outputs.reference }}@adnn/develop
-
+          conan remote add adnn ${{ secrets.CONAN_REMOTE_URL }}
+          conan user -p ${{ secrets.CONAN_USER_PASSWORD }} -r adnn ${{ secrets.CONAN_USER_NAME }}
+          conan copy --all ${{ steps.recipe.outputs.reference }} ${CONAN_DEV_USER_CHANNEL}
+          conan upload -r adnn --confirm ${{ steps.recipe.outputs.reference }}@${CONAN_DEV_USER_CHANNEL}
