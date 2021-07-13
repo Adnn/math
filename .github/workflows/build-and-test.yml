@@ -52,12 +52,15 @@ jobs:
           source activate_run.sh
           tests
           source deactivate_run.sh
-      - name: Run tests (powershell)
+      - name: Run tests (cmd)
         if: ${{ runner.os == 'Windows' }}
         run: |
-          ./activate_run.ps1
+          ./activate_run.bat
           tests
-          ./deactivate_run.ps1
+          ./deactivate_run.bat
+        # Powershell does not stop on first error
+        # see: https://github.community/t/multiline-commands-on-windows-do-not-fail-if-individual-commands-fail/16753
+        shell: cmd
       - name: Deploy recipe (develop)
         if: ${{ success() && contains('refs/heads/develop', github.ref) }}
         run: |
@@ -65,3 +68,4 @@ jobs:
           conan user -p ${{ secrets.CONAN_USER_PASSWORD }} -r adnn ${{ secrets.CONAN_USER_NAME }}
           conan copy --all ${{ steps.recipe.outputs.reference }} ${CONAN_DEV_USER_CHANNEL}
           conan upload -r adnn --confirm ${{ steps.recipe.outputs.reference }}@${CONAN_DEV_USER_CHANNEL}
+        shell: bash
