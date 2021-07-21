@@ -4,6 +4,7 @@ env:
   # Control Conan behaviour
   CONAN_V2_MODE: 1
   CONAN_SCM_TO_CONANDATA: 1
+  CONAN_SYSREQUIRES_MODE: enabled
   # Custom variables used by the workflow
   CONAN_DEV_USER_CHANNEL: adnn/develop
 #on:
@@ -35,8 +36,11 @@ jobs:
         shell: bash
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
+      - name: Configure Conan
+        run: conan remote add adnn ${{ secrets.CONAN_REMOTE_URL }}
       - run: >
           conan create
+          --build=missing
           -o ${{ steps.recipe.outputs.name }}:build_tests=True
           -s compiler.cppstd=${{ matrix.cppstd }}
           conan/ ${{ steps.recipe.outputs.reference }}@
@@ -64,7 +68,6 @@ jobs:
       - name: Deploy recipe (develop)
         if: ${{ success() && contains('refs/heads/develop', github.ref) }}
         run: |
-          conan remote add adnn ${{ secrets.CONAN_REMOTE_URL }}
           conan user -p ${{ secrets.CONAN_USER_PASSWORD }} -r adnn ${{ secrets.CONAN_USER_NAME }}
           conan copy --all ${{ steps.recipe.outputs.reference }} ${CONAN_DEV_USER_CHANNEL}
           conan upload -r adnn --confirm ${{ steps.recipe.outputs.reference }}@${CONAN_DEV_USER_CHANNEL}
