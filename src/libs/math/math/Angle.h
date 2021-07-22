@@ -64,6 +64,39 @@ public:
     template <class T_factor>
     constexpr Angle & operator/=(const T_factor aFactor);
 
+    // Comparison operations should work for types implicitly convertible to Angle,
+    // which would not be the case for an template free function defined outside the class.
+    // see: https://stackoverflow.com/a/9789036/1027706 
+	constexpr friend bool operator==(const Angle aLhs, const Angle aRhs)
+	{
+	    return aLhs.value() == aRhs.value();
+	}
+	
+	constexpr friend bool operator!=(const Angle aLhs, const Angle aRhs)
+	{
+	    return !(aLhs == aRhs);
+	}
+	
+	constexpr friend bool operator<(const Angle aLhs, const Angle aRhs)
+	{
+	    return aLhs.value() < aRhs.value();
+	}
+	
+	constexpr friend bool operator>(const Angle aLhs, const Angle aRhs)
+	{
+	    return aLhs.value() > aRhs.value();
+	}
+	
+	constexpr friend bool operator<=(const Angle aLhs, const Angle aRhs)
+	{
+	    return aLhs.value() <= aRhs.value();
+	}
+	
+	constexpr friend bool operator>=(const Angle aLhs, const Angle aRhs)
+	{
+	    return aLhs.value() >= aRhs.value();
+	}
+
 private:
     T_representation mValue{0};
 };
@@ -108,42 +141,6 @@ template <class T_representation, class T_unitTag>
 T_representation atan(const ANGLE aAngle)
 {
     return std::atan(Radian<T_representation>{aAngle}.value());
-}
-
-template <class T_representation, class T_unitTag>
-constexpr bool operator==(const ANGLE aLhs, const ANGLE aRhs)
-{
-    return aLhs.value() == aRhs.value();
-}
-
-template <class T_representation, class T_unitTag>
-constexpr bool operator!=(const ANGLE aLhs, const ANGLE aRhs)
-{
-    return !(aLhs == aRhs);
-}
-
-template <class T_representation, class T_unitTag>
-constexpr bool operator<(const ANGLE aLhs, const ANGLE aRhs)
-{
-    return aLhs.value() < aRhs.value();
-}
-
-template <class T_representation, class T_unitTag>
-constexpr bool operator>(const ANGLE aLhs, const ANGLE aRhs)
-{
-    return aLhs.value() > aRhs.value();
-}
-
-template <class T_representation, class T_unitTag>
-constexpr bool operator<=(const ANGLE aLhs, const ANGLE aRhs)
-{
-    return aLhs.value() <= aRhs.value();
-}
-
-template <class T_representation, class T_unitTag>
-constexpr bool operator>=(const ANGLE aLhs, const ANGLE aRhs)
-{
-    return aLhs.value() >= aRhs.value();
 }
 
 template <class T_representation, class T_unitTag>
