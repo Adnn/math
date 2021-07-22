@@ -36,9 +36,11 @@ using Degree = Angle<T_representation, Degree_tag>;
 template <class T_representation, class T_unitTag>
 class Angle
 {
-    template <class> struct type{};
-
 public:
+    // Notably useful as the TT_angle template type in ::as()
+    template <class T> 
+    using unit = Angle<T, T_unitTag>;
+
     constexpr Angle() noexcept= default;
 
     explicit constexpr Angle(T_representation aValue) noexcept :
@@ -208,6 +210,16 @@ template <class T_representation, class T_unitTag, class T_factor>
 constexpr ANGLE operator/(ANGLE aLhs, const T_factor aFactor)
 {
     return aLhs /= aFactor;
+}
+
+template <class T_representation, class T_unitTag>
+constexpr ANGLE reduce(ANGLE aLhs)
+{
+    constexpr auto halfRevolution = pi<Radian<T_representation>>.as<ANGLE::unit>().value();
+    constexpr auto revolution = 2 * halfRevolution;
+    // Note: 3D Math Primer (2nd) p. 241 listing 8.1 uses std::floor(angle + pi).
+    // Yet, this would reduce to the range [-180, 180[ instead of ]-180, 180].
+    return aLhs - ANGLE{std::ceil((aLhs.value() - halfRevolution) / revolution) * revolution};
 }
 
 #undef ANGLE

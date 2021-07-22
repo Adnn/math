@@ -189,3 +189,63 @@ SCENARIO("Angle literals")
     }
 }
 
+SCENARIO("Angle canonical form")
+{
+    GIVEN("Angles in radians in range ]-pi, +pi]")
+    {
+        Radian<double> zero{0.};
+        Radian<double> halfPi{pi<Radian<double>> / 2.};
+        Radian<double> minusHalfPi = -halfPi;
+
+        THEN("They are already reduced")
+        {
+            REQUIRE(reduce(zero) == zero);
+            REQUIRE(reduce(halfPi) == halfPi);
+            REQUIRE(reduce(minusHalfPi) == minusHalfPi);
+        }
+    }
+
+    GIVEN("Angles in degrees in range ]-180, +180]")
+    {
+        Degree<double> zero{0.};
+        Degree<double> half{180};
+        Degree<double> minusHalf{-179.999};
+
+        THEN("They are already reduced")
+        {
+            REQUIRE(reduce(zero) == zero);
+            REQUIRE(reduce(half) == half);
+            REQUIRE(reduce(minusHalf) == minusHalf);
+        }
+    }
+
+    GIVEN("An angle in radian out of ]-pi, +pi]")
+    {
+        Radian<double> minusPi = -pi<Radian<double>>;
+
+        Radian<double> reduced{2.};
+        Radian<double> expanded = reduced + 4 * pi<Radian<double>>;
+
+        THEN("It can be reduced")
+        {
+            CHECK(reduce(minusPi) == pi<Radian<double>>);
+            CHECK(reduce(expanded) == reduced);
+        }
+    }
+
+    GIVEN("An angle in degrees out of ]-180, +180]")
+    {
+        Degree<double> minusHalf{-180.};
+        Degree<double> full{360.};
+
+        Degree<double> reduced{-155.};
+        Degree<double> expanded = reduced - (7 * full);
+
+        THEN("It can be reduced")
+        {
+            CHECK(reduce(minusHalf) == Degree<double>{180.});
+            CHECK(reduce(full) == Degree<double>{0.});
+            CHECK(reduce(expanded) == reduced);
+        }
+    }
+}
