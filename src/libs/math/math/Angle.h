@@ -38,7 +38,7 @@ class Angle
 {
 public:
     // Notably useful as the TT_angle template type in ::as()
-    template <class T> 
+    template <class T>
     using unit = Angle<T, T_unitTag>;
 
     constexpr Angle() noexcept= default;
@@ -65,37 +65,37 @@ public:
     constexpr Angle & operator/=(const T_factor aFactor);
 
     // Comparison operations should work for types implicitly convertible to Angle,
-    // which would not be the case for an template free function defined outside the class.
-    // see: https://stackoverflow.com/a/9789036/1027706 
-	constexpr friend bool operator==(const Angle aLhs, const Angle aRhs)
-	{
-	    return aLhs.value() == aRhs.value();
-	}
-	
-	constexpr friend bool operator!=(const Angle aLhs, const Angle aRhs)
-	{
-	    return !(aLhs == aRhs);
-	}
-	
-	constexpr friend bool operator<(const Angle aLhs, const Angle aRhs)
-	{
-	    return aLhs.value() < aRhs.value();
-	}
-	
-	constexpr friend bool operator>(const Angle aLhs, const Angle aRhs)
-	{
-	    return aLhs.value() > aRhs.value();
-	}
-	
-	constexpr friend bool operator<=(const Angle aLhs, const Angle aRhs)
-	{
-	    return aLhs.value() <= aRhs.value();
-	}
-	
-	constexpr friend bool operator>=(const Angle aLhs, const Angle aRhs)
-	{
-	    return aLhs.value() >= aRhs.value();
-	}
+    // which would not be the case for a template free function defined outside the class.
+    // see: https://stackoverflow.com/a/9789036/1027706
+    constexpr friend bool operator==(const Angle aLhs, const Angle aRhs)
+    {
+        return aLhs.value() == aRhs.value();
+    }
+
+    constexpr friend bool operator!=(const Angle aLhs, const Angle aRhs)
+    {
+        return !(aLhs == aRhs);
+    }
+
+    constexpr friend bool operator<(const Angle aLhs, const Angle aRhs)
+    {
+        return aLhs.value() < aRhs.value();
+    }
+
+    constexpr friend bool operator>(const Angle aLhs, const Angle aRhs)
+    {
+        return aLhs.value() > aRhs.value();
+    }
+
+    constexpr friend bool operator<=(const Angle aLhs, const Angle aRhs)
+    {
+        return aLhs.value() <= aRhs.value();
+    }
+
+    constexpr friend bool operator>=(const Angle aLhs, const Angle aRhs)
+    {
+        return aLhs.value() >= aRhs.value();
+    }
 
 private:
     T_representation mValue{0};
@@ -212,7 +212,8 @@ constexpr ANGLE operator/(ANGLE aLhs, const T_factor aFactor)
 template <class T_representation, class T_unitTag>
 constexpr ANGLE reduce(ANGLE aLhs)
 {
-    constexpr auto halfRevolution = pi<Radian<T_representation>>.as<ANGLE::unit>().value();
+    constexpr auto halfRevolution =
+        pi<Radian<T_representation>>.template as<ANGLE::template unit>().value();
     constexpr auto revolution = 2 * halfRevolution;
     // Note: 3D Math Primer (2nd) p. 241 listing 8.1 uses std::floor(angle + pi).
     // Yet, this would reduce to the range [-180, 180[ instead of ]-180, 180].

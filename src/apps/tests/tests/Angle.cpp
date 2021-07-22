@@ -204,7 +204,7 @@ SCENARIO("Angle canonical form")
             REQUIRE(reduce(halfPi) == halfPi);
             REQUIRE(reduce(minusHalfPi) == minusHalfPi);
 
-			using Canon = Canonical<Radian<double>>;
+            using Canon = Canonical<Radian<double>>;
             REQUIRE(Canon{zero} == zero);
             REQUIRE(Canon{halfPi} == halfPi);
             REQUIRE(Canon{minusHalfPi} == minusHalfPi);
@@ -223,7 +223,7 @@ SCENARIO("Angle canonical form")
             REQUIRE(reduce(half) == half);
             REQUIRE(reduce(minusHalf) == minusHalf);
 
-			using Canon = Canonical<Degree<double>>;
+            using Canon = Canonical<Degree<double>>;
             REQUIRE(Canon{zero} == zero);
             REQUIRE(Canon{half} == half);
             REQUIRE(Canon{minusHalf} == minusHalf);
@@ -242,7 +242,7 @@ SCENARIO("Angle canonical form")
             CHECK(reduce(minusPi) == pi<Radian<double>>);
             CHECK(reduce(expanded) == reduced);
 
-			using Canon = Canonical<Radian<double>>;
+            using Canon = Canonical<Radian<double>>;
             CHECK(Canon{minusPi} == pi<Radian<double>>);
             CHECK(Canon{expanded} == reduced);
         }
@@ -262,7 +262,7 @@ SCENARIO("Angle canonical form")
             CHECK(reduce(full) == Degree<double>{0.});
             CHECK(reduce(expanded) == reduced);
 
-			using Canon = Canonical<Degree<double>>;
+            using Canon = Canonical<Degree<double>>;
             CHECK(Canon{minusHalf} == Degree<double>{180.});
             CHECK(Canon{full} == Degree<double>{0.});
             CHECK(Canon{expanded} == reduced);
