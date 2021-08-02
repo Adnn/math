@@ -3,6 +3,7 @@ set(TARGET_NAME math)
 set(${TARGET_NAME}_HEADERS
     Angle.h
     Barycentric.h
+    Base.h
     Canonical.h
     Color.h
     commons.h

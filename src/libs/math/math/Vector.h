@@ -113,6 +113,11 @@ public:
     explicit constexpr UnitVec(base_type aVec) : base_type{aVec.normalize()}
     {}
 
+    static UnitVec MakeFromUnitLength(base_type aNormalizedVec)
+    {
+        return UnitVec{aNormalizedVec, already_normalized{}};
+    }
+
     constexpr UnitVec operator-() const
     {
         return {base_type::operator-(), already_normalized{}};
