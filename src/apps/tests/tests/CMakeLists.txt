@@ -1,4 +1,5 @@
-project(tests)
+string(TOLOWER ${PROJECT_NAME} _lower_project_name)
+project(${_lower_project_name}_tests)
 
 set(${PROJECT_NAME}_HEADERS
     catch.hpp
