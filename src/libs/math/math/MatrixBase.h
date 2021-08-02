@@ -98,13 +98,15 @@ protected:
     static constexpr bool should_noexcept = std::is_arithmetic<value_type>::value;
 
 public:
-    /// \note: std::array does not have a std::initializer_list constructor, but aggregate initialization.
-    /// \note: enable_if to only allow this ctor when the right number of arguments is provided
-    ///        (notably prevents this constructor from being selected as the default ctor)
     // Implementer note:
     // I don't feel confident enought with my understanding of aggregate initialization
     // (see: https://en.cppreference.com/w/cpp/language/aggregate_initialization)
     // to know when it can and cannot throw exceptions. So be conservative and noexcept(false).
+    /// \brief Constructor from explicit element values.
+    /// \note std::array does not have a std::initializer_list constructor, but aggregate initialization.
+    /// \note enable_if to only allow this ctor when the right number of arguments is provided
+    ///       (notably prevents this constructor from being selected as the default ctor)
+    /// \attention the provided values' type is not allowed potential loss of precision.
     template <class... T_element,
               std::enable_if_t<sizeof...(T_element) == N_rows*N_cols, int> = 0>
     constexpr MatrixBase(T_element... vaElements) /*noexcept (see note)*/;
@@ -145,19 +147,23 @@ public:
                                                    T_otherNumber> & aOther)
     noexcept(should_noexcept);
 
-    /// \brief Sets all elements to zero
+    /// \brief Sets all elements to zero.
     constexpr T_derived & setZero() noexcept(should_noexcept);
 
     /// \brief Returns a Matrix with all elements set to 0.
     static constexpr T_derived Zero() noexcept(should_noexcept);
 
 
+    /// \brief Access a row of this matrix by the row's index.
+    ///
+    /// It is essentially intended to be immediately followed by a second access,
+    /// to the column of the matrix.
     constexpr Row operator[](std::size_t aRow);
     constexpr const_Row operator[](std::size_t aRow) const;
 
 
-    // Iterate one line at a time, going through each column in the line
-    // before descending to the next line
+    /// \breif Iterate one line at a time, going through each column in the line
+    /// before descending to the next line.
     constexpr const_iterator cbegin() const noexcept;
     constexpr const_iterator cend() const noexcept;
     // Also implemented to enable range for loop
@@ -173,11 +179,15 @@ public:
     constexpr iterator getMaxMagnitudeElement() noexcept(should_noexcept);
     constexpr const_iterator getMaxMagnitudeElement() const noexcept(should_noexcept);
 
+    /// \brief Checked access to an element by its linear index, i.e. `row*N_rows + column`
     constexpr T_number & at(std::size_t aIndex);
+    /// \brief Checked access to an element by its row and column index.
+    /// \note The order of parameters (row then column) matches usual M_ij mathematical notation.
     constexpr T_number & at(std::size_t aRow, std::size_t aColumn);
     constexpr T_number at(std::size_t aIndex) const;
     constexpr T_number at(std::size_t aRow, std::size_t aColumn) const;
 
+    /// \brief Returns a pointer to the matrix storage, a contiguous sequence of elements.
     constexpr const T_number * data() const noexcept;
 
 
@@ -209,10 +219,28 @@ public:
     /// \brief The componentwise division
     constexpr T_derived cwDiv(const T_derived &aRhs) const noexcept(should_noexcept);
 
-    /// \attention Can only be used in a constexpr context since C++20
+    /// \brief Equality comparison.
+    /// \attention Can be used in a constexpr context only since C++20
     constexpr bool operator==(const MatrixBase &aRhs) const noexcept(should_noexcept);
-    /// \attention Can only be used in a constexpr context since C++20
+    /// \brief Non-equality comparison.
+    /// \attention Can be used in a constexpr context only since C++20
     constexpr bool operator!=(const MatrixBase &aRhs) const noexcept(should_noexcept);
+
+
+    // Implementer note:
+    // Those two operations were initially free functions, notably templated on T_derived.
+    // Yet, it prevented them from being available for types derived from T_derived.
+    // see: https://stackoverflow.com/a/9789036/1027706
+    template <class T_derivedRight>
+    friend constexpr additive_t<T_derived, T_derivedRight>
+    operator+(T_derived aLhs, const MatrixBase<TMA_RIGHT>& aRhs)
+    { return aLhs += aRhs; }
+
+    template <class T_derivedRight>
+    friend constexpr additive_t<T_derived, T_derivedRight>
+    operator-(T_derived aLhs, const MatrixBase<TMA_RIGHT>& aRhs)
+    { return aLhs -= aRhs; }
+
 
 protected:
     constexpr T_derived * derivedThis() noexcept;
@@ -255,6 +283,7 @@ private:
 /*
  * Free function arithmetic operators
  */
+
 // Implementer note:
 //   Was simple and elegant, matching the T_derived in the first argument (by value to be modified)
 //   with the T_derived in the MatrixBase
@@ -264,16 +293,6 @@ private:
 
 // Implementer note:
 //   should_noexcept should not be part of the API, so it cannot be easily used here
-
-template <TMP, class T_derivedRight>
-constexpr additive_t<T_derived, T_derivedRight>
-operator+(T_derived aLhs, const MatrixBase<TMA_RIGHT> & aRhs)
-/*noexcept(T_derived::should_noexcept)*/;
-
-template <TMP, class T_derivedRight>
-constexpr additive_t<T_derived, T_derivedRight>
-operator-(T_derived aLhs, const MatrixBase<TMA_RIGHT> & aRhs)
-/*noexcept(T_derived::should_noexcept)*/;
 
 template <TMP, class T_scalar>
 constexpr std::enable_if_t<! from_matrix_v<T_scalar>, T_derived>

@@ -136,12 +136,14 @@ constexpr typename MatrixBase<TMA>::const_iterator MatrixBase<TMA>::end() const 
                 return std::abs(a) < std::abs(b);       \
             });
 
+
 template <TMP>
 constexpr typename MatrixBase<TMA>::iterator
 MatrixBase<TMA>::getMinMagnitudeElement() noexcept(should_noexcept)
 {
     GET_EXTREME_ELEMENT_IMPL(std::min_element);
 }
+
 
 template <TMP>
 constexpr typename MatrixBase<TMA>::const_iterator
@@ -150,6 +152,7 @@ MatrixBase<TMA>::getMinMagnitudeElement() const noexcept(should_noexcept)
     GET_EXTREME_ELEMENT_IMPL(std::min_element);
 }
 
+
 template <TMP>
 constexpr typename MatrixBase<TMA>::iterator
 MatrixBase<TMA>::getMaxMagnitudeElement() noexcept(should_noexcept)
@@ -157,12 +160,14 @@ MatrixBase<TMA>::getMaxMagnitudeElement() noexcept(should_noexcept)
     GET_EXTREME_ELEMENT_IMPL(std::max_element);
 }
 
+
 template <TMP>
 constexpr typename MatrixBase<TMA>::const_iterator
 MatrixBase<TMA>::getMaxMagnitudeElement() const noexcept(should_noexcept)
 {
     GET_EXTREME_ELEMENT_IMPL(std::max_element);
 }
+
 
 # undef GET_EXTREME_ELEMENT_IMPL
 
@@ -172,6 +177,7 @@ constexpr T_derived * MatrixBase<TMA>::derivedThis() noexcept
 {
     return static_cast<T_derived*>(this);
 }
+
 
 template <TMP>
 constexpr const T_derived * MatrixBase<TMA>::derivedThis() const noexcept
@@ -229,15 +235,6 @@ MatrixBase<TMA>::operator+=(const MatrixBase<TMA_RIGHT> &aRhs) noexcept(should_n
 }
 
 
-template <TMP, class T_derivedRight>
-constexpr additive_t<T_derived, T_derivedRight>
-operator+(T_derived aLhs, const MatrixBase<TMA_RIGHT> & aRhs)
-{
-    aLhs += aRhs;
-    return aLhs;
-}
-
-
 template <TMP>
 template <class T_derivedRight>
 constexpr additive_t<T_derived, T_derivedRight> &
@@ -249,15 +246,6 @@ MatrixBase<TMA>::operator-=(const MatrixBase<TMA_RIGHT> &aRhs) noexcept(should_n
     }
 
     return *derivedThis();
-}
-
-
-template <TMP, class T_derivedRight>
-constexpr additive_t<T_derived, T_derivedRight>
-operator-(T_derived aLhs, const MatrixBase<TMA_RIGHT> & aRhs)
-{
-    aLhs -= aRhs;
-    return aLhs;
 }
 
 
@@ -366,6 +354,7 @@ constexpr bool MatrixBase<TMA>::operator==(const MatrixBase &aRhs) const noexcep
 {
     return mStore == aRhs.mStore;
 }
+
 
 template<TMP>
 constexpr bool MatrixBase<TMA>::operator!=(const MatrixBase &aRhs) const noexcept(should_noexcept)
