@@ -104,6 +104,19 @@ constexpr typename MatrixBase<TMA>::const_iterator MatrixBase<TMA>::cend() const
 }
 
 template <TMP>
+constexpr typename MatrixBase<TMA>::iterator MatrixBase<TMA>::begin() noexcept
+{
+    return mStore.begin();
+}
+
+template <TMP>
+constexpr typename MatrixBase<TMA>::iterator MatrixBase<TMA>::end() noexcept
+{
+    return mStore.end();
+}
+
+
+template <TMP>
 constexpr typename MatrixBase<TMA>::const_iterator MatrixBase<TMA>::begin() const noexcept
 {
     return cbegin();
@@ -114,6 +127,44 @@ constexpr typename MatrixBase<TMA>::const_iterator MatrixBase<TMA>::end() const 
 {
     return cend();
 }
+
+
+#define GET_EXTREME_ELEMENT_IMPL(algorithm)             \
+    return algorithm(begin(), end(),                    \
+            [](const T_number & a, const T_number & b)  \
+            {                                           \
+                return std::abs(a) < std::abs(b);       \
+            });
+
+template <TMP>
+constexpr typename MatrixBase<TMA>::iterator
+MatrixBase<TMA>::getMinMagnitudeElement() noexcept(should_noexcept)
+{
+    GET_EXTREME_ELEMENT_IMPL(std::min_element);
+}
+
+template <TMP>
+constexpr typename MatrixBase<TMA>::const_iterator
+MatrixBase<TMA>::getMinMagnitudeElement() const noexcept(should_noexcept)
+{
+    GET_EXTREME_ELEMENT_IMPL(std::min_element);
+}
+
+template <TMP>
+constexpr typename MatrixBase<TMA>::iterator
+MatrixBase<TMA>::getMaxMagnitudeElement() noexcept(should_noexcept)
+{
+    GET_EXTREME_ELEMENT_IMPL(std::max_element);
+}
+
+template <TMP>
+constexpr typename MatrixBase<TMA>::const_iterator
+MatrixBase<TMA>::getMaxMagnitudeElement() const noexcept(should_noexcept)
+{
+    GET_EXTREME_ELEMENT_IMPL(std::max_element);
+}
+
+# undef GET_EXTREME_ELEMENT_IMPL
 
 
 template <TMP>

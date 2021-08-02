@@ -339,3 +339,26 @@ SCENARIO("Matrix transposition")
         }
     }
 }
+
+SCENARIO("Matrix extreme magnitude elements.")
+{
+    GIVEN("A 2x3 Matrix")
+    {
+        Matrix<2, 3> reference{
+            1., -1., 28.,
+            -28.1, 0.5, -0.6,
+        };
+
+        THEN("It minimal magnitude element can be queried")
+        {
+            REQUIRE(*reference.getMinMagnitudeElement() == 0.5);
+            REQUIRE(reference.getMinMagnitudeElement() == (reference.begin() + 4));
+        }
+
+        THEN("It minimal magnitude element can be queried")
+        {
+            REQUIRE(*reference.getMaxMagnitudeElement() == -28.1);
+            REQUIRE(reference.getMaxMagnitudeElement() == (reference.begin() + 3));
+        }
+    }
+}

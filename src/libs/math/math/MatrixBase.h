@@ -2,6 +2,7 @@
 
 #include "MatrixTraits.h"
 
+#include <algorithm>
 #include <array>
 #include <iostream>
 
@@ -38,6 +39,7 @@ class MatrixBase
 
 public:
     typedef typename store_type::value_type value_type; // i.e. T_number
+    typedef typename store_type::iterator iterator;
     typedef typename store_type::const_iterator const_iterator;
 
     static constexpr std::size_t Rows{N_rows};
@@ -159,8 +161,17 @@ public:
     constexpr const_iterator cbegin() const noexcept;
     constexpr const_iterator cend() const noexcept;
     // Also implemented to enable range for loop
+    constexpr iterator begin() noexcept;
+    constexpr iterator end() noexcept;
     constexpr const_iterator begin() const noexcept;
     constexpr const_iterator end() const noexcept;
+
+    /// \brief Returns an iterator to the matrix element with the lowest magnitude.
+    constexpr iterator getMinMagnitudeElement() noexcept(should_noexcept);
+    constexpr const_iterator getMinMagnitudeElement() const noexcept(should_noexcept);
+    /// \brief Returns an iterator to the matrix element with the biggest magnitude.
+    constexpr iterator getMaxMagnitudeElement() noexcept(should_noexcept);
+    constexpr const_iterator getMaxMagnitudeElement() const noexcept(should_noexcept);
 
     constexpr T_number & at(std::size_t aIndex);
     constexpr T_number & at(std::size_t aRow, std::size_t aColumn);
