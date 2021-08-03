@@ -153,6 +153,19 @@ SCENARIO("Basic operations are available on Matrix instances")
                 3., 4.,   -2.,
             };
 
+            THEN("They can be compared for equality.")
+            {
+                REQUIRE_FALSE(matrix == second);
+                REQUIRE(matrix != second);
+            }
+
+            THEN("They can be compared for equality within tolerances.")
+            {
+                REQUIRE_FALSE(matrix.equalsWithinTolerance(second, 1.));
+                REQUIRE(matrix.equalsWithinTolerance(second, 57.));
+            }
+
+
             THEN("First matrix can be assigned to the second")
             {
                 REQUIRE_FALSE(std::equal(matrix.begin(), matrix.end(), second.begin()));

@@ -226,6 +226,12 @@ public:
     /// \attention Can be used in a constexpr context only since C++20
     constexpr bool operator!=(const MatrixBase &aRhs) const noexcept(should_noexcept);
 
+    /// \brief Return true if elements of `aRhs` are all within the tolerance `aEpsilon` of corresponding
+    /// elements in this matrix.
+    ///
+    /// \note This can be used to test if two instances are almost equal.
+    constexpr bool equalsWithinTolerance(const MatrixBase & aRhs, T_number aEpsilon) const noexcept(should_noexcept);
+
 
     // Implementer note:
     // Those two operations were initially free functions, notably templated on T_derived.

@@ -364,6 +364,18 @@ constexpr bool MatrixBase<TMA>::operator!=(const MatrixBase &aRhs) const noexcep
 
 
 template<TMP>
+constexpr bool MatrixBase<TMA>::equalsWithinTolerance(const MatrixBase & aRhs, T_number aEpsilon) const noexcept(should_noexcept)
+{
+    return std::equal(begin(), end(),
+                      aRhs.begin(), aRhs.end(),
+                      [aEpsilon](const T_number & a, const T_number & b)
+                      {
+                           return std::abs(a-b) <= aEpsilon;
+                      });
+}
+
+
+template<TMP>
 std::ostream & operator<<(std::ostream & os, const MatrixBase<TMA> &aMatrix)
 {
     auto printRow = [&](std::size_t row)
