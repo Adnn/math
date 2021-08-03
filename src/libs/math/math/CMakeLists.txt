@@ -9,6 +9,7 @@ set(${TARGET_NAME}_HEADERS
     commons.h
     Constants.h
     Matrix.h
+    Matrix-impl.h
     MatrixBase.h
     MatrixBase-impl.h
     MatrixTraits.h
