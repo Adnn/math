@@ -41,20 +41,51 @@ public:
     constexpr std::enable_if_t<sizeof(T_dummy) && is_square_value, bool> isSymmetric() const noexcept(should_noexcept)
     { return isSymmetric_impl(); }
 
+    /// \brief Compute the trace of this matrix (i.e. the sum of its diagonal elements).
+    /// \note This matrix must be square.
+    constexpr T_number trace() const noexcept(should_noexcept);
+
     /// \brief Return another matrix instance, which is the transpose of this matrix.
     constexpr Matrix<N_cols, N_rows, T_number> transpose() const noexcept(should_noexcept);
 
+    /// \brief Return another matrix, which is the inverse of this matrix.
+    /// \attention  The current implementation is very inefficient for large matrices
+    constexpr Matrix inverse() const noexcept(should_noexcept);
+
     using base_type::operator*=;
     constexpr Matrix & operator*=(const Matrix & aRhs) noexcept(should_noexcept);
+
+    /// \brief Compute the determinant of this matrix.
+    constexpr T_number determinant() const noexcept(should_noexcept);
+
+    /// \brief Return the submatrix obtained by removing `aRemovedRow`th row and `aRemovedColumn`th column from this matrix.
+    constexpr Matrix<N_rows-1, N_cols-1, T_number> 
+    getSubmatrix(std::size_t aRemovedRow, std::size_t aRemovedColumn) const noexcept(should_noexcept);
+
+    /// \brief Compute the cofactor of the matrix element `at(aRow, aColumn)`.
+    constexpr T_number cofactor(std::size_t aRow, std::size_t aColumn) const noexcept(should_noexcept);
+
+    /// \brief Return another matrix, which has the corresponding cofactor in the place of each element of this matrix.
+    constexpr Matrix computeCofactorMatrix() const noexcept(should_noexcept);
+
+    /// \brief Return another matrix, which is the adjoint matrix (i.e. the transpose of the cofactor matrix).
+    constexpr Matrix computeAdjointMatrix() const noexcept(should_noexcept);
 
 private:
     constexpr bool isDiagonal_impl() const noexcept(should_noexcept);
     constexpr bool isSymmetric_impl() const noexcept(should_noexcept);
 };
 
+namespace detail
+{
 
+    template <class T_number>
+    constexpr T_number computeDeterminant_impl(const Matrix<2, 2, T_number> & aMatrix);
 
+    template <class T_number, int N_dimension>
+    constexpr T_number computeDeterminant_impl(const Matrix<N_dimension, N_dimension, T_number> & aMatrix);
 
+} // namespace detail
 
 
 

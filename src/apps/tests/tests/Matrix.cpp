@@ -405,6 +405,11 @@ SCENARIO("Matrix special cases analysis.")
             REQUIRE(symmetric.isDiagonal());
             REQUIRE(symmetric.isSymmetric());
         }
+
+        THEN("Its trace can be computed")
+        {
+            REQUIRE(symmetric.trace() == 3+5+9+17);
+        }
     }
 
     GIVEN("A symmetric 4x4 Matrix")
@@ -412,14 +417,19 @@ SCENARIO("Matrix special cases analysis.")
         Matrix<4, 4, int> symmetric = {
             3,  2,  0,  1,
             2,  5,  5, -2,
-            0,  5,  9,  0,
-            1, -2,  0, 17,
+            0,  5,  -9,  0,
+            1, -2,  0, 27,
         };
 
         THEN("It is symmetric but not diagonal")
         {
             REQUIRE_FALSE(symmetric.isDiagonal());
             REQUIRE(symmetric.isSymmetric());
+        }
+
+        THEN("Its trace can be computed")
+        {
+            REQUIRE(symmetric.trace() == 3+5-9+27);
         }
 
         WHEN("One non diagonal element is changed")
@@ -439,5 +449,156 @@ SCENARIO("Matrix special cases analysis.")
             }
         }
 
+    }
+}
+
+
+SCENARIO("Matrix cofactor and related manipulations.")
+{
+    GIVEN("A 4x3 matrix")
+    {
+        Matrix<4, 3, int> fourThree{
+            1, 2,  0,
+            3, 4, -1,
+            5, 3, 10,
+            6, 6, -4,
+        };
+
+        THEN("A submatrix can be obtained by removing one row one column")
+        {
+            {
+                Matrix<3, 2, int> threeTwo = fourThree.getSubmatrix(2, 1);
+                REQUIRE(threeTwo == Matrix<3, 2, int>{
+                    1,  0,
+                    3, -1,
+                    6, -4,
+                });
+            }
+
+            {
+                Matrix<3, 2, int> threeTwo = fourThree.getSubmatrix(0, 0);
+                REQUIRE(threeTwo == Matrix<3, 2, int>{
+                    4, -1,
+                    3, 10,
+                    6, -4,
+                });
+            }
+
+            {
+                Matrix<3, 2, int> threeTwo = fourThree.getSubmatrix(3, 2);
+                REQUIRE(threeTwo == Matrix<3, 2, int>{
+                    1, 2,
+                    3, 4,
+                    5, 3,
+                });
+            }
+        }
+    }
+
+    GIVEN("A 3x3 matrix")
+    {
+        Matrix<3, 3, int>square{
+             9,  3, 5,
+            -6, -9, 7, 
+            -1, -8, 1,
+        };
+
+        THEN("Elements cofactor can be computed.")
+        {
+            REQUIRE(square.cofactor(0, 0) ==  47);
+            REQUIRE(square.cofactor(1, 0) == -43);
+            REQUIRE(square.cofactor(0, 2) ==  39);
+            REQUIRE(square.cofactor(2, 1) == -93);
+
+
+            REQUIRE(square.computeCofactorMatrix() == Matrix<3, 3, int>{
+                 47,  -1,  39,
+                -43,  14,  69,
+                 66, -93, -63,
+            });
+
+            REQUIRE(square.computeAdjointMatrix() == Matrix<3, 3, int>{
+                 47, -43,  66,
+                 -1,  14, -93,
+                 39,  69, -63,
+            });
+        }
+    }
+}
+
+
+SCENARIO("Matrix determinants.")
+{
+    GIVEN("A 2x2 matrix")
+    {
+        Matrix<2, 2, int> square{
+            1, 2,
+            3, 4,
+        };
+
+        THEN("Its determinant can be computed")
+        {
+            REQUIRE(square.determinant() == -2);
+        }
+    }
+
+    GIVEN("A 3x3 matrix")
+    {
+        Matrix<3, 3, int> square{
+             9,  3, 5,
+            -6, -9, 7, 
+            -1, -8, 1,
+        };
+
+        THEN("Its determinant can be computed")
+        {
+            REQUIRE(square.determinant() == 615);
+        }
+    }
+
+    GIVEN("A 4x4 matrix")
+    {
+        Matrix<4, 4, int> square{
+             9,   3,  15, -5,
+             0,  -6, -19,  1, 
+            -1, -81,  12, 12,
+             1,  81,  21, 12,
+        };
+
+        THEN("Its determinant can be computed")
+        {
+            REQUIRE(square.determinant() == -352332);
+        }
+    }
+
+    GIVEN("A 5x5 matrix")
+    {
+        Matrix<5, 5, int> square{
+             9,  -3,  15, -5,  1,
+             0,  -6, -19,  1, -1,
+            -1, -81,  12, 12,  8,
+             1,  81,  21, 12,  8,
+            10,  -1,   0,  2, -8,
+        };
+
+        THEN("Its determinant can be computed")
+        {
+            REQUIRE(square.determinant() == 4210604);
+        }
+
+        THEN("It can be inverted")
+        {
+            Matrix<5, 5, double> base{square};
+            // Pre-computed
+            Matrix<5, 5, double> expected{
+                 354906., 377226.,  28958.,  71248.,   97416.,
+                  -2654.,   9138., -26958.,  25568.,   -2864.,
+                 -31096., -248312., 10964.,  -8212.,   29904.,
+                -217045.,  23859., 114847., 110992.,  195726.,
+                 389703., 476355.,  68279., 113612., -355266.,
+            };
+            expected /= 4210604.;
+            REQUIRE(base.inverse() == expected);
+        }
     }
 }
