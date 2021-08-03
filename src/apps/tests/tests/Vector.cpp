@@ -269,6 +269,25 @@ SCENARIO("Vec class operations")
         }
     }
 
+    GIVEN("A vector of dimension 3 and another vector of dimension 2")
+    {
+        Vec<3> a{ 1., 2., 3.};
+        Vec<2> b{ 4., 5.};
+
+        THEN("outer product can be computed")
+        {
+            auto r = a.outer(b);
+            REQUIRE(r.Rows == 3);
+            REQUIRE(r.Cols == 2);
+
+            REQUIRE(r == Matrix<3, 2>{
+                         4.,  5.,
+                         8., 10.,
+                        12., 15.,
+                    });
+        }
+    }
+
     GIVEN("A vector 3")
     {
         Vec<3> vector{ 5., 6., 15.};

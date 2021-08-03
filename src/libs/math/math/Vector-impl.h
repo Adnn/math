@@ -56,6 +56,26 @@ constexpr T_number Vector<T_derived, N_dimension, T_number>::dot(const Vector &a
     return result;
 }
 
+
+template <class T_derived, int N_dimension, class T_number>
+template <class T_rightDerived, int N_rightDimension>
+constexpr Matrix<N_dimension, N_rightDimension, T_number>
+Vector<T_derived, N_dimension, T_number>::outer(
+        const Vector<T_rightDerived, N_rightDimension, T_number> & aRhs) const
+{
+    using MatrixType = Matrix<N_dimension, N_rightDimension, T_number>;
+    MatrixType result{MatrixType::UninitializedTag{}};
+    for (std::size_t row = 0; row != N_dimension; ++row)
+    {
+        for (std::size_t col = 0; col != N_rightDimension; ++col)
+        {
+            result.at(row, col) = at(row) * aRhs.at(col);
+        }
+    }
+    return result;
+}
+
+
 template <class T_derived, int N_dimension, class T_number>
 constexpr T_number Vector<T_derived, N_dimension, T_number>::getNormSquared() const
 {

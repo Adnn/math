@@ -27,6 +27,15 @@ public:
     /// \brief Dot product
     constexpr T_number dot(const Vector &aRhs) const;
 
+    /// \brief Outer product
+    ///
+    /// see: https://en.wikipedia.org/wiki/Outer_product
+    ///
+    /// \note It returns a matrix, so it does not try to restrict to vector of the same derived type.
+    template <class T_rightDerived, int N_rightDimension>
+    constexpr Matrix<N_dimension, N_rightDimension, T_number>
+    outer(const Vector<T_rightDerived, N_rightDimension, T_number> & aRhs) const;
+
     /// \brief Vector magnitude squared (faster than normal magnitudes)
     constexpr T_number getNormSquared() const;
 
