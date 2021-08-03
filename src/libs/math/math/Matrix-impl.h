@@ -14,6 +14,46 @@ Matrix<TMP>::Identity() noexcept(should_noexcept)
 
 
 template <TMA>
+constexpr bool
+Matrix<TMP>::isDiagonal() const noexcept(should_noexcept)
+{
+    static_assert(is_square_value, "Only square matrices could be diagonal.");
+
+    for(std::size_t row = 0; row != N_rows; ++row)
+    {
+        for(std::size_t col = 0; col != N_cols; ++col)
+        {
+            if ((row != col) && (at(row, col) != 0))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+template <TMA>
+constexpr bool
+Matrix<TMP>::isSymmetric() const noexcept(should_noexcept)
+{
+    static_assert(is_square_value, "Only square matrices could be symmetric.");
+
+    for(std::size_t row = 0; row != N_rows; ++row)
+    {
+        for(std::size_t col = 1 + row; col != N_cols; ++col)
+        {
+            if (at(row, col) != at(col, row))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+template <TMA>
 constexpr T_number Matrix<TMP>::trace() const noexcept(should_noexcept)
 {
     static_assert(is_square_value, "Trace can only be computed for square matrices.");
@@ -124,41 +164,6 @@ Matrix<TMP>::getSubmatrix(std::size_t aRemovedRow, std::size_t aRemovedColumn) c
     return result;
 }
 
-
-template <TMA>
-constexpr bool
-Matrix<TMP>::isDiagonal_impl() const noexcept(should_noexcept)
-{
-    for(std::size_t row = 0; row != N_rows; ++row)
-    {
-        for(std::size_t col = 0; col != N_cols; ++col)
-        {
-            if ((row != col) && (at(row, col) != 0))
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-
-template <TMA>
-constexpr bool
-Matrix<TMP>::isSymmetric_impl() const noexcept(should_noexcept)
-{
-    for(std::size_t row = 0; row != N_rows; ++row)
-    {
-        for(std::size_t col = 1 + row; col != N_cols; ++col)
-        {
-            if (at(row, col) != at(col, row))
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 template <TMA>
 constexpr T_number

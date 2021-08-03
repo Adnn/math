@@ -379,18 +379,6 @@ SCENARIO("Matrix extreme magnitude elements.")
 
 SCENARIO("Matrix special cases analysis.")
 {
-    GIVEN("A 2x3 Matrix")
-    {
-        THEN("Test for diagonality and symmetry are not available")
-        {
-            REQUIRE_FALSE(is_detected_v<is_diagonality_testable, Matrix<2,3>>);
-            REQUIRE_FALSE(is_detected_v<is_symmetry_testable, Matrix<2,3>>);
-
-            REQUIRE(is_detected_v<is_diagonality_testable, Matrix<4,4>>);
-            REQUIRE(is_detected_v<is_symmetry_testable, Matrix<4,4>>);
-        }
-    }
-
     GIVEN("A diagonal 4x4 Matrix")
     {
         Matrix<4, 4, int> symmetric = {

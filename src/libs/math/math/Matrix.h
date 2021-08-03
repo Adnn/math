@@ -29,17 +29,11 @@ public:
 
     static constexpr Matrix Identity() noexcept(should_noexcept);
 
-    // Implementer note:
-    // T_dummy template argument is required so the `enable_if` conditions depends on a deduced template argument.
     /// \brief Test if the matrix is diagonal (i.e. only diagonal elements might not be null).
-    template <class T_dummy = int>
-    constexpr std::enable_if_t<sizeof(T_dummy) && is_square_value, bool> isDiagonal() const noexcept(should_noexcept)
-    { return isDiagonal_impl(); }
+    constexpr bool isDiagonal() const noexcept(should_noexcept);
 
     /// \brief Test if the matrix is symmetric (the matrix is equal to its transpose, by definition).
-    template <class T_dummy = int>
-    constexpr std::enable_if_t<sizeof(T_dummy) && is_square_value, bool> isSymmetric() const noexcept(should_noexcept)
-    { return isSymmetric_impl(); }
+    constexpr bool isSymmetric() const noexcept(should_noexcept);
 
     /// \brief Compute the trace of this matrix (i.e. the sum of its diagonal elements).
     /// \note This matrix must be square.
@@ -70,10 +64,6 @@ public:
 
     /// \brief Return another matrix, which is the adjoint matrix (i.e. the transpose of the cofactor matrix).
     constexpr Matrix computeAdjointMatrix() const noexcept(should_noexcept);
-
-private:
-    constexpr bool isDiagonal_impl() const noexcept(should_noexcept);
-    constexpr bool isSymmetric_impl() const noexcept(should_noexcept);
 };
 
 namespace detail
