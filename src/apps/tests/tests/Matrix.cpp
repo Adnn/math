@@ -362,3 +362,69 @@ SCENARIO("Matrix extreme magnitude elements.")
         }
     }
 }
+
+
+SCENARIO("Matrix special cases analysis.")
+{
+    GIVEN("A 2x3 Matrix")
+    {
+        THEN("Test for diagonality and symmetry are not available")
+        {
+            REQUIRE_FALSE(is_detected_v<is_diagonality_testable, Matrix<2,3>>);
+            REQUIRE_FALSE(is_detected_v<is_symmetry_testable, Matrix<2,3>>);
+
+            REQUIRE(is_detected_v<is_diagonality_testable, Matrix<4,4>>);
+            REQUIRE(is_detected_v<is_symmetry_testable, Matrix<4,4>>);
+        }
+    }
+
+    GIVEN("A diagonal 4x4 Matrix")
+    {
+        Matrix<4, 4, int> symmetric = {
+            3,  0,  0,  0,
+            0,  5,  0, -0,
+            0,  0,  9,  0,
+            0, -0,  0, 17,
+        };
+
+        THEN("It is diagonal and symmetric")
+        {
+            REQUIRE(symmetric.isDiagonal());
+            REQUIRE(symmetric.isSymmetric());
+        }
+    }
+
+    GIVEN("A symmetric 4x4 Matrix")
+    {
+        Matrix<4, 4, int> symmetric = {
+            3,  2,  0,  1,
+            2,  5,  5, -2,
+            0,  5,  9,  0,
+            1, -2,  0, 17,
+        };
+
+        THEN("It is symmetric but not diagonal")
+        {
+            REQUIRE_FALSE(symmetric.isDiagonal());
+            REQUIRE(symmetric.isSymmetric());
+        }
+
+        WHEN("One non diagonal element is changed")
+        {
+            auto modified1 = symmetric; 
+            ++modified1.at(0, 2);
+
+            auto modified2 = symmetric; 
+            ++modified2.at(3, 1);
+
+            THEN("It is not symmetric nor diagonal")
+            {
+                REQUIRE_FALSE(modified1.isDiagonal());
+                REQUIRE_FALSE(modified1.isSymmetric());
+                REQUIRE_FALSE(modified2.isDiagonal());
+                REQUIRE_FALSE(modified2.isSymmetric());
+            }
+        }
+
+    }
+}

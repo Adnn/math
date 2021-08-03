@@ -1,3 +1,39 @@
+template <TMA>
+constexpr bool
+Matrix<TMP>::isDiagonal_impl() const noexcept(should_noexcept)
+{
+    for(std::size_t row = 0; row != N_rows; ++row)
+    {
+        for(std::size_t col = 0; col != N_cols; ++col)
+        {
+            if ((row != col) && (at(row, col) != 0))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+template <TMA>
+constexpr bool
+Matrix<TMP>::isSymmetric_impl() const noexcept(should_noexcept)
+{
+    for(std::size_t row = 0; row != N_rows; ++row)
+    {
+        for(std::size_t col = 1 + row; col != N_cols; ++col)
+        {
+            if (at(row, col) != at(col, row))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
 template <class T_result, int N_lRows, int N_lCols, int N_rRows, int N_rCols, class T_lDerived, class T_number>
 constexpr T_result multiplyBase(const MatrixBase<T_lDerived, N_lRows, N_lCols, T_number> &aLhs,
                                 const Matrix<N_rRows, N_rCols, T_number> &aRhs)
