@@ -93,28 +93,6 @@ constexpr Matrix<TMP> Matrix<TMP>::inverse() const noexcept(should_noexcept)
 }
 
 
-template <class T_result, int N_lRows, int N_lCols, int N_rRows, int N_rCols, class T_lDerived, class T_number>
-constexpr T_result multiplyBase(const MatrixBase<T_lDerived, N_lRows, N_lCols, T_number> &aLhs,
-                                const Matrix<N_rRows, N_rCols, T_number> &aRhs)
-{
-    T_result result = T_result::Zero();
-    for(std::size_t row = 0; row != N_lRows; ++row)
-    {
-        for(std::size_t col = 0; col != N_rCols; ++col)
-        {
-            // Inner multiplication
-            for(std::size_t index = 0; index != N_rRows; ++index)
-            {
-                // Uses at() on result instead of double subscript, because T_result may be Vector type.
-                result.at(row, col) += aLhs[row][index] * aRhs[index][col];
-            }
-
-        }
-    }
-    return result;
-}
-
-
 template <TMA>
 constexpr T_number Matrix<TMP>::determinant() const noexcept(should_noexcept)
 {
@@ -173,6 +151,40 @@ template <TMA>
 constexpr Matrix<TMP> Matrix<TMP>::computeAdjointMatrix() const noexcept(should_noexcept)
 {
     return computeCofactorMatrix().transpose();
+}
+
+
+/// The explicit N_rowsMultiplied and N_colsMultiplied template arguments allow to implement subset multiplications 
+/// (useful for optimizing Affined matrices with known [0..0 1] elements).
+/// For complete multiplication, use multiplyBase() directly.
+template <class T_result, int N_rowsMultiplied, int N_colsMultiplied, int N_lRows, int N_matching, int N_rCols, class T_lDerived, class T_number>
+constexpr T_result multiplyBaseSubrange(const MatrixBase<T_lDerived, N_lRows, N_matching, T_number> &aLhs,
+                                     const Matrix<N_matching, N_rCols, T_number> &aRhs)
+{
+    T_result result{T_result::UninitializedTag{}};
+    for(std::size_t row = 0; row != N_rowsMultiplied; ++row)
+    {
+        for(std::size_t col = 0; col != N_colsMultiplied; ++col)
+        {
+            // Inner multiplication
+            for(std::size_t index = 0; index != N_matching; ++index)
+            {
+                // Uses at() on result instead of double subscript, because T_result may be Vector type.
+                result.at(row, col) += aLhs[row][index] * aRhs[index][col];
+            }
+
+        }
+    }
+    return result;
+}
+
+
+template <class T_result, int N_lRows, int N_matching, int N_rCols, class T_lDerived, class T_number>
+constexpr T_result multiplyBase(const MatrixBase<T_lDerived, N_lRows, N_matching, T_number> &aLhs,
+                                const Matrix<N_matching, N_rCols, T_number> &aRhs)
+{
+    // Here, subrange is chosen to be the totality.
+    return multiplyBaseSubrange<T_result, N_lRows, N_rCols>(aLhs, aRhs);
 }
 
 

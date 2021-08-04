@@ -33,14 +33,40 @@ class AffineMatrix : public Matrix<N_dimension, N_dimension, T_number>
     using base_type = Matrix<N_dimension, N_dimension, T_number>;
     using base_type::should_noexcept;
 
+    // Important:
+    // The constructor from base_type are not inherited, to avoid the constructor
+    // accepting an explicit list of elements.
+
 public:
     explicit constexpr AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
                                     const Vec<N_dimension-1, T_number> & aAffine = 
                                         Vec<N_dimension-1, T_number>::Zero()) 
         noexcept(should_noexcept);
+
+    explicit constexpr AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept);
+
+    Matrix & operator*=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
+    Matrix & setZero() = delete;
+    static Matrix Zero() = delete;
+
+    // 
+    // Factories
+    //
+    static constexpr AffineMatrix Identity() noexcept(should_noexcept);
+
+    //
+    // Arithmetic operations
+    //
+    constexpr AffineMatrix & operator*=(const AffineMatrix & aRhs) noexcept(should_noexcept);
 };
 
 #undef TMA_D
+
+
+/// \brief Affine matrices multiplication.
+template <TMA>
+constexpr AffineMatrix<TMP>
+operator*(const AffineMatrix<TMP> &aLhs, const AffineMatrix<TMP> &aRhs);
 
 
 // Implementer note:

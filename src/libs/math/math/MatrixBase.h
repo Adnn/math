@@ -277,7 +277,7 @@ public:
     };
 
     /// \brief Like a default constructor, but inaccessible to the client code thanks to the protected tag.
-    constexpr MatrixBase(UninitializedTag) noexcept(should_noexcept);
+    constexpr explicit MatrixBase(UninitializedTag) noexcept(should_noexcept);
 
     constexpr MatrixBase(detail::CastTag, store_type aData)
             noexcept(std::is_nothrow_move_constructible<value_type>::value);
