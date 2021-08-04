@@ -68,16 +68,20 @@ public:
     /// \brief Return another matrix, which is the adjoint matrix (i.e. the transpose of the cofactor matrix).
     constexpr Matrix computeAdjointMatrix() const noexcept(should_noexcept);
 
-    using base_type::operator*=;
-    constexpr Matrix & operator*=(const Matrix & aRhs) noexcept(should_noexcept);
+    //
+    // Arithmetic operations
+    //
+    using base_type::operator*=; // For scalar compound multiplication
+
+    constexpr Matrix & operator*=(const Matrix<N_cols, N_cols, T_number> & aRhs) noexcept(should_noexcept);
 };
 
 
 /// \brief Matrix multiplication
-template <int N_lRows, int N_lCols, int N_rRows, int N_rCols, class T_number>
+template <int N_lRows, int N_matching, int N_rCols, class T_number>
 constexpr Matrix<N_lRows, N_rCols, T_number>
-operator*(const Matrix<N_lRows, N_lCols, T_number> &aLhs,
-          const Matrix<N_rRows, N_rCols, T_number> &aRhs);
+operator*(const Matrix<N_lRows, N_matching, T_number> &aLhs,
+          const Matrix<N_matching, N_rCols, T_number> &aRhs);
 
 
 namespace detail

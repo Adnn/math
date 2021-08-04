@@ -176,22 +176,18 @@ constexpr Matrix<TMP> Matrix<TMP>::computeAdjointMatrix() const noexcept(should_
 }
 
 
-template <int N_lRows, int N_lCols, int N_rRows, int N_rCols, class T_number>
+template <int N_lRows, int N_matching, int N_rCols, class T_number>
 constexpr Matrix<N_lRows, N_rCols, T_number>
-operator*(const Matrix<N_lRows, N_lCols, T_number> &aLhs,
-          const Matrix<N_rRows, N_rCols, T_number> &aRhs)
+operator*(const Matrix<N_lRows, N_matching, T_number> &aLhs,
+          const Matrix<N_matching, N_rCols, T_number> &aRhs)
 {
-    static_assert(N_lCols == N_rRows, "Matrix multiplication dimension mismatch.");
     return multiplyBase<Matrix<N_lRows, N_rCols, T_number>>(aLhs, aRhs);
 }
 
 
 template <TMA>
-constexpr auto Matrix<TMP>::operator*=(const Matrix & aRhs)
-noexcept(should_noexcept) -> Matrix &
+constexpr Matrix<TMP> & Matrix<TMP>::operator*=(const Matrix<N_cols, N_cols, T_number> & aRhs) noexcept(should_noexcept)
 {
-    static_assert(is_square_value,
-                  "Matrix multiplication assignment only available for square Matrices");
     *this = *this * aRhs;
     return *this;
 }
