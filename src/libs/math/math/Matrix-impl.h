@@ -199,13 +199,17 @@ constexpr Matrix<TMP> Matrix<TMP>::computeAdjointMatrix() const noexcept(should_
 
 namespace detail
 {
+    template <class T_number>
+    constexpr T_number computeDeterminant_impl(const Matrix<1, 1, T_number> & aMatrix)
+    {
+        return aMatrix[0][0];
+    }
 
     template <class T_number>
     constexpr T_number computeDeterminant_impl(const Matrix<2, 2, T_number> & aMatrix)
     {
         return aMatrix[0][0] * aMatrix[1][1] - aMatrix[0][1] * aMatrix[1][0];
     }
-
 
     template <class T_number, int N_dimension>
     constexpr T_number computeDeterminant_impl(const Matrix<N_dimension, N_dimension, T_number> & aMatrix)

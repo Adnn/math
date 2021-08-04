@@ -20,6 +20,7 @@ set(${PROJECT_NAME}_SOURCES
     Rectangle.cpp
     Traits.cpp
     Transformations_tests.cpp
+    TransformNormal_tests.cpp
     Vector.cpp
     VectorOfAngle.cpp
 )

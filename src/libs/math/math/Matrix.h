@@ -62,12 +62,20 @@ public:
     /// \brief Return another matrix, which has the corresponding cofactor in the place of each element of this matrix.
     constexpr Matrix computeCofactorMatrix() const noexcept(should_noexcept);
 
+    /// \brief Return another matrix to transform surface's normals, if this matrix transformed the surface itself.
+    /// \attention This matrix will only give the correct direction, it will arbitrarily change the length of the normal.
+    constexpr Matrix toNormalTansformScaled() const noexcept(should_noexcept)
+    { return computeCofactorMatrix(); }
+
     /// \brief Return another matrix, which is the adjoint matrix (i.e. the transpose of the cofactor matrix).
     constexpr Matrix computeAdjointMatrix() const noexcept(should_noexcept);
 };
 
 namespace detail
 {
+
+    template <class T_number>
+    constexpr T_number computeDeterminant_impl(const Matrix<1, 1, T_number> & aMatrix);
 
     template <class T_number>
     constexpr T_number computeDeterminant_impl(const Matrix<2, 2, T_number> & aMatrix);
