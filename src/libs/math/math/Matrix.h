@@ -18,6 +18,7 @@ class Matrix : public MatrixBase<Matrix<TMP>, N_rows, N_cols, T_number>
 {
     typedef MatrixBase<Matrix<TMP>, N_rows, N_cols, T_number> base_type;
     using base_type::base_type;
+protected:
     using base_type::should_noexcept;
 
 public:
@@ -46,9 +47,6 @@ public:
     /// \attention  The current implementation is very inefficient for large matrices
     constexpr Matrix inverse() const noexcept(should_noexcept);
 
-    using base_type::operator*=;
-    constexpr Matrix & operator*=(const Matrix & aRhs) noexcept(should_noexcept);
-
     /// \brief Compute the determinant of this matrix.
     constexpr T_number determinant() const noexcept(should_noexcept);
 
@@ -69,7 +67,18 @@ public:
 
     /// \brief Return another matrix, which is the adjoint matrix (i.e. the transpose of the cofactor matrix).
     constexpr Matrix computeAdjointMatrix() const noexcept(should_noexcept);
+
+    using base_type::operator*=;
+    constexpr Matrix & operator*=(const Matrix & aRhs) noexcept(should_noexcept);
 };
+
+
+/// \brief Matrix multiplication
+template <int N_lRows, int N_lCols, int N_rRows, int N_rCols, class T_number>
+constexpr Matrix<N_lRows, N_rCols, T_number>
+operator*(const Matrix<N_lRows, N_lCols, T_number> &aLhs,
+          const Matrix<N_rRows, N_rCols, T_number> &aRhs);
+
 
 namespace detail
 {

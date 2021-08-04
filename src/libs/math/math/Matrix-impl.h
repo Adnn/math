@@ -115,27 +115,6 @@ constexpr T_result multiplyBase(const MatrixBase<T_lDerived, N_lRows, N_lCols, T
 }
 
 
-template <int N_lRows, int N_lCols, int N_rRows, int N_rCols, class T_number>
-constexpr Matrix<N_lRows, N_rCols, T_number>
-operator*(const Matrix<N_lRows, N_lCols, T_number> &aLhs,
-          const Matrix<N_rRows, N_rCols, T_number> &aRhs)
-{
-    static_assert(N_lCols == N_rRows, "Matrix multiplication dimension mismatch.");
-    return multiplyBase<Matrix<N_lRows, N_rCols, T_number>>(aLhs, aRhs);
-}
-
-
-template <TMA>
-constexpr auto Matrix<TMP>::operator*=(const Matrix & aRhs)
-noexcept(should_noexcept) -> Matrix &
-{
-    static_assert(is_square_value,
-                  "Matrix multiplication assignment only available for square Matrices");
-    *this = *this * aRhs;
-    return *this;
-}
-
-
 template <TMA>
 constexpr T_number Matrix<TMP>::determinant() const noexcept(should_noexcept)
 {
@@ -194,6 +173,27 @@ template <TMA>
 constexpr Matrix<TMP> Matrix<TMP>::computeAdjointMatrix() const noexcept(should_noexcept)
 {
     return computeCofactorMatrix().transpose();
+}
+
+
+template <int N_lRows, int N_lCols, int N_rRows, int N_rCols, class T_number>
+constexpr Matrix<N_lRows, N_rCols, T_number>
+operator*(const Matrix<N_lRows, N_lCols, T_number> &aLhs,
+          const Matrix<N_rRows, N_rCols, T_number> &aRhs)
+{
+    static_assert(N_lCols == N_rRows, "Matrix multiplication dimension mismatch.");
+    return multiplyBase<Matrix<N_lRows, N_rCols, T_number>>(aLhs, aRhs);
+}
+
+
+template <TMA>
+constexpr auto Matrix<TMP>::operator*=(const Matrix & aRhs)
+noexcept(should_noexcept) -> Matrix &
+{
+    static_assert(is_square_value,
+                  "Matrix multiplication assignment only available for square Matrices");
+    *this = *this * aRhs;
+    return *this;
 }
 
 

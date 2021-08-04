@@ -4,6 +4,7 @@ project(${_lower_project_name}_tests)
 set(${PROJECT_NAME}_HEADERS
     catch.hpp
     detection.h
+    operation_detectors.h
 )
 
 set(${PROJECT_NAME}_SOURCES
@@ -13,6 +14,7 @@ set(${PROJECT_NAME}_SOURCES
     Canonical_tests.cpp
     Color_tests.cpp
     Constexpr_tests.cpp
+    Homogeneous_tests.cpp
     Matrix.cpp
     Noexcept_tests.cpp
     Polynomial.cpp

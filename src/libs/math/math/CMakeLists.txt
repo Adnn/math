@@ -8,6 +8,8 @@ set(${TARGET_NAME}_HEADERS
     Color.h
     commons.h
     Constants.h
+    Homogeneous.h
+    Homogeneous-impl.h
     Matrix.h
     Matrix-impl.h
     MatrixBase.h
