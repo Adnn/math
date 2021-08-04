@@ -26,6 +26,17 @@ namespace trans2d {
     constexpr Matrix<2, 2, T_number> scale(const T_number aFactor, const UnitVec<2, T_number> aAxis);
 
 
+    /// \brief Non-uniform non-axis-aligned scale.
+    /// 
+    /// The scaling axis are X and Y, but rotated counter-clockwise by `aCounterClockwise`.
+    ///
+    /// \note see: FoCG 3rd p122
+    template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
+    constexpr Matrix<2, 2, T_number> 
+    scale(const T_number aFactorHorizontal, const T_number aFactorVertical, 
+          const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise);
+
+
     /// \brief Projects \b onto X
     template <class T_number=real_number>
     constexpr Matrix<2, 2, T_number> projectOrthographicOntoX();
@@ -57,6 +68,16 @@ namespace trans2d {
 
     template <class T_number>
     constexpr Matrix<2, 2, T_number> shearY(const T_number aWeightX);
+
+    /// \brief Shear matrix that tilts the vertical axis counter-clockwise (shears the X axis).
+    template <class T_number=real_number, class T_angleRepresentation, class T_angleUnitTag>
+    constexpr Matrix<2, 2, T_number> 
+    shearVertical(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise);
+
+    /// \brief Shear matrix that tilts the horizontal axis counter-clockwise (shear the Y axis).
+    template <class T_number=real_number, class T_angleRepresentation, class T_angleUnitTag>
+    constexpr Matrix<2, 2, T_number>
+    shearHorizontal(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise);
 
 
 } // namespace trans2d

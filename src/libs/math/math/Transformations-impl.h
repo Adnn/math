@@ -35,6 +35,27 @@ namespace trans2d {
     }
 
 
+    template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
+    constexpr Matrix<2, 2, T_number> 
+    scale(const T_number aFactorHorizontal, const T_number aFactorVertical, 
+          const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
+    {
+        // Compact aliases
+        auto l1 = aFactorHorizontal;
+        auto l2 = aFactorVertical;
+
+        auto cs = cos(-aCounterClockwise);
+        auto sn = sin(-aCounterClockwise);
+        
+        auto antidiagonal = (l2 - l1) * cs * sn;
+
+        return {
+            l1 * std::pow(cs, 2) + l2 * std::pow(sn, 2),    antidiagonal,
+            antidiagonal,                                   l2 * std::pow(cs, 2) + l1 * std::pow(sn, 2),
+        };
+    }
+
+
     template <class T_number>
     constexpr Matrix<2, 2, T_number> projectOrthographicOntoX()
     {
@@ -94,6 +115,22 @@ namespace trans2d {
             T_number{1},       aWeightX,
             T_number{0},    T_number{1},
         };
+    }
+
+
+    template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
+    constexpr Matrix<2, 2, T_number> 
+    shearVertical(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
+    {
+        return shearX(-tan(aCounterClockwise));
+    }
+
+
+    template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
+    constexpr Matrix<2, 2, T_number>
+    shearHorizontal(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
+    {
+        return shearY(tan(aCounterClockwise));
     }
 
 

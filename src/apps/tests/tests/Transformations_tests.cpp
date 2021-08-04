@@ -124,6 +124,19 @@ SCENARIO("2D scaling")
             }
         }
     }
+
+    THEN("A non-uniform non-axis-aligned scaling matrix can be computed")
+    {
+        // This the example from FoCG 3rd p122.
+        Matrix<2, 2> scaling = trans2d::scale(2.618, 0.382, Degree<double>(31.7));
+
+        Matrix<2, 2> reference{
+            2., 1.,
+            1., 1.,
+        };
+
+        REQUIRE(scaling.equalsWithinTolerance(reference, 0.001));
+    }
 }
 
 
@@ -269,6 +282,21 @@ SCENARIO("2D shearing")
             }
         }
 
+        GIVEN("A matrix shearing the vertical axis")
+        {
+            Matrix<2, 2> shearing = trans2d::shearVertical(Degree<double>(45));
+
+            THEN("The vectors can be skewed")
+            {
+                REQUIRE(zero * shearing ==  zero);
+                APPROX_EQUAL(i * shearing,  i);
+                APPROX_EQUAL(j * shearing,  j - i);
+
+                APPROX_EQUAL(a * shearing, (Vec<2>{ 2.5, -2.0}));
+                APPROX_EQUAL(b * shearing, (Vec<2>{-2.5,  2.0}));
+            }
+        }
+
         GIVEN("A matrix shearing the Y coordinate")
         {
             Matrix<2, 2> shearing = trans2d::shearY(-0.2);
@@ -281,6 +309,21 @@ SCENARIO("2D shearing")
 
                 APPROX_EQUAL(a * shearing, (Vec<2>{ 0.5, -2.1}));
                 APPROX_EQUAL(b * shearing, (Vec<2>{-0.5,  2.1}));
+            }
+        }
+
+        GIVEN("A matrix shearing the horizontal axis")
+        {
+            Matrix<2, 2> shearing = trans2d::shearHorizontal(Radian<double>(pi<double>/4.));
+
+            THEN("The vectors can be skewed")
+            {
+                REQUIRE(zero * shearing ==  zero);
+                APPROX_EQUAL(i * shearing,  i + j);
+                APPROX_EQUAL(j * shearing,  j);
+
+                APPROX_EQUAL(a * shearing, (Vec<2>{ 0.5, -1.5}));
+                APPROX_EQUAL(b * shearing, (Vec<2>{-0.5,  1.5}));
             }
         }
     }
