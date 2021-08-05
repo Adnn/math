@@ -267,6 +267,84 @@ SCENARIO("Affine matrices available operations")
             REQUIRE_FALSE(is_detected_v<is_multiplicative_assignable_t, Affine4, double>);
         }
     }
+
+    THEN("Affine matrices can be added to both 'plain' and affine matrices.")
+    {
+        // Affine + Affine -> Matrix
+        REQUIRE(is_detected_v<is_additive_t, Affine4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>() + std::declval<Affine4>()),
+                               Matrix4x4>);
+
+        THEN("Two affine matrices cannot be compound added.")
+        {
+            REQUIRE_FALSE(is_detected_v<is_additivecompound_t, Affine4, Affine4>);
+        }
+
+        // Affine + Matrix -> Matrix
+        REQUIRE(is_detected_v<is_additive_t, Affine4, Matrix4x4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>() + std::declval<Matrix4x4>()),
+                               Matrix4x4>);
+
+        THEN("A plain matrice cannot be compound added to an affine matrix.")
+        {
+            REQUIRE_FALSE(is_detected_v<is_additivecompound_t, Affine4, Matrix4x4>);
+        }
+
+        // Matrix + Affine -> Matrix
+        REQUIRE(is_detected_v<is_additive_t, Matrix4x4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Matrix4x4>() + std::declval<Affine4>()),
+                               Matrix4x4>);
+
+        THEN("An affine matrix can be compound added to a plain matrix.")
+        {
+            REQUIRE(is_detected_v<is_additivecompound_t, Matrix4x4, Affine4>);
+        }
+
+        THEN("Addition is not available if dimensions don't match")
+        {
+            REQUIRE_FALSE(is_detected_v<is_additive_t, Affine4, Affine3>);
+            REQUIRE_FALSE(is_detected_v<is_additive_t, Affine4, Matrix3x4>);
+        }
+    }
+
+    THEN("Affine matrices can be substracted with both 'plain' and affine matrices.")
+    {
+        // Affine - Affine -> Matrix
+        REQUIRE(is_detected_v<is_substractive_t, Affine4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>() - std::declval<Affine4>()),
+                               Matrix4x4>);
+
+        THEN("Two affine matrices cannot be compound substracted.")
+        {
+            REQUIRE_FALSE(is_detected_v<is_substractivecompound_t, Affine4, Affine4>);
+        }
+
+        // Affine - Matrix -> Matrix
+        REQUIRE(is_detected_v<is_substractive_t, Affine4, Matrix4x4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>() - std::declval<Matrix4x4>()),
+                               Matrix4x4>);
+
+        THEN("A plain matrice cannot be compound substracted from an affine matrix.")
+        {
+            REQUIRE_FALSE(is_detected_v<is_substractivecompound_t, Affine4, Matrix4x4>);
+        }
+
+        // Matrix - Affine -> Matrix
+        REQUIRE(is_detected_v<is_substractive_t, Matrix4x4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Matrix4x4>() - std::declval<Affine4>()),
+                               Matrix4x4>);
+
+        THEN("An affine matrix can be compound added to a plain matrix.")
+        {
+            REQUIRE(is_detected_v<is_substractivecompound_t, Matrix4x4, Affine4>);
+        }
+
+        THEN("Substraction is not available if dimensions don't match")
+        {
+            REQUIRE_FALSE(is_detected_v<is_substractive_t, Affine4, Affine3>);
+            REQUIRE_FALSE(is_detected_v<is_substractive_t, Affine4, Matrix3x4>);
+        }
+    }
 }
 
 
@@ -322,6 +400,103 @@ SCENARIO("Affine matrices mutliplication.")
             THEN("The matrix can be multiplied by the scalar.")
             {
                 REQUIRE(matrix * scalar == expected);
+            }
+        }
+    }
+}
+
+
+SCENARIO("Affine matrices addition/substraction.")
+{
+    GIVEN("An affine matrix of dimension 3.")
+    {
+        AffineMatrix<3, int> matrix{
+            {1, 0,
+             3, 1},
+            {0, 1}
+        };
+
+        THEN("Adding the zero matrix give the plain matrix with same values")
+        {
+            REQUIRE(matrix + Matrix<3, 3, int>::Zero() == matrix);
+        }
+
+        GIVEN("A second affine matrix of dimension 3.")
+        {
+            AffineMatrix<3, int> second{
+                {5, 5,
+                 5, 5},
+                {2, 2}
+            };
+
+            Matrix<3, 3, int> expectedAdd{
+                6,  5,  0,
+                8,  6,  0,
+                2,  3,  2
+            };
+
+            Matrix<3, 3, int> expectedSub{
+                -4,  -5,  0,
+                -2,  -4,  0,
+                -2,  -1,  0
+            };
+
+            THEN("They can be added together")
+            {
+                REQUIRE(matrix + second == expectedAdd);
+                REQUIRE(second + matrix == expectedAdd);
+
+                Matrix<3, 3, int> secondPlain{second};
+                secondPlain += matrix;
+                REQUIRE(secondPlain == expectedAdd);
+            }
+
+            THEN("They can be substracted")
+            {
+                REQUIRE(matrix - second == expectedSub);
+
+                Matrix<3, 3, int> firstPlain{matrix};
+                firstPlain -= second;
+                REQUIRE(firstPlain == expectedSub);
+            }
+        }
+
+        GIVEN("A plain matrix of dimension 3.")
+        {
+            Matrix<3, 3, int> second{
+                5,  0,  2,
+                0,  5, -5,
+                2,  0, -2,
+            };
+
+            Matrix<3, 3, int> expectedAdd{
+                6,  0,  2,
+                3,  6, -5,
+                2,  1, -1, 
+            };
+
+            Matrix<3, 3, int> expectedSub{
+                -4,   0, -2,
+                 3,  -4,  5,
+                -2,   1,  3 
+            };
+
+            THEN("They can be added together")
+            {
+                REQUIRE(matrix + second == expectedAdd);
+                REQUIRE(second + matrix == expectedAdd);
+
+                second += matrix;
+                REQUIRE(second == expectedAdd);
+            }
+
+            THEN("They can be substracted")
+            {
+                REQUIRE(matrix - second == expectedSub);
+
+                Matrix<3, 3, int> firstPlain{matrix};
+                firstPlain -= second;
+                REQUIRE(firstPlain == expectedSub);
             }
         }
     }

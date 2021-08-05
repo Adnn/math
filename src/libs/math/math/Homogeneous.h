@@ -45,6 +45,8 @@ public:
 
     explicit constexpr AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept);
 
+    Matrix & operator+=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
+    Matrix & operator-=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
     Matrix & operator*=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
     Matrix & setZero() = delete;
     static Matrix Zero() = delete;
