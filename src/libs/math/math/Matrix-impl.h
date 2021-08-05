@@ -1,5 +1,9 @@
+namespace ad {
+namespace math {
+
+
 template <TMA>
-constexpr Matrix<TMP> 
+constexpr Matrix<TMP>
 Matrix<TMP>::Identity() noexcept(should_noexcept)
 {
     static_assert(is_square_value, "Only square matrices can be identity.");
@@ -23,7 +27,7 @@ Matrix<TMP>::isDiagonal() const noexcept(should_noexcept)
     {
         for(std::size_t col = 0; col != N_cols; ++col)
         {
-            if ((row != col) && (at(row, col) != 0))
+            if ((row != col) && (this->at(row, col) != 0))
             {
                 return false;
             }
@@ -43,7 +47,7 @@ Matrix<TMP>::isSymmetric() const noexcept(should_noexcept)
     {
         for(std::size_t col = 1 + row; col != N_cols; ++col)
         {
-            if (at(row, col) != at(col, row))
+            if (this->at(row, col) != this->at(col, row))
             {
                 return false;
             }
@@ -97,7 +101,7 @@ template <TMA>
 constexpr T_number Matrix<TMP>::determinant() const noexcept(should_noexcept)
 {
     static_assert(is_square_value, "Determinant is only available on square matrices.");
-    return detail::computeDeterminant_impl(*this); 
+    return detail::computeDeterminant_impl(*this);
 }
 
 
@@ -106,10 +110,10 @@ constexpr Matrix<N_rows-1, N_cols-1, T_number>
 Matrix<TMP>::getSubmatrix(std::size_t aRemovedRow, std::size_t aRemovedColumn) const noexcept(should_noexcept)
 {
     static_assert(N_rows > 1 && N_cols > 1, "Cannot get submatrix when starting from a dimension < 2x2.");
-    
+
     using MatrixResult = Matrix<N_rows-1, N_cols-1, T_number>;
-    MatrixResult result{MatrixResult::UninitializedTag{}};
-    
+    MatrixResult result{typename MatrixResult::UninitializedTag{}};
+
     for(std::size_t row = 0; row != N_rows-1; ++row)
     {
         for(std::size_t col = 0; col != N_cols-1; ++col)
@@ -135,7 +139,7 @@ Matrix<TMP>::cofactor(std::size_t aRow, std::size_t aColumn) const noexcept(shou
 template <TMA>
 constexpr Matrix<TMP> Matrix<TMP>::computeCofactorMatrix() const noexcept(should_noexcept)
 {
-    Matrix result{Matrix::UninitializedTag{}};
+    Matrix result{typename Matrix::UninitializedTag{}};
     for(std::size_t row = 0; row != N_rows; ++row)
     {
         for(std::size_t col = 0; col != N_cols; ++col)
@@ -154,14 +158,14 @@ constexpr Matrix<TMP> Matrix<TMP>::computeAdjointMatrix() const noexcept(should_
 }
 
 
-/// The explicit N_rowsMultiplied and N_colsMultiplied template arguments allow to implement subset multiplications 
+/// The explicit N_rowsMultiplied and N_colsMultiplied template arguments allow to implement subset multiplications
 /// (useful for optimizing Affined matrices with known [0..0 1] elements).
 /// For complete multiplication, use multiplyBase() directly.
 template <class T_result, int N_rowsMultiplied, int N_colsMultiplied, int N_lRows, int N_matching, int N_rCols, class T_lDerived, class T_number>
 constexpr T_result multiplyBaseSubrange(const MatrixBase<T_lDerived, N_lRows, N_matching, T_number> &aLhs,
                                      const Matrix<N_matching, N_rCols, T_number> &aRhs)
 {
-    T_result result{T_result::UninitializedTag{}};
+    T_result result{typename T_result::UninitializedTag{}};
     for(std::size_t row = 0; row != N_rowsMultiplied; ++row)
     {
         for(std::size_t col = 0; col != N_colsMultiplied; ++col)
@@ -231,3 +235,6 @@ namespace detail
     }
 
 } // namespace detail
+
+
+}} // namespace ad::math

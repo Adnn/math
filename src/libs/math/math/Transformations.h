@@ -27,13 +27,13 @@ namespace trans2d {
 
 
     /// \brief Non-uniform non-axis-aligned scale.
-    /// 
+    ///
     /// The scaling axis are X and Y, but rotated counter-clockwise by `aCounterClockwise`.
     ///
     /// \note see: FoCG 3rd p122
     template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number> 
-    scale(const T_number aFactorHorizontal, const T_number aFactorVertical, 
+    constexpr Matrix<2, 2, T_number>
+    scale(const T_number aFactorHorizontal, const T_number aFactorVertical,
           const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise);
 
 
@@ -71,7 +71,7 @@ namespace trans2d {
 
     /// \brief Shear matrix that tilts the vertical axis counter-clockwise (shears the X axis).
     template <class T_number=real_number, class T_angleRepresentation, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number> 
+    constexpr Matrix<2, 2, T_number>
     shearVertical(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise);
 
     /// \brief Shear matrix that tilts the horizontal axis counter-clockwise (shear the Y axis).
@@ -159,8 +159,8 @@ namespace trans3d {
 } // namespace trans3d
 
 
-#include "Transformations-impl.h"
-
-
 } // namespace math
 } // namespace ad
+
+
+#include "Transformations-impl.h"

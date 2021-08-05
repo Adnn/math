@@ -39,19 +39,19 @@ class AffineMatrix : public Matrix<N_dimension, N_dimension, T_number>
 
 public:
     explicit constexpr AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
-                                    const Vec<N_dimension-1, T_number> & aAffine = 
-                                        Vec<N_dimension-1, T_number>::Zero()) 
+                                    const Vec<N_dimension-1, T_number> & aAffine =
+                                        Vec<N_dimension-1, T_number>::Zero())
         noexcept(should_noexcept);
 
     explicit constexpr AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept);
 
-    Matrix & operator+=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
-    Matrix & operator-=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
-    Matrix & operator*=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
-    Matrix & setZero() = delete;
-    static Matrix Zero() = delete;
+    base_type & operator+=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
+    base_type & operator-=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
+    base_type & operator*=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
+    base_type & setZero() = delete;
+    static base_type Zero() = delete;
 
-    // 
+    //
     // Factories
     //
     static constexpr AffineMatrix Identity() noexcept(should_noexcept);
@@ -72,12 +72,12 @@ operator*(const AffineMatrix<TMP> &aLhs, const AffineMatrix<TMP> &aRhs);
 
 
 // Implementer note:
-// I wonder if the homogeneous vector types should be separate types 
+// I wonder if the homogeneous vector types should be separate types
 // (whether derived, or independently implemented).
 // This could offer some more special case optimization safely verified by the type system.
 // Yet it would complicate the class hierarchy even more.
 //
-// For the moment just use the normal vector types, and provide helper 
+// For the moment just use the normal vector types, and provide helper
 // factories to put the final 0 or 1 accordingly.
 
 
@@ -88,7 +88,7 @@ namespace homogeneous
 template<int N_dimension, class T_number = real_number, class... VT_elements>
 Position<N_dimension, T_number> makePosition(VT_elements && ... aElements)
 {
-    return Position<N_dimension, T_number>{std::forward<VT_elements>(aElements)..., T_number{1}}; 
+    return Position<N_dimension, T_number>{std::forward<VT_elements>(aElements)..., T_number{1}};
 }
 
 /// \brief Factory for homogeneous vectors (in the sense of "displacement").
@@ -101,12 +101,12 @@ Vec<N_dimension, T_number> makeVec(VT_elements && ... aElements)
 } // namespace homogeneous
 
 
+} // namespace math
+} // namespace ad
+
+
 #include "Homogeneous-impl.h"
 
 
 #undef TMP
 #undef TMA
-
-
-} // namespace math
-} // namespace ad

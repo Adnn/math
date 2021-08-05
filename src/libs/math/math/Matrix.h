@@ -51,7 +51,7 @@ public:
     constexpr T_number determinant() const noexcept(should_noexcept);
 
     /// \brief Return the submatrix obtained by removing `aRemovedRow`th row and `aRemovedColumn`th column from this matrix.
-    constexpr Matrix<N_rows-1, N_cols-1, T_number> 
+    constexpr Matrix<N_rows-1, N_cols-1, T_number>
     getSubmatrix(std::size_t aRemovedRow, std::size_t aRemovedColumn) const noexcept(should_noexcept);
 
     /// \brief Compute the cofactor of the matrix element `at(aRow, aColumn)`.
@@ -99,12 +99,11 @@ namespace detail
 } // namespace detail
 
 
+}} // namespace ad::math
+
 
 #include "Matrix-impl.h"
 
 
 #undef TMP
 #undef TMA
-
-
-}} // namespace ad::math

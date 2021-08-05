@@ -1,3 +1,7 @@
+namespace ad {
+namespace math {
+
+
 namespace trans2d {
 
 
@@ -36,8 +40,8 @@ namespace trans2d {
 
 
     template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number> 
-    scale(const T_number aFactorHorizontal, const T_number aFactorVertical, 
+    constexpr Matrix<2, 2, T_number>
+    scale(const T_number aFactorHorizontal, const T_number aFactorVertical,
           const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
     {
         // Compact aliases
@@ -46,7 +50,7 @@ namespace trans2d {
 
         auto cs = cos(-aCounterClockwise);
         auto sn = sin(-aCounterClockwise);
-        
+
         auto antidiagonal = (l2 - l1) * cs * sn;
 
         return {
@@ -119,7 +123,7 @@ namespace trans2d {
 
 
     template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number> 
+    constexpr Matrix<2, 2, T_number>
     shearVertical(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
     {
         return shearX(-tan(aCounterClockwise));
@@ -311,3 +315,7 @@ namespace trans3d {
 
 
 } // namespace trans3d
+
+
+} // namespace math
+} // namespace ad

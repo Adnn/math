@@ -323,14 +323,14 @@ template<TMP>
 std::ostream & operator<<(std::ostream & os, const MatrixBase<TMA> &aMatrix);
 
 
-#include "MatrixBase-impl.h"
+namespace detail
+{
 
-
-namespace detail {
     std::false_type test_matrix_convertible(...);
 
     template <TMP>
     std::true_type test_matrix_convertible(const ::ad::math::MatrixBase<TMA> &);
+
 } // namespace detail
 
 
@@ -339,11 +339,14 @@ class from_matrix : public decltype(detail::test_matrix_convertible(std::declval
 {};
 
 
+} // namespace math
+} // namespace ad
+
+
+#include "MatrixBase-impl.h"
+
+
 #undef TMA_RIGHT
 #undef TMA
 #undef TMT
 #undef TMP
-
-
-} // namespace math
-} // namespace ad

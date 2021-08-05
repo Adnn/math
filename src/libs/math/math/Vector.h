@@ -203,4 +203,5 @@ public:
 
 }} // namespace ad::math
 
+
 #include "Vector-impl.h"

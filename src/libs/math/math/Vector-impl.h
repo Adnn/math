@@ -1,7 +1,9 @@
 #include <cmath>
 
+
 namespace ad {
 namespace math {
+
 
 /*
  * Vector implementation
@@ -64,12 +66,12 @@ Vector<T_derived, N_dimension, T_number>::outer(
         const Vector<T_rightDerived, N_rightDimension, T_number> & aRhs) const
 {
     using MatrixType = Matrix<N_dimension, N_rightDimension, T_number>;
-    MatrixType result{MatrixType::UninitializedTag{}};
+    MatrixType result{typename MatrixType::UninitializedTag{}};
     for (std::size_t row = 0; row != N_dimension; ++row)
     {
         for (std::size_t col = 0; col != N_rightDimension; ++col)
         {
-            result.at(row, col) = at(row) * aRhs.at(col);
+            result.at(row, col) = this->at(row) * aRhs.at(col);
         }
     }
     return result;
@@ -123,5 +125,6 @@ auto Vec<N_dimension, T_number>::cross(const Vec &aRhs) -> Vec
         x()*aRhs.y() - y()*aRhs.x(),
     };
 }
+
 
 }} // namespace ad::math

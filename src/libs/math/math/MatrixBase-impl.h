@@ -1,3 +1,10 @@
+#include <cmath>
+
+
+namespace ad {
+namespace math {
+
+
 template<TMP>
 template <class... T_element,
           std::enable_if_t<sizeof...(T_element) == N_rows*N_cols, int>>
@@ -397,3 +404,6 @@ std::ostream & operator<<(std::ostream & os, const MatrixBase<TMA> &aMatrix)
 
     return os;
 }
+
+
+}} // namespace ad::math
