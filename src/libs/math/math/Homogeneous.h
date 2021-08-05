@@ -27,6 +27,8 @@ namespace math {
 /// of homogeneous coordinates.
 ///
 /// \important Its projective elements are fixed as [0..0 1], it cannot be used to implement perspective projection.
+/// 
+/// \warning It is undefined behaviour to modify the projective elements of an AffineMatrix.
 template <TMA_D>
 class AffineMatrix : public Matrix<N_dimension, N_dimension, T_number>
 {
@@ -45,9 +47,13 @@ public:
 
     explicit constexpr AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept);
 
+    //
+    // Disable the modifying operations incompatible with AffineMatrix specialized case
+    //
     base_type & operator+=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
     base_type & operator-=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
     base_type & operator*=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
+    base_type & operator/=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;
     base_type & setZero() = delete;
     static base_type Zero() = delete;
 

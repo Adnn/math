@@ -189,6 +189,35 @@ SCENARIO("Affine matrices construction")
 }
 
 
+SCENARIO("Affine matrices conversions")
+{
+    THEN("AffineMatrix can be casted to plain Matrix")
+    {
+        REQUIRE(is_detected_v<is_staticcastable_t, AffineMatrix<2>, Matrix<2, 2>>);
+        REQUIRE(is_detected_v<is_staticcastable_t, AffineMatrix<3>, Matrix<3, 3>>);
+
+        AffineMatrix<2> affine{
+            Matrix<1, 1>{1.},
+            Vec<1>{3.}
+        };
+
+        Matrix<2, 2> plain = static_cast<Matrix<2 ,2>>(affine);
+
+        REQUIRE(plain == Matrix<2, 2>{
+            1., 0.,
+            3., 1.
+        });
+    }
+
+    // Note: this very case with conversion to AffineMatrix<2> is a very good reason
+    // for making the MatrixBase(Element ...) ctor explicit: otherwise the
+    // ctor for AffineMatrix<2> taking a Matrix<1, 1> becomes available, since
+    // MatrixBase(Element ...) would be availabe to attempt an implicit conversion
+    // from Matrix<2, 2> to the single Element of a Matrix<1, 1>. 
+    REQUIRE_FALSE(is_detected_v<is_staticcastable_t, Matrix<2, 2>, AffineMatrix<2>>);
+    REQUIRE_FALSE(is_detected_v<is_staticcastable_t, Matrix<3, 3>, AffineMatrix<3>>);
+}
+
 SCENARIO("Affine matrices available operations")
 {
     using Affine3 = AffineMatrix<3>;
@@ -263,6 +292,25 @@ SCENARIO("Affine matrices available operations")
                                Matrix4x4>);
 
         THEN("They cannot be compound multiplied.")
+        {
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_assignable_t, Affine4, double>);
+        }
+    }
+
+    THEN("Affine matrices can be divided by a scalar, yielding 'plain' matrices.")
+    {
+        // Affine / Scalar -> Matrix
+        REQUIRE(is_detected_v<is_divisive_t, Affine4, double>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>() / std::declval<double>()),
+                               Matrix4x4>);
+
+        // Scalar / Affine -> Matrix
+        THEN("A scalar cannot be divided by an affine matrix.")
+        {
+            REQUIRE_FALSE(is_detected_v<is_divisive_t, double, Affine4>);
+        }
+
+        THEN("They cannot be compound divided.")
         {
             REQUIRE_FALSE(is_detected_v<is_multiplicative_assignable_t, Affine4, double>);
         }
@@ -344,6 +392,39 @@ SCENARIO("Affine matrices available operations")
             REQUIRE_FALSE(is_detected_v<is_substractive_t, Affine4, Affine3>);
             REQUIRE_FALSE(is_detected_v<is_substractive_t, Affine4, Matrix3x4>);
         }
+    }
+}
+
+
+SCENARIO("Affine matrices available componentwise operations")
+{
+    using Affine4 = AffineMatrix<4>;
+    using Matrix4x4 = Matrix<4, 4>;
+
+    THEN("Affine matrices can be component-wise multiplied with both plain and affine matrices.")
+    {
+        REQUIRE(is_detected_v<is_cwmul_t, Affine4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>().cwMul(std::declval<Affine4>())),
+                               Matrix4x4>);
+        REQUIRE(is_detected_v<is_cwmul_t, Matrix4x4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Matrix4x4>().cwMul(std::declval<Affine4>())),
+                               Matrix4x4>);
+        REQUIRE(is_detected_v<is_cwmul_t, Affine4, Matrix4x4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>().cwMul(std::declval<Matrix4x4>())),
+                               Matrix4x4>);
+    }
+
+    THEN("Affine matrices can be component-wise divided with both plain and affine matrices.")
+    {
+        REQUIRE(is_detected_v<is_cwdiv_t, Affine4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>().cwDiv(std::declval<Affine4>())),
+                               Matrix4x4>);
+        REQUIRE(is_detected_v<is_cwdiv_t, Matrix4x4, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Matrix4x4>().cwDiv(std::declval<Affine4>())),
+                               Matrix4x4>);
+        REQUIRE(is_detected_v<is_cwdiv_t, Affine4, Matrix4x4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>().cwDiv(std::declval<Matrix4x4>())),
+                               Matrix4x4>);
     }
 }
 

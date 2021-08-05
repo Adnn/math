@@ -102,14 +102,29 @@ public:
     // I don't feel confident enought with my understanding of aggregate initialization
     // (see: https://en.cppreference.com/w/cpp/language/aggregate_initialization)
     // to know when it can and cannot throw exceptions. So be conservative and noexcept(false).
+    //
+    // Must be made explicit, otherwise it would be available for implicit conversions
+    // in any context expecting a 1x1 matrix.
+    // E.g., the ctor of an AffineMatrix<2> takes a Matrix<1, 1> as its first argument,
+    // we don't want this MatrixBase ctor to try and convert anything to a Matrix<1, 1>.
+    //
+    // Yet that causes complication where we construct derived types by list initialization
+    // (forcing to type out the type, because it is explicit even with several elements)
+    // So it is split between the single element (explicit case),
+    // and the several elements case (not explicit)
+
     /// \brief Constructor from explicit element values.
     /// \note std::array does not have a std::initializer_list constructor, but aggregate initialization.
     /// \note enable_if to only allow this ctor when the right number of arguments is provided
     ///       (notably prevents this constructor from being selected as the default ctor)
     /// \attention the provided values' type is not allowed potential loss of precision.
     template <class... T_element,
-              std::enable_if_t<sizeof...(T_element) == N_rows*N_cols, int> = 0>
+              std::enable_if_t<sizeof...(T_element) == N_rows*N_cols && (N_rows*N_cols > 1), int> = 0>
     constexpr MatrixBase(T_element... vaElements) /*noexcept (see note)*/;
+
+    // Note: split because of a complication with explicit handling
+    // (C++ 20 introduce conditional explicit, which could be used instead)
+    constexpr explicit MatrixBase(T_number aSingleElement) /*noexcept (see note)*/;
 
     /// \brief Explicit cast to another derived type of same dimensions and scalar type
     template <class T_otherDerived,

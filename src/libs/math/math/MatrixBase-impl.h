@@ -7,9 +7,15 @@ namespace math {
 
 template<TMP>
 template <class... T_element,
-          std::enable_if_t<sizeof...(T_element) == N_rows*N_cols, int>>
+          std::enable_if_t<sizeof...(T_element) == N_rows*N_cols && (N_rows*N_cols > 1), int>>
 constexpr MatrixBase<TMA>::MatrixBase(T_element... vaElements) :
         mStore{ {vaElements...} }
+{}
+
+
+template<TMP>
+constexpr MatrixBase<TMA>::MatrixBase(T_number aSingleElement) :
+    mStore{ {aSingleElement} }
 {}
 
 
