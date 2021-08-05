@@ -13,29 +13,42 @@ namespace math {
 #define FILL_LAST_COLUMN(matrix) \
     for (std::size_t row = 0; row != N_dimension-1; ++row)  \
     {                                                       \
-        (matrix)[row][N_dimension-1] = 0;                   \
+        (matrix)[row][N_dimension-1] = T_number{0};         \
     }                                                       \
-    (matrix)[N_dimension-1][N_dimension-1] = 1;
+    (matrix)[N_dimension-1][N_dimension-1] = T_number{1};
+
+
+#define FILL(linear, affine) \
+    for (std::size_t row = 0; row != N_dimension-1; ++row)      \
+    {                                                           \
+        for (std::size_t col = 0; col != N_dimension-1; ++col)  \
+        {                                                       \
+            (*this)[row][col] = (linear)[row][col];             \
+        }                                                       \
+        (*this)[row][N_dimension-1] = 0;                        \
+    }                                                           \
+    for (std::size_t col = 0; col != N_dimension-1; ++col)      \
+    {                                                           \
+        (*this)[N_dimension-1][col] = (affine)[col];            \
+    }                                                           \
+    (*this)[N_dimension-1][N_dimension-1] = 1;                  
 
 
 template <TMA>
 constexpr AffineMatrix<TMP>::AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
                                           const Vec<N_dimension-1, T_number> & aAffine) noexcept(should_noexcept) :
-    base_type{typename base_type::UninitializedTag{}}
+        base_type{typename base_type::UninitializedTag{}}
 {
-    for (std::size_t row = 0; row != N_dimension-1; ++row)
-    {
-        for (std::size_t col = 0; col != N_dimension-1; ++col)
-        {
-            (*this)[row][col] = aLinear[row][col];
-        }
-        (*this)[row][N_dimension-1] = 0;
-    }
-    for (std::size_t col = 0; col != N_dimension-1; ++col)
-    {
-        (*this)[N_dimension-1][col] = aAffine[col];
-    }
-    (*this)[N_dimension-1][N_dimension-1] = 1;
+    FILL(aLinear, aAffine)
+}
+
+
+template <TMA>
+constexpr AffineMatrix<TMP>::AffineMatrix(const Matrix<N_dimension, N_dimension-1, T_number> & aElements)
+    noexcept(should_noexcept) :
+        base_type{typename base_type::UninitializedTag{}}
+{
+    FILL(aElements, aElements[N_dimension-1])
 }
 
 

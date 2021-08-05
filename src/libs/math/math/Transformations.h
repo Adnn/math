@@ -3,6 +3,7 @@
 #include "commons.h"
 
 #include "Angle.h"
+#include "Homogeneous.h"
 #include "Matrix.h"
 #include "Vector.h"
 
@@ -80,6 +81,11 @@ namespace trans2d {
     shearHorizontal(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise);
 
 
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    translate(const Vec<2, T_number> aDisplacement);
+
+
 } // namespace trans2d
 
 
@@ -154,6 +160,11 @@ namespace trans3d {
     template <class T_number>
     constexpr Matrix<3, 3, T_number> shearYZ(const T_number aWeightXonY,
                                              const T_number aWeightXonZ);
+
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    translate(const Vec<3, T_number> aDisplacement);
 
 
 } // namespace trans3d

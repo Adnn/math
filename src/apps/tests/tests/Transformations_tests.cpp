@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include <math/Constants.h>
+#include <math/Homogeneous.h>
 #include <math/Transformations.h>
 #include <math/Vector.h>
 
@@ -328,6 +329,48 @@ SCENARIO("2D shearing")
         }
     }
 }
+
+
+SCENARIO("2D translations")
+{
+    GIVEN("A few homogeneous 2D position")
+    {
+        using namespace homogeneous;
+        Position<3> z = makePosition<3>(0., 0.);
+        Position<3> a = makePosition<3>(0.5, -2.0);
+
+        GIVEN("A translation")
+        {
+            Vec<2> displacement{5., -5.};
+            AffineMatrix<3> translation = trans2d::translate(displacement);
+
+            THEN("The homogeneous positions can be translated.")
+            {
+                Vec<3> homoDisplacement = makeVec<3>(5., -5.);
+                REQUIRE(z * translation == makePosition<3>(5., -5.));
+                REQUIRE(a * translation == a + homoDisplacement);
+            }
+        }
+    }
+
+    GIVEN("An homogeneous 2D displacement")
+    {
+        using namespace homogeneous;
+        Vec<3> a = makeVec<3>(0.5, -2.0);
+
+        GIVEN("A translation")
+        {
+            Vec<2> displacement{5., -5.};
+            AffineMatrix<3> translation = trans2d::translate(displacement);
+
+            THEN("The homogeneous displacement is not affected by translation.")
+            {
+                REQUIRE(a * translation == a);
+            }
+        }
+    }
+}
+
 
 SCENARIO("3D rotations")
 {
@@ -703,6 +746,47 @@ SCENARIO("3D shearing")
 
                 APPROX_EQUAL(a * shearing, (Vec<3>{ 0.5, -2.0, 4.9}));
                 APPROX_EQUAL(b * shearing, (Vec<3>{-0.5,  0.0, 5.1}));
+            }
+        }
+    }
+}
+
+
+SCENARIO("3D translations")
+{
+    GIVEN("A few homogeneous 3D position")
+    {
+        using namespace homogeneous;
+        Position<4> z = makePosition<4>(0., 0., 0.);
+        Position<4> a = makePosition<4>(0.5, -10., 28.);
+
+        GIVEN("A translation")
+        {
+            Vec<3> displacement{5., -5., 0.5};
+            AffineMatrix<4> translation = trans3d::translate(displacement);
+
+            THEN("The homogeneous positions can be translated.")
+            {
+                Vec<4> homoDisplacement = makeVec<4>(5., -5., 0.5);
+                REQUIRE(z * translation == makePosition<4>(5., -5., 0.5));
+                REQUIRE(a * translation == a + homoDisplacement);
+            }
+        }
+    }
+
+    GIVEN("An homogeneous 3D displacement")
+    {
+        using namespace homogeneous;
+        Vec<4> a = makeVec<4>(0.5, -10., 28.);
+
+        GIVEN("A translation")
+        {
+            Vec<3> displacement{5., -5., 0.5};
+            AffineMatrix<4> translation = trans3d::translate(displacement);
+
+            THEN("The homogeneous displacement is not affected by translation.")
+            {
+                REQUIRE(a * translation == a);
             }
         }
     }

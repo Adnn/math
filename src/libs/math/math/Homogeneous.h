@@ -32,6 +32,8 @@ namespace math {
 template <TMA_D>
 class AffineMatrix : public Matrix<N_dimension, N_dimension, T_number>
 {
+    static_assert(N_dimension > 1, "AffineMatrix dimension must be >= 2.");
+
     using base_type = Matrix<N_dimension, N_dimension, T_number>;
     using base_type::should_noexcept;
 
@@ -43,6 +45,17 @@ public:
     explicit constexpr AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
                                     const Vec<N_dimension-1, T_number> & aAffine =
                                         Vec<N_dimension-1, T_number>::Zero())
+        noexcept(should_noexcept);
+
+    // Implementer note:
+    // Cannot find a way to implement that, because the [0..0 1] values should be inserted in the middle
+    // of the parameter pack expansion.
+    //template <class... VT_elements,
+    //          class /*enabler*/ = std::enable_if_t<sizeof...(VT_elements) == N_dimension * (N_dimension - 1)>>
+    //constexpr AffineMatrix(VT_elements && ... aElements) noexcept(should_noexcept);
+
+    // Note: It would probably be better to have the explicit element constructor instead.
+    explicit constexpr AffineMatrix(const Matrix<N_dimension, N_dimension-1, T_number> & aElements)
         noexcept(should_noexcept);
 
     explicit constexpr AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept);
@@ -85,6 +98,10 @@ operator*(const AffineMatrix<TMP> &aLhs, const AffineMatrix<TMP> &aRhs);
 //
 // For the moment just use the normal vector types, and provide helper
 // factories to put the final 0 or 1 accordingly.
+//
+// WARNING: without dedicated type handling, currently the Vector::as<> conversion
+// produces wrong results when used to convert homogeneous Position<->Vec 
+// (the final 0/1 is not switched).
 
 
 namespace homogeneous

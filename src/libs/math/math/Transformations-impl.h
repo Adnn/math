@@ -138,6 +138,19 @@ namespace trans2d {
     }
 
 
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    translate(const Vec<2, T_number> aDisplacement)
+    {
+        // Note: because there is no AffineMatrix ctor directly taking the list of element
+        // the construction has to use the constructor taking a Matrix.
+        return AffineMatrix<3, T_number>{{
+            T_number{1},      T_number{0},
+            T_number{0},      T_number{1},
+            aDisplacement[0], aDisplacement[1],
+        }};
+    }
+
 } // namespace trans2d
 
 
@@ -311,6 +324,21 @@ namespace trans3d {
             T_number{0},    T_number{1},    T_number{0},
             T_number{0},    T_number{0},    T_number{1},
         };
+    }
+
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    translate(const Vec<3, T_number> aDisplacement)
+    {
+        // Note: because there is no AffineMatrix ctor directly taking the list of element
+        // the construction has to use the constructor taking a Matrix.
+        return AffineMatrix<4, T_number>{{
+            T_number{1},       T_number{0},       T_number{0},      
+            T_number{0},       T_number{1},       T_number{0},
+            T_number{0},       T_number{0},       T_number{1}, 
+            aDisplacement[0],  aDisplacement[1],  aDisplacement[2],
+        }};
     }
 
 
