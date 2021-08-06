@@ -24,7 +24,7 @@ protected:
 public:
 
     template<class T>
-    using derived_type = Matrix<TMP>;
+    using derived_type = Matrix<N_rows, N_cols, T>;
 
     static constexpr bool is_square_value{N_rows == N_cols};
 

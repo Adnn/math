@@ -13,8 +13,22 @@ class Vector : public MatrixBase<T_derived, 1, N_dimension, T_number>
 {
     typedef MatrixBase<T_derived, 1, N_dimension, T_number> base_type;
     using base_type::base_type;
+    using base_type::should_noexcept;
 
 public:
+    /// \brief Constructor from a head vector of lower dimension, with explicit tail element to complete.
+    ///
+    /// \note Currently accept a head vector of different logic type (e.g. `Position` vs `Vec`) as long as
+    /// the element types exactly match. This might be later restricted if the need arises.
+    template <class T_otherDerived,
+              int N_headDimension,
+              class... VT_tailElements,
+              class /*enabler*/ = std::enable_if_t<(N_headDimension < N_dimension)
+                                                   && sizeof...(VT_tailElements) == (N_dimension - N_headDimension)>>
+    constexpr Vector(const Vector<T_otherDerived, N_headDimension, T_number> & aHead, VT_tailElements && ... aTail) noexcept(should_noexcept) :
+            Vector{aHead, std::make_index_sequence<N_headDimension>(), std::forward<VT_tailElements>(aTail)...}
+    {}
+
     template <template <int, class> class TT_derivedVector, class T_targetNumber=T_number>
     constexpr TT_derivedVector<N_dimension, T_targetNumber> as() const;
 
@@ -46,6 +60,13 @@ public:
     // Implementer's note: Not constexpr, because getNorm() is not
     /// \brief Compound normalization
     /*constexpr*/ T_derived & normalize();
+
+private:
+    // Implementation for the public constructor taking a head vector of lower dimension.
+    template <class T_vector, std::size_t... VN_indices, class... VT_tailElements>
+    constexpr Vector(const T_vector & aHead,
+                     std::index_sequence<VN_indices ...>,
+                     VT_tailElements && ... aTail) noexcept(should_noexcept);
 };
 
 template <class T_derived, int N_dimension, class T_number>

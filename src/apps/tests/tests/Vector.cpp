@@ -61,6 +61,20 @@ SCENARIO("Vectors can be constructed and manipulated")
             REQUIRE(std::all_of(vec3.begin(), vec3.end(), [](double aValue){ return aValue == 0; }));
         }
     }
+   
+    WHEN("Using constructor from lower dimension vector")
+    {
+        Vec<2, int> v2{1, 2};
+        Vec<3, int> v3{v2, 3};
+        Vec<4, int> v4{v3, 4};
+        Vec<4, int> v4b{v2, 3, 4};
+
+        THEN("Stored values are in the order of the construction")
+        {
+            REQUIRE(v4 == Vec<4, int>{1, 2, 3, 4});
+            REQUIRE(v4b == v4);
+        }
+    }
 
     GIVEN("A vector")
     {

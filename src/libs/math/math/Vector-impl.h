@@ -9,6 +9,15 @@ namespace math {
  * Vector implementation
  */
 template <class T_derived, int N_dimension, class T_number>
+template <class T_vector, std::size_t... VN_indices, class... VT_tailElements>
+constexpr Vector<T_derived, N_dimension, T_number>::Vector(
+    const T_vector & aHead,
+    std::index_sequence<VN_indices ...>,
+    VT_tailElements && ... aTail) noexcept(should_noexcept) :
+        base_type{aHead[VN_indices]..., aTail...}
+{}
+
+template <class T_derived, int N_dimension, class T_number>
 template <template <int, class> class TT_derivedVector, class T_targetNumber>
 constexpr TT_derivedVector<N_dimension, T_targetNumber>
 Vector<T_derived, N_dimension, T_number>::as() const
