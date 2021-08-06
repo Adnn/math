@@ -24,6 +24,11 @@ struct Rectangle
     T_number & height()
     { return mDimension.height(); }
 
+    T_number width() const
+    { return mDimension.width(); }
+    T_number height() const
+    { return mDimension.height(); }
+
     T_number xMin() const
     { return x(); }
     T_number xMax() const
@@ -34,11 +39,6 @@ struct Rectangle
     T_number yMax() const
     { return y() + height(); }
 
-    T_number width() const
-    { return mDimension.width(); }
-    T_number height() const
-    { return mDimension.height(); }
-
     T_number area() const
     { return mDimension.area(); }
 
@@ -48,14 +48,14 @@ struct Rectangle
     Position<2, T_number> bottomLeft() const
     { return origin(); }
 
+    Position<2, T_number> bottomRight() const
+    { return mPosition + Vec<2, T_number>{mDimension.width(), T_number{0}}; }
+
     Position<2, T_number> topLeft() const
-    { return mPosition + Vec<2, T_number>{static_cast<T_number>(0), mDimension.height()}; }
+    { return mPosition + Vec<2, T_number>{T_number{0}, mDimension.height()}; }
 
     Position<2, T_number> topRight() const
-    { return mPosition + static_cast<Vec<2, T_number>>(mDimension); }
-
-    Position<2, T_number> bottomRight() const
-    { return mPosition + Vec<2, T_number>{mDimension.width(), static_cast<T_number>(0)}; }
+    { return mPosition + mDimension.as<Vec>(); }
 
     bool operator==(const Rectangle &aRhs) const
     { return mPosition == aRhs.mPosition && mDimension == aRhs.mDimension; }
@@ -63,7 +63,7 @@ struct Rectangle
     { return !(*this == aRhs); }
 
     Rectangle centered() const
-    { return { {mPosition - static_cast<Vec<2, T_number>>(mDimension/static_cast<T_number>(2))},
+    { return { {mPosition - (mDimension/T_number{2}).as<Vec>()},
                 mDimension }; }
 
     template <class T_positionValue>

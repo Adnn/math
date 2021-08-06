@@ -11,6 +11,7 @@ set(${PROJECT_NAME}_SOURCES
     Angle.cpp
     Barycentric.cpp
     Base.cpp
+    Box.cpp
     Canonical_tests.cpp
     Color_tests.cpp
     Constexpr_tests.cpp

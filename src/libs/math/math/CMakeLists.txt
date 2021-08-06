@@ -4,6 +4,7 @@ set(${TARGET_NAME}_HEADERS
     Angle.h
     Barycentric.h
     Base.h
+    Box.h
     Canonical.h
     Color.h
     commons.h

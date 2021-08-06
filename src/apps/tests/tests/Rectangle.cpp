@@ -31,7 +31,10 @@ SCENARIO("Rectangle usage")
         THEN("Its corners are accessible")
         {
             REQUIRE(rect.origin() == Position<2>{0., 5.});
-            REQUIRE(rect.topRight() == Position<2>{20., 35.});
+            REQUIRE(rect.bottomLeft()  == Position<2>{ 0.,  5.});
+            REQUIRE(rect.bottomRight() == Position<2>{20.,  5.});
+            REQUIRE(rect.topLeft()     == Position<2>{ 0., 35.});
+            REQUIRE(rect.topRight()    == Position<2>{20., 35.});
         }
 
         THEN("It can generate a centered rectangle")
