@@ -5,6 +5,7 @@
 #include "Angle.h"
 #include "Homogeneous.h"
 #include "Matrix.h"
+#include "Rectangle.h"
 #include "Vector.h"
 
 
@@ -84,6 +85,11 @@ namespace trans2d {
     template <class T_number>
     constexpr AffineMatrix<3, T_number>
     translate(const Vec<2, T_number> aDisplacement);
+
+
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    window(const Rectangle<T_number> aSource, const Rectangle<T_number> aDestination);
 
 
 } // namespace trans2d

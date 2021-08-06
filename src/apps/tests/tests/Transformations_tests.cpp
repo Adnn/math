@@ -372,6 +372,35 @@ SCENARIO("2D translations")
 }
 
 
+SCENARIO("2D windowing transformation.")
+{
+    GIVEN("A (source) rectangle, and its 4 corners as homogeneous positions.")
+    {
+        Rectangle<double> source{{-5., 2.}, {10., 8.}};
+
+        using namespace homogeneous;
+        Position<3> bottomLeft  = makePosition<3>(source.bottomLeft());
+        Position<3> bottomRight = makePosition<3>(source.bottomRight());
+        Position<3> topLeft     = makePosition<3>(source.topLeft());
+        Position<3> topRight    = makePosition<3>(source.topRight());
+
+        GIVEN("A windowing transformation to a destination rectangle.")
+        {
+            Rectangle<double> destination{{50., 50.}, {1., 1.}};
+            AffineMatrix<3> windowing = trans2d::window(source, destination);
+
+            THEN("The 4 source corners are moved to the 4 destination corners by the transformation.")
+            {
+                REQUIRE(bottomLeft * windowing == makePosition<3>(destination.bottomLeft()));
+                REQUIRE(bottomRight * windowing == makePosition<3>(destination.bottomRight()));
+                REQUIRE(topLeft * windowing == makePosition<3>(destination.topLeft()));
+                REQUIRE(topRight * windowing == makePosition<3>(destination.topRight()));
+            }
+        }
+    }
+}
+
+
 SCENARIO("3D rotations")
 {
     GIVEN("A few 3D vectors")

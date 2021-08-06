@@ -151,6 +151,35 @@ namespace trans2d {
         }};
     }
 
+
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    window(const Rectangle<T_number> aSource, const Rectangle<T_number> aDestination)
+    {
+        const T_number xsl = aSource.xMin();
+        const T_number xsh = aSource.xMax();
+        const T_number ysl = aSource.yMin();
+        const T_number ysh = aSource.yMax();
+
+        const T_number xdl = aDestination.xMin();
+        const T_number xdh = aDestination.xMax();
+        const T_number ydl = aDestination.yMin();
+        const T_number ydh = aDestination.yMax();
+
+        const T_number swidth = aSource.width();
+        const T_number sheight = aSource.height();
+
+        const T_number dwidth = aDestination.width();
+        const T_number dheight = aDestination.height();
+
+
+        return AffineMatrix<3, T_number>{{
+            dwidth/swidth,                  T_number{0},
+            T_number{0},                    dheight/sheight,
+            (xdl*xsh - xdh*xsl) / swidth,   (ydl*ysh - ydh*ysl) / sheight
+        }};
+    }
+
 } // namespace trans2d
 
 
