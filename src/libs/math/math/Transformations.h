@@ -3,6 +3,7 @@
 #include "commons.h"
 
 #include "Angle.h"
+#include "Box.h"
 #include "Homogeneous.h"
 #include "Matrix.h"
 #include "Rectangle.h"
@@ -171,6 +172,11 @@ namespace trans3d {
     template <class T_number>
     constexpr AffineMatrix<4, T_number>
     translate(const Vec<3, T_number> aDisplacement);
+
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    window(const Box<T_number> aSource, const Box<T_number> aDestination);
 
 
 } // namespace trans3d

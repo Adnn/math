@@ -172,7 +172,6 @@ namespace trans2d {
         const T_number dwidth = aDestination.width();
         const T_number dheight = aDestination.height();
 
-
         return AffineMatrix<3, T_number>{{
             dwidth/swidth,                  T_number{0},
             T_number{0},                    dheight/sheight,
@@ -367,6 +366,41 @@ namespace trans3d {
             T_number{0},       T_number{1},       T_number{0},
             T_number{0},       T_number{0},       T_number{1}, 
             aDisplacement[0],  aDisplacement[1],  aDisplacement[2],
+        }};
+    }
+
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    window(const Box<T_number> aSource, const Box<T_number> aDestination)
+    {
+        const T_number xsl = aSource.xMin();
+        const T_number xsh = aSource.xMax();
+        const T_number ysl = aSource.yMin();
+        const T_number ysh = aSource.yMax();
+        const T_number zsl = aSource.zMin();
+        const T_number zsh = aSource.zMax();
+
+        const T_number xdl = aDestination.xMin();
+        const T_number xdh = aDestination.xMax();
+        const T_number ydl = aDestination.yMin();
+        const T_number ydh = aDestination.yMax();
+        const T_number zdl = aDestination.zMin();
+        const T_number zdh = aDestination.zMax();
+
+        const T_number swidth = aSource.width();
+        const T_number sheight = aSource.height();
+        const T_number sdepth = aSource.depth();
+
+        const T_number dwidth = aDestination.width();
+        const T_number dheight = aDestination.height();
+        const T_number ddepth = aDestination.depth();
+
+        return AffineMatrix<4, T_number>{{
+            dwidth/swidth,                  T_number{0},                    T_number{0},
+            T_number{0},                    dheight/sheight,                T_number{0},
+            T_number{0},                    T_number{0},                    ddepth/sdepth,
+            (xdl*xsh - xdh*xsl) / swidth,   (ydl*ysh - ydh*ysl) / sheight,  (zdl*zsh - zdh*zsl) / sdepth,
         }};
     }
 

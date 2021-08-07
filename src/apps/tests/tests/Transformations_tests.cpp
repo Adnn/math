@@ -820,3 +820,40 @@ SCENARIO("3D translations")
         }
     }
 }
+
+
+SCENARIO("3D windowing transformation.")
+{
+    GIVEN("A (source) box, and its 8 corners as homogeneous positions.")
+    {
+        Box<double> source{{-5., 2., 0.5}, {10., 8., 0.5}};
+
+        using namespace homogeneous;
+        Position<4> bottomLeftFront  = makePosition<4>(source.bottomLeftFront());
+        Position<4> bottomLeftBack   = makePosition<4>(source.bottomLeftBack());
+        Position<4> bottomRightFront = makePosition<4>(source.bottomRightFront());
+        Position<4> bottomRightBack  = makePosition<4>(source.bottomRightBack());
+        Position<4> topLeftFront     = makePosition<4>(source.topLeftFront());
+        Position<4> topLeftBack      = makePosition<4>(source.topLeftBack());
+        Position<4> topRightFront    = makePosition<4>(source.topRightFront());
+        Position<4> topRightBack     = makePosition<4>(source.topRightBack());
+
+        GIVEN("A windowing transformation to a destination box.")
+        {
+            Box<double> destination{{50., 50., 50.}, {1., 1., 1.}};
+            AffineMatrix<4> windowing = trans3d::window(source, destination);
+
+            THEN("The 8 source corners are moved to the 8 destination corners by the transformation.")
+            {
+                REQUIRE(bottomLeftFront * windowing  == makePosition<4>(destination.bottomLeftFront()));
+                REQUIRE(bottomLeftBack * windowing   == makePosition<4>(destination.bottomLeftBack()));
+                REQUIRE(bottomRightFront * windowing == makePosition<4>(destination.bottomRightFront()));
+                REQUIRE(bottomRightBack * windowing  == makePosition<4>(destination.bottomRightBack()));
+                REQUIRE(topLeftFront * windowing     == makePosition<4>(destination.topLeftFront()));
+                REQUIRE(topLeftBack * windowing      == makePosition<4>(destination.topLeftBack()));
+                REQUIRE(topRightFront * windowing    == makePosition<4>(destination.topRightFront()));
+                REQUIRE(topRightBack * windowing     == makePosition<4>(destination.topRightBack()));
+            }
+        }
+    }
+}

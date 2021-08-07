@@ -55,7 +55,9 @@ struct Rectangle
     { return mPosition + Vec<2, T_number>{T_number{0}, mDimension.height()}; }
 
     Position<2, T_number> topRight() const
-    { return mPosition + mDimension.as<Vec>(); }
+    // TODO: Why as does not work on clang here ?!
+    //{ return mPosition + mDimension.as<Vec>(); }
+    { return mPosition + static_cast<Vec<2, T_number>>(mDimension); }
 
     bool operator==(const Rectangle &aRhs) const
     { return mPosition == aRhs.mPosition && mDimension == aRhs.mDimension; }
@@ -63,7 +65,7 @@ struct Rectangle
     { return !(*this == aRhs); }
 
     Rectangle centered() const
-    { return { {mPosition - (mDimension/T_number{2}).as<Vec>()},
+    { return { {mPosition - static_cast<Vec<2, T_number>>(mDimension/T_number{2})},
                 mDimension }; }
 
     template <class T_positionValue>
