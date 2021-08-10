@@ -45,6 +45,30 @@ SCENARIO("Homogeneous Vectors.")
 }
 
 
+SCENARIO("Homogeneous Vectors normalization.")
+{
+    GIVEN("Homogeneous postions and displacement")
+    {
+        Position<3> normalizedPos2D{2., -6., 1.};
+        Position<3> pos2D{7., 0., -5.};
+
+        Position<4> normalizedVec3D{0., 0.1, 0.01, 1.};
+        Position<4> vec3D{7., -7., 7.7, 55.};
+
+        THEN("They can be normalized")
+        {
+            REQUIRE(normalizedPos2D == homogeneous::normalize(normalizedPos2D));
+            REQUIRE_FALSE(pos2D == homogeneous::normalize(pos2D));
+            REQUIRE(homogeneous::normalize(pos2D) == pos2D/pos2D.z());
+
+            REQUIRE(normalizedVec3D == homogeneous::normalize(normalizedVec3D));
+            REQUIRE_FALSE(vec3D == homogeneous::normalize(vec3D));
+            REQUIRE(homogeneous::normalize(vec3D) == vec3D/vec3D.w());
+        }
+    }
+}
+
+
 SCENARIO("There are separate homogenous types for position and displacement.")
 {
     using HomoPos = decltype(homogeneous::makePosition<4>(1., 1., 1.));

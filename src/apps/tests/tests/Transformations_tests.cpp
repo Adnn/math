@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include <math/Base.h>
 #include <math/Constants.h>
 #include <math/Homogeneous.h>
 #include <math/Transformations.h>
@@ -395,6 +396,53 @@ SCENARIO("2D windowing transformation.")
                 REQUIRE(bottomRight * windowing == makePosition<3>(destination.bottomRight()));
                 REQUIRE(topLeft * windowing == makePosition<3>(destination.topLeft()));
                 REQUIRE(topRight * windowing == makePosition<3>(destination.topRight()));
+            }
+        }
+    }
+}
+
+
+SCENARIO("2D coordinate frame transformation.")
+{
+    using namespace homogeneous;
+
+    GIVEN("A 2D coordinate frame")
+    {
+        Frame<2> localFrame{
+            {10., -10.},
+            OrthonormalBase<2>::MakeFromSingleVector({0., 1.})
+        };
+
+        GIVEN("A few vectors in both spaces")
+        {
+            Position<3> canon_canonicalOrigin = makePosition(Position<2>{0., 0.});
+            Position<3> canon_localOrigin = makePosition(Position<2>{10., -10.});
+            Position<3> canon_a = makePosition(Position<2>{5., 5.});
+            Position<3> canon_b = makePosition(Position<2>{-0.5, 5.});
+
+            Position<3> local_canonicalOrigin = makePosition(Position<2>{10., 10.});
+            Position<3> local_localOrigin = makePosition(Position<2>{0., 0.});
+            Position<3> local_a = makePosition(Position<2>{15., 5.});
+            Position<3> local_b = makePosition(Position<2>{15., 10.5});
+
+            THEN("Canonical coordinates can be expressed in the local frame")
+            {
+                AffineMatrix<3> canonicalToFrame = trans2d::canonicalToFrame(localFrame);
+
+                REQUIRE(canon_canonicalOrigin * canonicalToFrame == local_canonicalOrigin);
+                REQUIRE(canon_localOrigin * canonicalToFrame == local_localOrigin);
+                REQUIRE(canon_a * canonicalToFrame == local_a);
+                REQUIRE(canon_b * canonicalToFrame == local_b);
+            }
+
+            THEN("Local coordinates can be expressed in the canonical frame")
+            {
+                AffineMatrix<3> frameToCanonical = trans2d::frameToCanonical(localFrame);
+
+                REQUIRE(local_canonicalOrigin * frameToCanonical == canon_canonicalOrigin);
+                REQUIRE(local_localOrigin * frameToCanonical == canon_localOrigin);
+                REQUIRE(local_a * frameToCanonical == canon_a);
+                REQUIRE(local_b * frameToCanonical == canon_b);
             }
         }
     }
@@ -853,6 +901,138 @@ SCENARIO("3D windowing transformation.")
                 REQUIRE(topLeftBack * windowing      == makePosition<4>(destination.topLeftBack()));
                 REQUIRE(topRightFront * windowing    == makePosition<4>(destination.topRightFront()));
                 REQUIRE(topRightBack * windowing     == makePosition<4>(destination.topRightBack()));
+            }
+        }
+    }
+}
+
+
+SCENARIO("3D coordinate frame transformation.")
+{
+    using namespace homogeneous;
+
+    GIVEN("A 3D coordinate frame")
+    {
+        Frame<3> localFrame{
+            {10., 10., 1.5},
+            OrthonormalBase<3>::MakeFromTwoVectors(/*w*/{0., 0., 1.}, /*up*/{-1., -1., 0.})
+        };
+
+        GIVEN("A few vectors in both spaces")
+        {
+            Position<4> canon_canonicalOrigin = makePosition(Position<3>{0., 0., 0.});
+            Position<4> canon_localOrigin = makePosition(Position<3>{10., 10., 1.5});
+            Position<4> canon_a = makePosition(Position<3>{0., 10., 5.});
+
+            Position<4> local_canonicalOrigin = makePosition(Position<3>{0., 10*std::sqrt(2), -1.5});
+            Position<4> local_localOrigin = makePosition(Position<3>{0., 0., 0.});
+            Position<4> local_a = makePosition(Position<3>{10*std::sin(pi<double>/4), 10.*std::sin(pi<double>/4), 3.5});
+
+            THEN("Canonical coordinates can be expressed in the local frame")
+            {
+                AffineMatrix<4> canonicalToFrame = trans3d::canonicalToFrame(localFrame);
+
+                REQUIRE((canon_canonicalOrigin * canonicalToFrame).equalsWithinTolerance(local_canonicalOrigin, 0.00001));
+                REQUIRE(canon_localOrigin * canonicalToFrame == local_localOrigin);
+                REQUIRE((canon_a * canonicalToFrame).equalsWithinTolerance(local_a, 0.00001));
+            }
+
+            THEN("Local coordinates can be expressed in the canonical frame")
+            {
+                AffineMatrix<4> frameToCanonical = trans3d::frameToCanonical(localFrame);
+
+                REQUIRE(local_canonicalOrigin * frameToCanonical == canon_canonicalOrigin);
+                REQUIRE(local_localOrigin * frameToCanonical == canon_localOrigin);
+                REQUIRE(local_a * frameToCanonical == canon_a);
+            }
+        }
+    }
+}
+
+
+SCENARIO("3D perspective transformation.")
+{
+    using namespace homogeneous;
+
+    GIVEN("A few homogeneous positions.")
+    {
+        Position<4> nearPlane_a = makePosition(Position<3>{0.,  0.,  -2.});
+        Position<4> nearPlane_b = makePosition(Position<3>{10., -5., -2.});
+
+        Position<4> farPlane_a = makePosition(Position<3>{0.,  0.,  -10.});
+        Position<4> farPlane_b = makePosition(Position<3>{5., -25., -10.});
+        
+        Position<4> mid_a = makePosition(Position<3>{0.,   0.,  -4.});
+        Position<4> mid_b = makePosition(Position<3>{-5.5, 25., -4.});
+
+        GIVEN("A pespective transformation.")
+        {
+            Matrix<4, 4> perspective = trans3d::perspective(-2., -10.);
+
+            auto nearPlane_a_transformed = normalize(nearPlane_a * perspective);
+            auto nearPlane_b_transformed = normalize(nearPlane_b * perspective);
+            auto mid_a_transformed = normalize(mid_a * perspective);
+            auto mid_b_transformed = normalize(mid_b * perspective);
+            auto farPlane_a_transformed = normalize(farPlane_a * perspective);
+            auto farPlane_b_transformed = normalize(farPlane_b * perspective);
+
+            THEN("The near plane positions are not changed by the transformation.")
+            {
+                REQUIRE(nearPlane_a_transformed == nearPlane_a);
+                REQUIRE(nearPlane_b_transformed  == nearPlane_b);
+            }
+
+            THEN("The other positions are applying perspective as expected (divided by Z/Near).")
+            {
+                //Mid
+                REQUIRE(mid_a_transformed.x() == mid_a.x()/2.);
+                REQUIRE(mid_a_transformed.y() == mid_a.y()/2.);
+
+                REQUIRE(mid_b_transformed.x() == mid_b.x()/2.);
+                REQUIRE(mid_b_transformed.y() == mid_b.y()/2.);
+
+                THEN("The mid points Z value is NOT identical after transformation")
+                {
+                    REQUIRE_FALSE(mid_a_transformed.z() == mid_a.z());
+                    REQUIRE_FALSE(mid_b_transformed.z() == mid_b.z());
+                }
+
+                //Far plane
+                REQUIRE(farPlane_a_transformed.x() == farPlane_a.x()/(farPlane_a.z() / -2.));
+                REQUIRE(farPlane_a_transformed.y() == farPlane_a.y()/(farPlane_a.z() / -2.));
+
+                REQUIRE(farPlane_b_transformed.x() == farPlane_b.x()/(farPlane_b.z() / -2.));
+                REQUIRE(farPlane_b_transformed.y() == farPlane_b.y()/(farPlane_b.z() / -2.));
+
+                THEN("The far plane points Z value is identical after transformation")
+                {
+                    REQUIRE(farPlane_a_transformed.z() == farPlane_a.z());
+                    REQUIRE(farPlane_b_transformed.z() == farPlane_b.z());
+                }
+
+                THEN("The relative Z ordering is maintained by the transformation")
+                {
+                    REQUIRE(-2. > mid_a_transformed.z());
+                    REQUIRE(mid_a_transformed.z() > farPlane_a_transformed.z());
+
+                    REQUIRE(-2. > mid_b_transformed.z());
+                    REQUIRE(mid_b_transformed.z() > farPlane_b_transformed.z());
+                }
+            }
+
+            GIVEN("An inverse pespective transformation.")
+            {
+                Matrix<4, 4> inverse = trans3d::perspectiveInverse(-2., -10.);
+
+                THEN("It allows to find the original positions back.")
+                {
+                    REQUIRE(normalize(nearPlane_a_transformed * inverse) == nearPlane_a);
+                    REQUIRE(normalize(nearPlane_b_transformed * inverse) == nearPlane_b);
+                    REQUIRE(normalize(mid_a_transformed * inverse) == mid_a);
+                    REQUIRE(normalize(mid_b_transformed * inverse) == mid_b);
+                    REQUIRE(normalize(farPlane_a_transformed * inverse) == farPlane_a);
+                    REQUIRE(normalize(farPlane_b_transformed * inverse) == farPlane_b);
+                }
             }
         }
     }

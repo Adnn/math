@@ -179,6 +179,49 @@ namespace trans2d {
         }};
     }
 
+
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    frameToCanonical(const Frame<2, T_number> aFrame)
+    {
+        /// FoCG 3rd p137
+        const auto & u = aFrame.base.u();
+        const auto & v = aFrame.base.v();
+        const auto & e = aFrame.origin;
+
+        return AffineMatrix<3, T_number>{{
+                u.x(),  u.y(),
+                v.x(),  v.y(),
+                e.x(),  e.y()
+        }};
+    }
+
+
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    canonicalToFrame(const Frame<2, T_number> aFrame)
+    {
+        /// FoCG 3rd p138
+        const auto & u = aFrame.base.u();
+        const auto & v = aFrame.base.v();
+        const auto & e = aFrame.origin;
+
+        return 
+            AffineMatrix<3, T_number>{{
+                T_number{1},    T_number{0},
+                T_number{0},    T_number{1},
+                -e.x(),         -e.y()
+            }}
+            *
+            AffineMatrix<3, T_number>{{
+                u.x(),          v.x(),
+                u.y(),          v.y(),
+                T_number{0},    T_number{0}
+            }}
+        ;
+    }
+
+
 } // namespace trans2d
 
 
@@ -402,6 +445,90 @@ namespace trans3d {
             T_number{0},                    T_number{0},                    ddepth/sdepth,
             (xdl*xsh - xdh*xsl) / swidth,   (ydl*ysh - ydh*ysl) / sheight,  (zdl*zsh - zdh*zsl) / sdepth,
         }};
+    }
+
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    frameToCanonical(const Frame<3, T_number> aFrame)
+    {
+        /// FoCG 3rd p137
+        const auto & u = aFrame.base.u();
+        const auto & v = aFrame.base.v();
+        const auto & w = aFrame.base.w();
+        const auto & e = aFrame.origin;
+
+        return AffineMatrix<4, T_number>{{
+                u.x(),  u.y(),  u.z(),
+                v.x(),  v.y(),  v.z(),
+                w.x(),  w.y(),  w.z(),
+                e.x(),  e.y(),  e.z(),
+        }};
+    }
+
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    canonicalToFrame(const Frame<3, T_number> aFrame)
+    {
+        /// FoCG 3rd p138
+        const auto & u = aFrame.base.u();
+        const auto & v = aFrame.base.v();
+        const auto & w = aFrame.base.w();
+        const auto & e = aFrame.origin;
+
+        return 
+            AffineMatrix<4, T_number>{{
+                T_number{1},    T_number{0},    T_number{0},
+                T_number{0},    T_number{1},    T_number{0},
+                T_number{0},    T_number{0},    T_number{1},
+                -e.x(),         -e.y(),         -e.z()
+            }}
+            *
+            AffineMatrix<4, T_number>{{
+                u.x(),          v.x(),          w.x(),
+                u.y(),          v.y(),          w.y(),
+                u.z(),          v.z(),          w.z(),
+                T_number{0},    T_number{0},    T_number{0}
+            }}
+        ;
+    }
+
+
+    template <class T_number>
+    constexpr Matrix<4, 4, T_number>
+    perspective(const T_number aNearPlaneZ, const T_number aFarPlaneZ)
+    {
+        const T_number n = aNearPlaneZ;
+        const T_number f = aFarPlaneZ;
+        const T_number v0 = T_number{0};
+        const T_number v1 = T_number{1};
+
+        return {
+            n,   v0,  v0,   v0,
+            v0,  n,   v0,   v0,
+            v0,  v0,  n+f,  v1,
+            v0,  v0,  -f*n, v0
+        };
+    }
+
+
+
+    template <class T_number>
+    constexpr Matrix<4, 4, T_number>
+    perspectiveInverse(const T_number aNearPlaneZ, const T_number aFarPlaneZ)
+    {
+        const T_number n = aNearPlaneZ;
+        const T_number f = aFarPlaneZ;
+        const T_number v0 = T_number{0};
+        const T_number v1 = T_number{1};
+
+        return {
+            f,   v0,  v0,   v0,
+            v0,  f,   v0,   v0,
+            v0,  v0,  v0,   -v1,
+            v0,  v0,  f*n,  n+f, 
+        };
     }
 
 

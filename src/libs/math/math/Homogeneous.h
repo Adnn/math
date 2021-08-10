@@ -114,10 +114,10 @@ Position<N_dimension, T_number> makePosition(VT_elements && ... aElements)
     return Position<N_dimension, T_number>{std::forward<VT_elements>(aElements)..., T_number{1}};
 }
 
-template<int N_dimension, class T_number = real_number>
-Position<N_dimension, T_number> makePosition(const Position<N_dimension-1, T_number> & aPosition)
+template<int N_lowerDimension, class T_number = real_number>
+Position<N_lowerDimension+1, T_number> makePosition(const Position<N_lowerDimension, T_number> & aPosition)
 {
-    return Position<N_dimension, T_number>{aPosition, T_number{1}};
+    return Position<N_lowerDimension+1, T_number>{aPosition, T_number{1}};
 }
 
 /// \brief Factory for homogeneous vectors (in the sense of "displacement").
@@ -127,11 +127,28 @@ Vec<N_dimension, T_number> makeVec(VT_elements && ... aElements)
     return Vec<N_dimension, T_number>{std::forward<VT_elements>(aElements)..., T_number{0}};
 }
 
-template<int N_dimension, class T_number = real_number>
-Vec<N_dimension, T_number> makeVec(const Vec<N_dimension-1, T_number> & aPosition)
+template<int N_lowerDimension, class T_number = real_number>
+Vec<N_lowerDimension+1, T_number> makeVec(const Vec<N_lowerDimension, T_number> & aPosition)
 {
-    return Vec<N_dimension, T_number>{aPosition, T_number{1}};
+    return Vec<N_lowerDimension+1, T_number>{aPosition, T_number{1}};
 }
+
+
+//template<int N_dimension, class T_number = real_number, template <N_dimension, T_number> TT_derivedVector>
+template<class T_derived, int N_dimension, class T_number = real_number>
+T_derived normalize(const Vector<T_derived, N_dimension, T_number> & aHomogeneous)
+{
+    T_derived result{T_derived::UninitializedTag{}};
+    for (std::size_t i = 0; i != (N_dimension - 1); ++i)
+    {
+        result[i] = aHomogeneous[i]/aHomogeneous[N_dimension - 1];
+    }
+    result[N_dimension - 1] = T_number{1};
+    return result;
+}
+
+
+
 
 } // namespace homogeneous
 

@@ -3,6 +3,7 @@
 #include "commons.h"
 
 #include "Angle.h"
+#include "Base.h"
 #include "Box.h"
 #include "Homogeneous.h"
 #include "Matrix.h"
@@ -18,6 +19,7 @@ namespace math {
 namespace trans2d {
 
 
+    /// \brief Counter-clockwise rotation.
     template <class T_number, class T_angleUnitTag=void>
     constexpr Matrix<2, 2, T_number> rotate(const Angle<T_number, T_angleUnitTag> aAngle);
 
@@ -91,6 +93,19 @@ namespace trans2d {
     template <class T_number>
     constexpr AffineMatrix<3, T_number>
     window(const Rectangle<T_number> aSource, const Rectangle<T_number> aDestination);
+
+
+    // 
+    // Coordinate transformations
+    //
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    frameToCanonical(const Frame<2, T_number> aFrame);
+
+
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    canonicalToFrame(const Frame<2, T_number> aFrame);
 
 
 } // namespace trans2d
@@ -177,6 +192,31 @@ namespace trans3d {
     template <class T_number>
     constexpr AffineMatrix<4, T_number>
     window(const Box<T_number> aSource, const Box<T_number> aDestination);
+
+
+    // 
+    // Coordinate transformations
+    //
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    frameToCanonical(const Frame<3, T_number> aFrame);
+
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    canonicalToFrame(const Frame<3, T_number> aFrame);
+
+
+    /// \brief Perspective matrix.
+    template <class T_number>
+    constexpr Matrix<4, 4, T_number>
+    perspective(const T_number aNearPlaneZ, const T_number aFarPlaneZ);
+
+
+    /// \brief The inverse of the perspective matrix.
+    template <class T_number>
+    constexpr Matrix<4, 4, T_number>
+    perspectiveInverse(const T_number aNearPlaneZ, const T_number aFarPlaneZ);
 
 
 } // namespace trans3d

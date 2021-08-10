@@ -6,6 +6,30 @@
 using namespace ad::math;
 
 
+SCENARIO("Making orthonormal 2D bases.")
+{
+    using Base = OrthonormalBase<2>;
+
+    GIVEN("A direction vector")
+    {
+        Vec<2> direction{2., 0.};
+        THEN("A bases can be instantiated")
+        {
+            Base from1 = Base::MakeFromSingleVector(direction);
+
+            REQUIRE(from1.u().x() == 1);
+            REQUIRE(from1.u() == direction.normalize());
+            REQUIRE(from1.u().getNorm() == 1.);
+            REQUIRE(from1.v().getNorm() == 1.);
+
+            REQUIRE(from1.u().dot(from1.v()) == 0.);
+            REQUIRE(from1.v().x() == 0.);
+            REQUIRE(from1.v().y() == 1.);
+        }
+    }
+}
+
+
 SCENARIO("Making orthonormal 3D bases.")
 {
     using Base = OrthonormalBase<3>;
