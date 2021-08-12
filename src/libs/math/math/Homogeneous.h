@@ -27,7 +27,7 @@ namespace math {
 /// of homogeneous coordinates.
 ///
 /// \important Its projective elements are fixed as [0..0 1], it cannot be used to implement perspective projection.
-/// 
+///
 /// \warning It is undefined behaviour to modify the projective elements of an AffineMatrix.
 template <TMA_D>
 class AffineMatrix : public Matrix<N_dimension, N_dimension, T_number>
@@ -100,7 +100,7 @@ operator*(const AffineMatrix<TMP> &aLhs, const AffineMatrix<TMP> &aRhs);
 // factories to put the final 0 or 1 accordingly.
 //
 // WARNING: without dedicated type handling, currently the Vector::as<> conversion
-// produces wrong results when used to convert homogeneous Position<->Vec 
+// produces wrong results when used to convert homogeneous Position<->Vec
 // (the final 0/1 is not switched).
 
 
@@ -138,7 +138,7 @@ Vec<N_lowerDimension+1, T_number> makeVec(const Vec<N_lowerDimension, T_number> 
 template<class T_derived, int N_dimension, class T_number = real_number>
 T_derived normalize(const Vector<T_derived, N_dimension, T_number> & aHomogeneous)
 {
-    T_derived result{T_derived::UninitializedTag{}};
+    T_derived result{typename T_derived::UninitializedTag{}};
     for (std::size_t i = 0; i != (N_dimension - 1); ++i)
     {
         result[i] = aHomogeneous[i]/aHomogeneous[N_dimension - 1];

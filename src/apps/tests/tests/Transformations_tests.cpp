@@ -943,7 +943,7 @@ SCENARIO("3D coordinate frame transformation.")
 
                 REQUIRE(local_canonicalOrigin * frameToCanonical == canon_canonicalOrigin);
                 REQUIRE(local_localOrigin * frameToCanonical == canon_localOrigin);
-                REQUIRE(local_a * frameToCanonical == canon_a);
+                REQUIRE((local_a * frameToCanonical).equalsWithinTolerance(canon_a, 0.0000001));
             }
         }
     }
@@ -961,7 +961,7 @@ SCENARIO("3D perspective transformation.")
 
         Position<4> farPlane_a = makePosition(Position<3>{0.,  0.,  -10.});
         Position<4> farPlane_b = makePosition(Position<3>{5., -25., -10.});
-        
+
         Position<4> mid_a = makePosition(Position<3>{0.,   0.,  -4.});
         Position<4> mid_b = makePosition(Position<3>{-5.5, 25., -4.});
 
