@@ -22,6 +22,7 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
+      - run: git config --global core.autocrlf input
       - uses: actions/checkout@v2
         with:
           submodules: recursive
