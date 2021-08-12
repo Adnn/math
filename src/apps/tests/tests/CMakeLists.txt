@@ -1,13 +1,13 @@
 string(TOLOWER ${PROJECT_NAME} _lower_project_name)
-project(${_lower_project_name}_tests)
+set(TARGET_NAME ${_lower_project_name}_tests)
 
-set(${PROJECT_NAME}_HEADERS
+set(${TARGET_NAME}_HEADERS
     catch.hpp
     detection.h
     operation_detectors.h
 )
 
-set(${PROJECT_NAME}_SOURCES
+set(${TARGET_NAME}_SOURCES
     Angle.cpp
     Barycentric.cpp
     Base.cpp
@@ -28,22 +28,22 @@ set(${PROJECT_NAME}_SOURCES
     VectorOfAngle.cpp
 )
 
-add_executable(${PROJECT_NAME}
+add_executable(${TARGET_NAME}
     main.cpp
-    ${${PROJECT_NAME}_SOURCES}
-    ${${PROJECT_NAME}_HEADERS}
+    ${${TARGET_NAME}_SOURCES}
+    ${${TARGET_NAME}_HEADERS}
 )
 
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${TARGET_NAME} PRIVATE
     ad::math
 )
 
 include(cmc-cpp)
-cmc_cpp_all_warnings_as_errors(${PROJECT_NAME})
+cmc_cpp_all_warnings_as_errors(${TARGET_NAME})
 
 
 ##
 ## Install
 ##
-install(TARGETS ${PROJECT_NAME} RUNTIME)
+install(TARGETS ${TARGET_NAME} RUNTIME)
