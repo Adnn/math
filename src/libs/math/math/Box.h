@@ -84,6 +84,9 @@ struct Box
     Position<3, T_number> topRightBack() const
     { return mPosition + Vec<3, T_number>{mDimension.width(), mDimension.height(), - mDimension.depth()}; }
 
+    Position<3, T_number> center() const
+    { return mPosition + (Vec<3, T_number>{mDimension.width(), mDimension.height(), - mDimension.depth()} / 2); }
+
     bool operator==(const Box &aRhs) const
     { return mPosition == aRhs.mPosition && mDimension == aRhs.mDimension; }
     bool operator!=(const Box &aRhs) const

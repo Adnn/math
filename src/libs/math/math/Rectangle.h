@@ -59,6 +59,9 @@ struct Rectangle
     //{ return mPosition + mDimension.as<Vec>(); }
     { return mPosition + static_cast<Vec<2, T_number>>(mDimension); }
 
+    Position<2, T_number> center() const
+    { return mPosition + static_cast<Vec<2, T_number>>(mDimension / 2); }
+
     bool operator==(const Rectangle &aRhs) const
     { return mPosition == aRhs.mPosition && mDimension == aRhs.mDimension; }
     bool operator!=(const Rectangle &aRhs) const

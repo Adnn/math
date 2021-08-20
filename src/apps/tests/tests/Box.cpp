@@ -42,6 +42,7 @@ SCENARIO("Box usage")
             REQUIRE(box.topLeftBack()      == Position<3>{ 0., 35., -30.});
             REQUIRE(box.topRightFront()    == Position<3>{20., 35.,  10.});
             REQUIRE(box.topRightBack()     == Position<3>{20., 35., -30.});
+            REQUIRE(box.center()           == Position<3>{10., 20., -10.});
         }
 
         THEN("It can generate a centered box")
