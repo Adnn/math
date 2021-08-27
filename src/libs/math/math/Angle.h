@@ -108,6 +108,12 @@ private:
 #define ANGLE Angle<T_representation, T_unitTag>
 
 template <class T_representation, class T_unitTag>
+constexpr ANGLE abs(const ANGLE aAngle)
+{
+    return ANGLE{std::abs(aAngle.value())};
+}
+
+template <class T_representation, class T_unitTag>
 T_representation sin(const ANGLE aAngle)
 {
     return std::sin(Radian<T_representation>{aAngle}.value());

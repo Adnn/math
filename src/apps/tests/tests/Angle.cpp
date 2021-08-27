@@ -32,10 +32,20 @@ SCENARIO("Angles operations")
             REQUIRE(circle.value() == value);
         }
 
+        THEN("Its absolute value is itself, since it is positive")
+        {
+            REQUIRE(abs(circle) == circle);
+        }
+
         THEN("It can be negated")
         {
-            circle = -circle;
-            REQUIRE(circle.value() == -value);
+            auto negation = -circle;
+            REQUIRE(negation.value() == -value);
+
+            THEN("The negated absolute value is the original angle")
+            {
+                REQUIRE(abs(negation) == circle);
+            }
         }
 
         THEN("It can be multiplied by a scalar")
