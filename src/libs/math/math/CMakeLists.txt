@@ -23,6 +23,7 @@ set(${TARGET_NAME}_HEADERS
     Utilities.h
     Vector.h
     Vector-impl.h
+    VectorUtilities.h
 )
 
 add_library(${TARGET_NAME} INTERFACE)

@@ -24,6 +24,7 @@ set(${TARGET_NAME}_SOURCES
     Traits.cpp
     Transformations_tests.cpp
     TransformNormal_tests.cpp
+    Utilities_tests.cpp
     Vector.cpp
     VectorOfAngle.cpp
 )

@@ -16,6 +16,8 @@ class Vector : public MatrixBase<T_derived, 1, N_dimension, T_number>
     using base_type::should_noexcept;
 
 public:
+    static constexpr std::size_t Dimension{N_dimension};
+
     /// \brief Constructor from a head vector of lower dimension, with explicit tail element to complete.
     ///
     /// \note Currently accept a head vector of different logic type (e.g. `Position` vs `Vec`) as long as
