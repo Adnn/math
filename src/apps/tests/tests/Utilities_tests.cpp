@@ -25,4 +25,25 @@ SCENARIO("Vector utilities")
             REQUIRE(getOrientedAngle(b, a) == - getOrientedAngle(a, b));
         }
     }
+
+    GIVEN("An aspect ratio and a matching size")
+    {
+        double ratio = 16./9.;
+        Size<2, double> expected{1920., 1080.};
+
+        THEN("A size can be obtained from a height and this ratio")
+        {
+            REQUIRE(makeSizeFromHeight(1080., ratio) == expected);
+        }
+
+        THEN("A size can be obtained from a height and this ratio")
+        {
+            REQUIRE(makeSizeFromWidth(1920., ratio) == expected);
+        }
+
+        THEN("The ratio can be found from the size")
+        {
+            REQUIRE(getRatio<double>(expected) == ratio);
+        }
+    }
 }

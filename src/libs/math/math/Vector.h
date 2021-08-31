@@ -204,7 +204,7 @@ class Size : public BASE
 public:
     template<class T>
     using derived_type = Size<N_dimension, T>;
-
+    
     ACCESSOR_DIMENSION(width,  1)
     ACCESSOR_DIMENSION(height, 2)
     ACCESSOR_DIMENSION(depth,  3)
