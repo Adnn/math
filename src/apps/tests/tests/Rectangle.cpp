@@ -18,6 +18,7 @@ SCENARIO("Rectangle usage")
 
             REQUIRE(rect.width() == 20.);
             REQUIRE(rect.height() == 30.);
+            REQUIRE(rect.dimension() == Size<2>{20., 30.});
         }
 
         THEN("It can be assigned from another rectangle")

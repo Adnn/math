@@ -25,20 +25,6 @@ struct Box
     T_number z() const
     { return mPosition.z(); }
 
-    T_number & width()
-    { return mDimension.width(); }
-    T_number & height()
-    { return mDimension.height(); }
-    T_number & depth()
-    { return mDimension.depth(); }
-
-    T_number width() const
-    { return mDimension.width(); }
-    T_number height() const
-    { return mDimension.height(); }
-    T_number depth() const
-    { return mDimension.depth(); }
-
     T_number xMin() const
     { return x(); }
     T_number xMax() const
@@ -53,6 +39,25 @@ struct Box
     { return z() - depth(); }
     T_number zMax() const
     { return z(); }
+
+    T_number & width()
+    { return mDimension.width(); }
+    T_number & height()
+    { return mDimension.height(); }
+    T_number & depth()
+    { return mDimension.depth(); }
+
+    T_number width() const
+    { return mDimension.width(); }
+    T_number height() const
+    { return mDimension.height(); }
+    T_number depth() const
+    { return mDimension.depth(); }
+
+    Size<3, T_number> & dimension()
+    { return mDimension; }
+    Size<3, T_number> dimension() const
+    { return mDimension; }
 
     T_number volume() const
     { return mDimension.volume(); }

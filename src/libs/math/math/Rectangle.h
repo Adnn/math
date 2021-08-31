@@ -19,6 +19,16 @@ struct Rectangle
     T_number y() const
     { return mPosition.y(); }
 
+    T_number xMin() const
+    { return x(); }
+    T_number xMax() const
+    { return x() + width(); }
+
+    T_number yMin() const
+    { return y(); }
+    T_number yMax() const
+    { return y() + height(); }
+
     T_number & width()
     { return mDimension.width(); }
     T_number & height()
@@ -29,15 +39,10 @@ struct Rectangle
     T_number height() const
     { return mDimension.height(); }
 
-    T_number xMin() const
-    { return x(); }
-    T_number xMax() const
-    { return x() + width(); }
-
-    T_number yMin() const
-    { return y(); }
-    T_number yMax() const
-    { return y() + height(); }
+    Size<2, T_number> & dimension()
+    { return mDimension; }
+    Size<2, T_number> dimension() const
+    { return mDimension; }
 
     T_number area() const
     { return mDimension.area(); }

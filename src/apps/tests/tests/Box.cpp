@@ -20,6 +20,7 @@ SCENARIO("Box usage")
             REQUIRE(box.width()  == 20.);
             REQUIRE(box.height() == 30.);
             REQUIRE(box.depth()  == 40.);
+            REQUIRE(box.dimension() == Size<3>{20., 30., 40.});
         }
 
         THEN("It can be assigned from another box")
