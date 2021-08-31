@@ -363,6 +363,26 @@ constexpr T_derived MatrixBase<TMA>::cwDiv(const T_derived &aRhs) const noexcept
 
 
 template <TMP>
+constexpr T_derived & MatrixBase<TMA>::cwModAssign(const MatrixBase &aRhs) noexcept(should_noexcept)
+{
+    for(std::size_t elementId = 0; elementId != N_rows*N_cols; ++elementId)
+    {
+        mStore[elementId] %= aRhs.mStore[elementId];
+    }
+    return *this->derivedThis();
+}
+
+
+template <TMP>
+constexpr T_derived MatrixBase<TMA>::cwMod(const T_derived &aRhs) const noexcept(should_noexcept)
+{
+    T_derived left(*derivedThis()); // Avoid conversion op by using *derivedThis instead of *this
+    return left.cwModAssign(aRhs);
+}
+
+
+
+template <TMP>
 constexpr bool MatrixBase<TMA>::operator==(const MatrixBase &aRhs) const noexcept(should_noexcept)
 {
     return mStore == aRhs.mStore;

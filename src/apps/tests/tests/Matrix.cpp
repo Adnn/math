@@ -238,6 +238,36 @@ SCENARIO("Basic operations are available on Matrix instances")
                 REQUIRE((matrix * second) == expectedResult);
             }
         }
+
+        GIVEN("Two 2x2 integers matrices")
+        {
+            Matrix<2, 2, int> numerators
+            {
+                3,  4,
+                10, 0
+            };
+
+            Matrix<2, 2, int> denominators
+            {
+                1,  3,
+                2,  5,
+            };
+
+
+            THEN("The modulo operator can be applied componentwise.")
+            {
+                Matrix<2, 2, int> expectedResult = {
+                    0, 1,
+                    0, 0,
+                };
+
+                REQUIRE((numerators.cwMod(denominators)) == expectedResult);
+
+                numerators.cwModAssign(denominators);
+                REQUIRE(numerators == expectedResult);
+            }
+
+        }
     }
 }
 

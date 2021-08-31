@@ -234,6 +234,11 @@ public:
     /// \brief The componentwise division
     constexpr T_derived cwDiv(const T_derived &aRhs) const noexcept(should_noexcept);
 
+    /// \brief The compound componentwise modulo
+    constexpr T_derived & cwModAssign(const MatrixBase &aRhs) noexcept(should_noexcept);
+    /// \brief The componentwise modulo
+    constexpr T_derived cwMod(const T_derived &aRhs) const noexcept(should_noexcept);
+
     /// \brief Equality comparison.
     /// \attention Can be used in a constexpr context only since C++20
     constexpr bool operator==(const MatrixBase &aRhs) const noexcept(should_noexcept);
