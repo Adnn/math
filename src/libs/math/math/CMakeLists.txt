@@ -11,6 +11,7 @@ set(${TARGET_NAME}_HEADERS
     Constants.h
     Homogeneous.h
     Homogeneous-impl.h
+    Interpolation.h
     Matrix.h
     Matrix-impl.h
     MatrixBase.h

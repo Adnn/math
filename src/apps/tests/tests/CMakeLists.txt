@@ -16,6 +16,7 @@ set(${TARGET_NAME}_SOURCES
     Color_tests.cpp
     Constexpr_tests.cpp
     Homogeneous_tests.cpp
+    Interpolation_tests.cpp
     Matrix.cpp
     Noexcept_tests.cpp
     Polynomial.cpp
