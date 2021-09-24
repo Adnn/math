@@ -398,6 +398,19 @@ SCENARIO("2D windowing transformation.")
                 REQUIRE(topRight * windowing == makePosition<3>(destination.topRight()));
             }
         }
+
+        GIVEN("An orthographic projection")
+        {
+            AffineMatrix<3> projection = trans2d::orthographicProjection(source);
+
+            THEN("The 4 source corners are moved to the 4 destination corners by the transformation.")
+            {
+                REQUIRE(bottomLeft  * projection == Position<3>{-1., -1.,  1.});
+                REQUIRE(bottomRight * projection == Position<3>{ 1., -1.,  1.});
+                REQUIRE(topLeft     * projection == Position<3>{-1.,  1.,  1.});
+                REQUIRE(topRight    * projection == Position<3>{ 1.,  1.,  1.});
+            }
+        }
     }
 }
 
@@ -901,6 +914,23 @@ SCENARIO("3D windowing transformation.")
                 REQUIRE(topLeftBack * windowing      == makePosition<4>(destination.topLeftBack()));
                 REQUIRE(topRightFront * windowing    == makePosition<4>(destination.topRightFront()));
                 REQUIRE(topRightBack * windowing     == makePosition<4>(destination.topRightBack()));
+            }
+        }
+
+        GIVEN("An orthographic projection")
+        {
+            AffineMatrix<4> projection = trans3d::orthographicProjection(source);
+
+            THEN("The 4 source corners are moved to the 4 destination corners by the transformation.")
+            {
+                REQUIRE(bottomLeftFront  * projection == Position<4>{-1., -1.,  1.,  1.});
+                REQUIRE(bottomLeftBack   * projection == Position<4>{-1., -1., -1.,  1.});
+                REQUIRE(bottomRightFront * projection == Position<4>{ 1., -1.,  1.,  1.});
+                REQUIRE(bottomRightBack  * projection == Position<4>{ 1., -1., -1.,  1.});
+                REQUIRE(topLeftFront     * projection == Position<4>{-1.,  1.,  1.,  1.});
+                REQUIRE(topLeftBack      * projection == Position<4>{-1.,  1., -1.,  1.});
+                REQUIRE(topRightFront    * projection == Position<4>{ 1.,  1.,  1.,  1.});
+                REQUIRE(topRightBack     * projection == Position<4>{ 1.,  1., -1.,  1.});
             }
         }
     }

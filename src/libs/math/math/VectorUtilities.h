@@ -44,6 +44,7 @@ Size<2, T_number> makeSizeFromWidth(T_number aWidth, T_number aAspectRatio)
 }
 
 
+/// \brief Ratio of width over height.
 template <class T_ratio, class T_number>
 T_ratio getRatio(const Size<2, T_number> aSize)
 {

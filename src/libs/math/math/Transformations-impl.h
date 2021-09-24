@@ -222,6 +222,16 @@ namespace trans2d {
     }
 
 
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    orthographicProjection(const Rectangle<T_number> aProjected)
+    {
+        return window(aProjected,
+                      { { T_number{-1}, T_number{-1}},
+                        { T_number{2},  T_number{2} } });
+    }
+
+
 } // namespace trans2d
 
 
@@ -494,6 +504,15 @@ namespace trans3d {
         ;
     }
 
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    orthographicProjection(const Box<T_number> aProjected)
+    {
+        return window(aProjected,
+                      { { T_number{-1}, T_number{-1}, T_number{+1} },
+                        { T_number{2},  T_number{2},  T_number{2}  } });
+    }
 
     template <class T_number>
     constexpr Matrix<4, 4, T_number>

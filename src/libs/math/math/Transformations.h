@@ -108,6 +108,15 @@ namespace trans2d {
     canonicalToFrame(const Frame<2, T_number> aFrame);
 
 
+    //
+    // Viewing (higher level) transformations
+    //
+    /// \brief Project a rectangle onto the canonical unit square [-1, 1]^2 (i.e. OpenGL's)
+    template <class T_number>
+    constexpr AffineMatrix<3, T_number>
+    orthographicProjection(const Rectangle<T_number> aProjected);
+
+
 } // namespace trans2d
 
 
@@ -206,8 +215,17 @@ namespace trans3d {
     constexpr AffineMatrix<4, T_number>
     canonicalToFrame(const Frame<3, T_number> aFrame);
 
+    //
+    // Viewing (higher level) transformations
+    //
+    /// \brief Project a box onto the canonical unit cube [-1, 1]^3 (i.e. OpenGL's)
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    orthographicProjection(const Box<T_number> aProjected);
+
 
     /// \brief Perspective matrix.
+    /// \see FoCG 3rd - 7.3 Perspective Projection (p 151)
     template <class T_number>
     constexpr Matrix<4, 4, T_number>
     perspective(const T_number aNearPlaneZ, const T_number aFarPlaneZ);
