@@ -38,22 +38,36 @@ public:
 
     /// \brief Compute the barycentric coordinates of aPoint in the basis formed by this Barycentric
     Coordinates getCoordinates(Position<2, T_number> aPoint);
+
+    /// \important This was the initial implementation, which allows to get rid 
+    /// of data members mAlphaFactors nor mValueA.
+    /// Yet, it was observed when implementing a triangle rasterizer that it introduced some errors.
+    Coordinates getCoordinatesShortcut(Position<2, T_number> aPoint);
     
 private:
     static T_number signedDistance(const Factors &aFactors, Position<2, T_number> aPoint);
 
 
 private:
+    Factors mAlphaFactors;
     Factors mBetaFactors;
     Factors mGammaFactors;
 
+    T_number mValueA;
     T_number mValueB;
     T_number mValueC;
 };
 
 
 template <class T_number>
-Barycentric<T_number>::Barycentric(Position<2, T_number> aPointA, Position<2, T_number> aPointB, Position<2, T_number> aPointC) :
+Barycentric<T_number>::Barycentric(Position<2, T_number> aPointA,  
+                                   Position<2, T_number> aPointB,
+                                   Position<2, T_number> aPointC) :
+        mAlphaFactors { 
+            aPointB.y()-aPointC.y(),
+            aPointC.x()-aPointB.x(),
+            aPointB.x()*aPointC.y() - aPointC.x()*aPointB.y()
+        },
         mBetaFactors { 
             aPointA.y()-aPointC.y(),
             aPointC.x()-aPointA.x(),
@@ -64,13 +78,16 @@ Barycentric<T_number>::Barycentric(Position<2, T_number> aPointA, Position<2, T_
             aPointB.x()-aPointA.x(),
             aPointA.x()*aPointB.y() - aPointB.x()*aPointA.y()
         },
-        mValueB{ signedDistance(mBetaFactors, aPointB) },
+        mValueA{ signedDistance(mAlphaFactors, aPointA) },
+        mValueB{ signedDistance(mBetaFactors,  aPointB) },
         mValueC{ signedDistance(mGammaFactors, aPointC) }
 {}
 
 
 template <class T_number>
-Barycentric<T_number> makeBarycentric(Position<2, T_number> aPointA, Position<2, T_number> aPointB, Position<2, T_number> aPointC)
+Barycentric<T_number> makeBarycentric(Position<2, T_number> aPointA,
+                                      Position<2, T_number> aPointB,
+                                      Position<2, T_number> aPointC)
 {
     return Barycentric<T_number>(aPointA, aPointB, aPointC);
 }
@@ -81,9 +98,22 @@ typename Barycentric<T_number>::Coordinates Barycentric<T_number>::getCoordinate
 {
     static_assert(std::is_floating_point<T_number>::value, "Not yet implement for non-floating point coordinates");
 
-    T_number beta = signedDistance(mBetaFactors, aPoint) / mValueB;
+    return {
+        signedDistance(mAlphaFactors, aPoint) / mValueA,
+        signedDistance(mBetaFactors, aPoint)  / mValueB,
+        signedDistance(mGammaFactors, aPoint) / mValueC
+    };
+}
+
+
+template <class T_number>
+typename Barycentric<T_number>::Coordinates Barycentric<T_number>::getCoordinatesShortcut(Position<2, T_number> aPoint)
+{
+    static_assert(std::is_floating_point<T_number>::value, "Not yet implement for non-floating point coordinates");
+
+    T_number beta  = signedDistance(mBetaFactors, aPoint)  / mValueB;
     T_number gamma = signedDistance(mGammaFactors, aPoint) / mValueC;
-    return { (1-beta-gamma), beta, gamma };
+    return { (T_number{1} - beta - gamma), beta, gamma };
 }
 
 
