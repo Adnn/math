@@ -242,9 +242,9 @@ namespace trans3d {
     constexpr Matrix<3, 3, T_number> rotateX(const Angle<T_number, T_angleUnitTag> aAngle)
     {
         return {
-            1.,           0.,            0.,
-            0.,  cos(aAngle),   sin(aAngle),
-            0., -sin(aAngle),   cos(aAngle),
+            T_number{1.}, T_number{0.},  T_number{0.},
+            T_number{0.},  cos(aAngle),   sin(aAngle),
+            T_number{0.}, -sin(aAngle),   cos(aAngle),
         };
     }
 
@@ -253,9 +253,9 @@ namespace trans3d {
     constexpr Matrix<3, 3, T_number> rotateY(const Angle<T_number, T_angleUnitTag> aAngle)
     {
         return {
-            cos(aAngle),    0., -sin(aAngle),
-                     0.,    1.,           0.,
-            sin(aAngle),    0.,  cos(aAngle),
+            cos(aAngle),    T_number{0.}, -sin(aAngle),
+            T_number{0.},   T_number{1.}, T_number{0.},
+            sin(aAngle),    T_number{0.},  cos(aAngle),
         };
     }
 
@@ -264,9 +264,9 @@ namespace trans3d {
     constexpr Matrix<3, 3, T_number> rotateZ(const Angle<T_number, T_angleUnitTag> aAngle)
     {
         return {
-             cos(aAngle),   sin(aAngle),    0.,
-            -sin(aAngle),   cos(aAngle),    0.,
-                      0.,            0.,    1.,
+             cos(aAngle),   sin(aAngle),    T_number{0.},
+            -sin(aAngle),   cos(aAngle),    T_number{0.},
+            T_number{0.},  T_number{0.},    T_number{1.},
         };
     }
 
