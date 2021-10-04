@@ -25,6 +25,8 @@ set(${TARGET_NAME}_HEADERS
     Vector.h
     Vector-impl.h
     VectorUtilities.h
+
+    Curves/Bezier.h
 )
 
 add_library(${TARGET_NAME} INTERFACE)

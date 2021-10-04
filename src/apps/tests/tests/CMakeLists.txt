@@ -11,6 +11,7 @@ set(${TARGET_NAME}_SOURCES
     Angle.cpp
     Barycentric.cpp
     Base.cpp
+    Bezier_tests.cpp
     Box.cpp
     Canonical_tests.cpp
     Color_tests.cpp
