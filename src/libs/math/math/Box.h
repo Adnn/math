@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Rectangle.h"
 #include "Vector.h"
 
 namespace ad {
@@ -104,6 +105,8 @@ struct Box
 
     Position<3, T_number> closestPoint(Position<3, T_number> aPosition) const;
 
+    constexpr Rectangle<T_number> frontRectangle() const;
+
     Position<3, T_number>  mPosition;
     Size<3, T_number> mDimension;
 };
@@ -141,6 +144,16 @@ Position<3, T_number> Box<T_number>::closestPoint(Position<3, T_number> aPositio
     aPosition.y() = std::min(std::max(aPosition.y(), yMin()), yMax());
     aPosition.z() = std::min(std::max(aPosition.z(), zMin()), zMax());
     return aPosition;
+}
+
+
+template <class T_number>
+constexpr Rectangle<T_number> Box<T_number>::frontRectangle() const
+{
+    return {
+        {mPosition.x(), mPosition.y()},
+        {mDimension.width(), mDimension.height()}
+    };
 }
 
 

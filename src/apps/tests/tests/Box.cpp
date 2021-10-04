@@ -52,6 +52,12 @@ SCENARIO("Box usage")
             REQUIRE(box.centered() == expected);
         }
 
+        THEN("It can provide its front rectangle")
+        {
+            REQUIRE(box.frontRectangle() == Rectangle<double>{{0., 5.}, {20., 30.}});
+        }
+
+
         GIVEN("A position inside the box")
         {
             Position<3, double> in{10., 15., 5.};
