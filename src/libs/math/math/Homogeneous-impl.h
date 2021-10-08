@@ -34,8 +34,8 @@ namespace math {
     (*this)[N_dimension-1][N_dimension-1] = 1;                  
 
 
-template <TMA>
-constexpr AffineMatrix<TMP>::AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
+template <TMP>
+constexpr AffineMatrix<TMA>::AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
                                           const Vec<N_dimension-1, T_number> & aAffine) noexcept(should_noexcept) :
         base_type{typename base_type::UninitializedTag{}}
 {
@@ -43,8 +43,8 @@ constexpr AffineMatrix<TMP>::AffineMatrix(const Matrix<N_dimension-1, N_dimensio
 }
 
 
-template <TMA>
-constexpr AffineMatrix<TMP>::AffineMatrix(const Matrix<N_dimension, N_dimension-1, T_number> & aElements)
+template <TMP>
+constexpr AffineMatrix<TMA>::AffineMatrix(const Matrix<N_dimension, N_dimension-1, T_number> & aElements)
     noexcept(should_noexcept) :
         base_type{typename base_type::UninitializedTag{}}
 {
@@ -52,30 +52,30 @@ constexpr AffineMatrix<TMP>::AffineMatrix(const Matrix<N_dimension, N_dimension-
 }
 
 
-template <TMA>
-constexpr AffineMatrix<TMP>::AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept) :
+template <TMP>
+constexpr AffineMatrix<TMA>::AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept) :
     base_type{typename base_type::UninitializedTag{}}
 {}
 
-template <TMA>
-constexpr AffineMatrix<TMP> AffineMatrix<TMP>::Identity() noexcept(should_noexcept)
+template <TMP>
+constexpr AffineMatrix<TMA> AffineMatrix<TMA>::Identity() noexcept(should_noexcept)
 {
     return AffineMatrix{Matrix<N_dimension-1, N_dimension-1, T_number>::Identity()};
 }
 
 
-template <TMA>
-constexpr AffineMatrix<TMP>
-operator*(const AffineMatrix<TMP> &aLhs, const AffineMatrix<TMP> &aRhs)
+template <TMP>
+constexpr AffineMatrix<TMA>
+AffineMatrix<TMA>::multiply_impl(const AffineMatrix<TMA> &aRhs) const
 {
-    AffineMatrix<TMP> result = multiplyBaseSubrange<AffineMatrix<TMP>, N_dimension, N_dimension-1>(aLhs, aRhs);
+    AffineMatrix<TMA> result = multiplyBaseSubrange<AffineMatrix<TMA>, N_dimension, N_dimension-1>(*this, aRhs);
     FILL_LAST_COLUMN(result);
     return result;
 }
 
 
-template <TMA>
-constexpr AffineMatrix<TMP> & AffineMatrix<TMP>::operator*=(const AffineMatrix & aRhs) noexcept(should_noexcept)
+template <TMP>
+constexpr AffineMatrix<TMA> & AffineMatrix<TMA>::operator*=(const AffineMatrix & aRhs) noexcept(should_noexcept)
 {
     *this = *this * aRhs;
     return *this;

@@ -163,7 +163,7 @@ constexpr Matrix<TMP> Matrix<TMP>::computeAdjointMatrix() const noexcept(should_
 /// For complete multiplication, use multiplyBase() directly.
 template <class T_result, int N_rowsMultiplied, int N_colsMultiplied, int N_lRows, int N_matching, int N_rCols, class T_lDerived, class T_number>
 constexpr T_result multiplyBaseSubrange(const MatrixBase<T_lDerived, N_lRows, N_matching, T_number> &aLhs,
-                                     const Matrix<N_matching, N_rCols, T_number> &aRhs)
+                                        const Matrix<N_matching, N_rCols, T_number> &aRhs)
 {
     T_result result{typename T_result::UninitializedTag{}};
     for(std::size_t row = 0; row != N_rowsMultiplied; ++row)

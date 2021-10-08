@@ -12,9 +12,9 @@ namespace ad {
 namespace math {
 
 
-#define TMA int N_dimension, class T_number
-#define TMA_D int N_dimension, class T_number = real_number
-#define TMP N_dimension, T_number
+#define TMP int N_dimension, class T_number
+#define TMP_D int N_dimension, class T_number = real_number
+#define TMA N_dimension, T_number
 
 
 // Implementer note:
@@ -29,7 +29,7 @@ namespace math {
 /// \important Its projective elements are fixed as [0..0 1], it cannot be used to implement perspective projection.
 ///
 /// \warning It is undefined behaviour to modify the projective elements of an AffineMatrix.
-template <TMA_D>
+template <TMP_D>
 class AffineMatrix : public Matrix<N_dimension, N_dimension, T_number>
 {
     static_assert(N_dimension > 1, "AffineMatrix dimension must be >= 2.");
@@ -72,6 +72,7 @@ public:
     base_type & setZero() = delete;
     static base_type Zero() = delete;
 
+
     //
     // Factories
     //
@@ -81,15 +82,16 @@ public:
     // Arithmetic operations
     //
     constexpr AffineMatrix & operator*=(const AffineMatrix & aRhs) noexcept(should_noexcept);
+    // Must be a defined inside the class to allow implicit conversions on both operands.
+    // see: https://stackoverflow.com/a/9789036/1027706
+    friend constexpr AffineMatrix<TMA> operator*(const AffineMatrix &aLhs, const AffineMatrix &aRhs)
+    { return aLhs.multiply_impl(aRhs); }
+
+private:
+    constexpr AffineMatrix<TMA> multiply_impl(const AffineMatrix<TMA> &aRhs) const;
 };
 
-#undef TMA_D
-
-
-/// \brief Affine matrices multiplication.
-template <TMA>
-constexpr AffineMatrix<TMP>
-operator*(const AffineMatrix<TMP> &aLhs, const AffineMatrix<TMP> &aRhs);
+#undef TMP_D
 
 
 // Implementer note:
@@ -162,5 +164,5 @@ T_derived normalize(const Vector<T_derived, N_dimension, T_number> & aHomogeneou
 #include "Homogeneous-impl.h"
 
 
-#undef TMP
 #undef TMA
+#undef TMP
