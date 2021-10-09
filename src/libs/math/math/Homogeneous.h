@@ -42,11 +42,9 @@ class AffineMatrix : public Matrix<N_dimension, N_dimension, T_number>
     // accepting an explicit list of elements.
 
 public:
-    /// \note Made implicit so linear matrices can be multiplied with/assigned to affines matrices
-    /// (with corresponding dimension+1).
-    /*implicit*/ constexpr AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
-                                        const Vec<N_dimension-1, T_number> & aAffine =
-                                            Vec<N_dimension-1, T_number>::Zero())
+    explicit constexpr AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
+                                    const Vec<N_dimension-1, T_number> & aAffine =
+                                        Vec<N_dimension-1, T_number>::Zero())
         noexcept(should_noexcept);
 
     // Implementer note:

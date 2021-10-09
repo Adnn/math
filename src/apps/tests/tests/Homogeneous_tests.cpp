@@ -233,13 +233,33 @@ SCENARIO("Affine matrices conversions")
         });
     }
 
-    // Note: this very case with conversion to AffineMatrix<2> is a very good reason
-    // for making the MatrixBase(Element ...) ctor explicit: otherwise the
-    // ctor for AffineMatrix<2> taking a Matrix<1, 1> becomes available, since
-    // MatrixBase(Element ...) would be availabe to attempt an implicit conversion
-    // from Matrix<2, 2> to the single Element of a Matrix<1, 1>. 
-    REQUIRE_FALSE(is_detected_v<is_staticcastable_t, Matrix<2, 2>, AffineMatrix<2>>);
-    REQUIRE_FALSE(is_detected_v<is_staticcastable_t, Matrix<3, 3>, AffineMatrix<3>>);
+    THEN("Plain matrices cannot be cast to Affine Matrices of equal dimension")
+    {
+        // Note: this very case with conversion to AffineMatrix<2> is a very good reason
+        // for making the MatrixBase(Element ...) ctor explicit: otherwise the
+        // ctor for AffineMatrix<2> taking a Matrix<1, 1> becomes available, since
+        // MatrixBase(Element ...) would be availabe to attempt an implicit conversion
+        // from Matrix<2, 2> to the single Element of a Matrix<1, 1>. 
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, Matrix<2, 2>, AffineMatrix<2>>);
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, Matrix<3, 3>, AffineMatrix<3>>);
+    }
+
+    THEN("Affine Matrices of dimension N cannot be cast to Affine Matrices of adjacent dimensions.")
+    {
+        // Note: these cases from N to N+1 is a rationale for making explicit 
+        // the ctor taking a Matrix<N, N>: an AffineMatrix<N> is-a Matrix<N,N>,
+        // which would then be implicitly convertible to AffineMatrix<N+1>.
+        CHECK_FALSE(std::is_convertible_v<AffineMatrix<2>, AffineMatrix<3>>);
+        CHECK_FALSE(std::is_convertible_v<AffineMatrix<3>, AffineMatrix<4>>);
+
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, AffineMatrix<2>, AffineMatrix<3>>);
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, AffineMatrix<3>, AffineMatrix<4>>);
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, AffineMatrix<2>, AffineMatrix<4>>);
+
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, AffineMatrix<3>, AffineMatrix<2>>);
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, AffineMatrix<4>, AffineMatrix<3>>);
+        CHECK_FALSE(is_detected_v<is_staticcastable_t, AffineMatrix<4>, AffineMatrix<2>>);
+    } 
 }
 
 SCENARIO("Affine matrices available operations")
