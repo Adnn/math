@@ -35,7 +35,7 @@ namespace math {
 
 
 template <TMP>
-constexpr AffineMatrix<TMA>::AffineMatrix(const Matrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
+constexpr AffineMatrix<TMA>::AffineMatrix(const LinearMatrix<N_dimension-1, N_dimension-1, T_number> & aLinear,
                                           const Vec<N_dimension-1, T_number> & aAffine) noexcept(should_noexcept) :
         base_type{typename base_type::UninitializedTag{}}
 {
@@ -60,7 +60,7 @@ constexpr AffineMatrix<TMA>::AffineMatrix(typename base_type::UninitializedTag) 
 template <TMP>
 constexpr AffineMatrix<TMA> AffineMatrix<TMA>::Identity() noexcept(should_noexcept)
 {
-    return AffineMatrix{Matrix<N_dimension-1, N_dimension-1, T_number>::Identity()};
+    return AffineMatrix{LinearMatrix<N_dimension-1, N_dimension-1, T_number>::Identity()};
 }
 
 

@@ -4,6 +4,7 @@
 
 #include <math/Angle.h>
 #include <math/Homogeneous.h>
+#include <math/LinearMatrix.h>
 #include <math/Transformations.h>
 
 
@@ -221,7 +222,7 @@ SCENARIO("Affine matrices conversions")
         REQUIRE(is_detected_v<is_staticcastable_t, AffineMatrix<3>, Matrix<3, 3>>);
 
         AffineMatrix<2> affine{
-            Matrix<1, 1>{1.},
+            LinearMatrix<1, 1>{1.},
             Vec<1>{3.}
         };
 
@@ -266,10 +267,18 @@ SCENARIO("Affine matrices available operations")
 {
     using Affine3 = AffineMatrix<3>;
     using Affine4 = AffineMatrix<4>;
-    using Matrix4x4 = Matrix<4, 4>;
+    using Linear2 = LinearMatrix<2, 2>;
+    using Linear3 = LinearMatrix<3, 3>;
+    using Linear4 = LinearMatrix<4, 4>;
+    using Linear5 = LinearMatrix<5, 5>;
+    using Matrix2x2 = Matrix<2, 2>;
+    using Matrix3x3 = Matrix<3, 3>;
     using Matrix3x4 = Matrix<3, 4>;
+    using Matrix4x4 = Matrix<4, 4>;
+    using Matrix5x5 = Matrix<5, 5>;
 
-    THEN("Affine matrices can be multiplied with 'plain' matrices of matching dimensions.")
+    THEN("Affine matrices can be multiplied with 'plain' matrices of matching dimensions,"
+         " resulting in plain matrices.")
     {
         // Affine x Matrix -> Matrix
         REQUIRE(is_detected_v<is_multiplicative_t, Affine4, Matrix4x4>);
@@ -284,6 +293,28 @@ SCENARIO("Affine matrices available operations")
         THEN("Multiplication is not available if dimensions don't match")
         {
             REQUIRE_FALSE(is_detected_v<is_multiplicative_t, Affine4, Matrix3x4>);
+            // Available for Linear, not for plain of dimensions N-1
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_t, Affine4, Matrix3x3>);
+        }
+    }
+
+    THEN("Affine matrices of N dimension can be multiplied with Linear matrices of N-1 dimensions,"
+         " resulting in Affine matrices of N dimension.")
+    {
+        // Affine<N> x LinearMatrix<N-1> -> AffineMatrix<N>
+        REQUIRE(is_detected_v<is_multiplicative_t, Affine4, Linear3>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Affine4>() * std::declval<Linear3>()),
+                               Affine4>);
+
+        THEN("They can be compound multiplied.")
+        {
+            REQUIRE(is_detected_v<is_multiplicative_assignable_t, Affine4, Linear3>);
+        }
+
+        THEN("Multiplication is not available for lower or higher dimensions")
+        {
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_t, Affine4, Linear2>);
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_t, Affine4, Linear5>);
         }
     }
 
@@ -302,6 +333,28 @@ SCENARIO("Affine matrices available operations")
         {
             REQUIRE(is_detected_v<is_multiplicative_assignable_t, Matrix4x4, Affine4>);
             REQUIRE(is_detected_v<is_multiplicative_assignable_t, Matrix3x4, Affine4>);
+            // Available for Linear, not for plain of dimensions N-1
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_t, Matrix3x3, Affine4>);
+        }
+    }
+
+    THEN("Linear matrices of N-1 dimension can be multiplied with Affine matrices of N dimension,"
+         " resulting in Affine matrices of N dimension.")
+    {
+        // LinearMatrix<N-1> x Affine<N> -> AffineMatrix<N>
+        REQUIRE(is_detected_v<is_multiplicative_t, Linear3, Affine4>);
+        REQUIRE(std::is_same_v<decltype(std::declval<Linear3>() * std::declval<Affine4>()),
+                               Affine4>);
+
+        THEN("They cannot be compound multiplied into the Linear matrix.")
+        {
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_assignable_t, Linear3, Affine4>);
+        }
+
+        THEN("Multiplication is not available for lower or higher dimensions")
+        {
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_t, Linear2, Affine4>);
+            REQUIRE_FALSE(is_detected_v<is_multiplicative_t, Linear5, Affine4>);
         }
     }
 
