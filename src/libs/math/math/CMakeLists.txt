@@ -27,6 +27,12 @@ set(${TARGET_NAME}_HEADERS
     VectorUtilities.h
 
     Curves/Bezier.h
+    Curves/CardinalCubic.h
+    Curves/CurveBase.h
+)
+
+source_group(TREE ${CMAKE_CURRENT_LIST_DIR}
+             FILES ${${TARGET_NAME}_HEADERS}
 )
 
 add_library(${TARGET_NAME} INTERFACE)

@@ -14,6 +14,7 @@ set(${TARGET_NAME}_SOURCES
     Bezier_tests.cpp
     Box.cpp
     Canonical_tests.cpp
+    CardinalCubic_tests.cpp
     Color_tests.cpp
     Constexpr_tests.cpp
     Homogeneous_tests.cpp
