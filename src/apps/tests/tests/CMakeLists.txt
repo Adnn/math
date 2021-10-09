@@ -18,6 +18,7 @@ set(${TARGET_NAME}_SOURCES
     Constexpr_tests.cpp
     Homogeneous_tests.cpp
     Interpolation_tests.cpp
+    LinearMatrix_tests.cpp
     Matrix.cpp
     Noexcept_tests.cpp
     Polynomial.cpp

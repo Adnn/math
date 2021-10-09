@@ -17,11 +17,13 @@ template <int N_rows, int N_cols, class T_number=real_number>
 class Matrix : public MatrixBase<Matrix<TMP>, N_rows, N_cols, T_number>
 {
     typedef MatrixBase<Matrix<TMP>, N_rows, N_cols, T_number> base_type;
-    using base_type::base_type;
+
 protected:
     using base_type::should_noexcept;
 
 public:
+    // If not moved in the public section, VisualStudio erros on LinearMatrix compilation
+    using base_type::base_type;
 
     template<class T>
     using derived_type = Matrix<N_rows, N_cols, T>;
