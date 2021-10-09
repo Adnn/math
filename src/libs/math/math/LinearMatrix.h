@@ -29,6 +29,16 @@ class LinearMatrix : public ::ad::math::Matrix<TMA>
 public:
     template<class T>
     using derived_type = LinearMatrix<N_rows, N_cols, T>;
+
+    static constexpr LinearMatrix Identity() noexcept(should_noexcept);
+
+
+private:
+    // Even though the conversion ctor is explicit and private
+    // it is detected via is_staticcastable_t. Adding a dummy tag fixes that.
+    struct Dummy{};
+    explicit LinearMatrix(base_type aOther, Dummy) : base_type{std::move(aOther)}
+    {}
 };
 
 
@@ -40,6 +50,13 @@ operator*(const LinearMatrix<TMA> &aLhs, const LinearMatrix<TMA> &aRhs)
 }
 
 
+template <TMP>
+constexpr LinearMatrix<TMA> LinearMatrix<TMA>::Identity() noexcept(should_noexcept)
+{
+    return LinearMatrix<TMA>{Matrix<TMA>::Identity(), Dummy{}};
+}
+
+ 
 #undef TMA
 #undef TMP_D
 #undef TMP
