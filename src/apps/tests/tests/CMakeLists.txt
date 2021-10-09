@@ -3,6 +3,7 @@ set(TARGET_NAME ${_lower_project_name}_tests)
 
 set(${TARGET_NAME}_HEADERS
     catch.hpp
+    CustomCatchMatchers.h
     detection.h
     operation_detectors.h
 )

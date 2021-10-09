@@ -15,6 +15,16 @@ namespace trans2d {
     }
 
 
+    template <class T_number, class T_angleUnitTag>
+    constexpr AffineMatrix<3, T_number> rotateAbout(const Angle<T_number, T_angleUnitTag> aAngle,
+                                                    const Position<2, T_number> aRotationCenter)
+    {
+        return translate(-aRotationCenter.template as<Vec>()) 
+            * rotate(aAngle) 
+            * translate(aRotationCenter.template as<Vec>());
+    }
+
+
     template <class T_number>
     constexpr LinearMatrix<2, 2, T_number> scale(const T_number aFactorX, const T_number aFactorY)
     {
