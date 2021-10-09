@@ -6,7 +6,7 @@ namespace trans2d {
 
 
     template <class T_number, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number> rotate(const Angle<T_number, T_angleUnitTag> aAngle)
+    constexpr LinearMatrix<2, 2, T_number> rotate(const Angle<T_number, T_angleUnitTag> aAngle)
     {
         return {
              cos(aAngle), sin(aAngle),
@@ -16,7 +16,7 @@ namespace trans2d {
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> scale(const T_number aFactorX, const T_number aFactorY)
+    constexpr LinearMatrix<2, 2, T_number> scale(const T_number aFactorX, const T_number aFactorY)
     {
         return {
             aFactorX,         0.,
@@ -26,7 +26,7 @@ namespace trans2d {
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> scale(const T_number aFactor, const UnitVec<2, T_number> aAxis)
+    constexpr LinearMatrix<2, 2, T_number> scale(const T_number aFactor, const UnitVec<2, T_number> aAxis)
     {
         // Some compact aliases for parameters
         const T_number & k = aFactor;
@@ -40,7 +40,7 @@ namespace trans2d {
 
 
     template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number>
+    constexpr LinearMatrix<2, 2, T_number>
     scale(const T_number aFactorHorizontal, const T_number aFactorVertical,
           const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
     {
@@ -61,49 +61,49 @@ namespace trans2d {
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> projectOrthographicOntoX()
+    constexpr LinearMatrix<2, 2, T_number> projectOrthographicOntoX()
     {
         return scale(T_number{1}, T_number{0});
     };
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> projectOrthographicOntoY()
+    constexpr LinearMatrix<2, 2, T_number> projectOrthographicOntoY()
     {
         return scale(T_number{0}, T_number{1});
     };
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> projectOrthographicAlong(const UnitVec<2, T_number> aAxis)
+    constexpr LinearMatrix<2, 2, T_number> projectOrthographicAlong(const UnitVec<2, T_number> aAxis)
     {
         return scale(T_number{0}, aAxis);
     }
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> reflectAlongX()
+    constexpr LinearMatrix<2, 2, T_number> reflectAlongX()
     {
         return scale(T_number{-1}, T_number{1});
     }
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> reflectAlongY()
+    constexpr LinearMatrix<2, 2, T_number> reflectAlongY()
     {
         return scale(T_number{1}, T_number{-1});
     }
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> reflectAlong(const UnitVec<2, T_number> aAxis)
+    constexpr LinearMatrix<2, 2, T_number> reflectAlong(const UnitVec<2, T_number> aAxis)
     {
         return scale(T_number{-1}, aAxis);
     }
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> shearX(const T_number aWeightY)
+    constexpr LinearMatrix<2, 2, T_number> shearX(const T_number aWeightY)
     {
         return {
             T_number{1},    T_number{0},
@@ -113,7 +113,7 @@ namespace trans2d {
 
 
     template <class T_number>
-    constexpr Matrix<2, 2, T_number> shearY(const T_number aWeightX)
+    constexpr LinearMatrix<2, 2, T_number> shearY(const T_number aWeightX)
     {
         return {
             T_number{1},       aWeightX,
@@ -123,7 +123,7 @@ namespace trans2d {
 
 
     template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number>
+    constexpr LinearMatrix<2, 2, T_number>
     shearVertical(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
     {
         return shearX(-tan(aCounterClockwise));
@@ -131,7 +131,7 @@ namespace trans2d {
 
 
     template <class T_number, class T_angleRepresentation, class T_angleUnitTag>
-    constexpr Matrix<2, 2, T_number>
+    constexpr LinearMatrix<2, 2, T_number>
     shearHorizontal(const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise)
     {
         return shearY(tan(aCounterClockwise));
@@ -239,7 +239,7 @@ namespace trans3d {
 
 
     template <class T_number, class T_angleUnitTag>
-    constexpr Matrix<3, 3, T_number> rotateX(const Angle<T_number, T_angleUnitTag> aAngle)
+    constexpr LinearMatrix<3, 3, T_number> rotateX(const Angle<T_number, T_angleUnitTag> aAngle)
     {
         return {
             T_number{1.}, T_number{0.},  T_number{0.},
@@ -250,7 +250,7 @@ namespace trans3d {
 
 
     template <class T_number, class T_angleUnitTag>
-    constexpr Matrix<3, 3, T_number> rotateY(const Angle<T_number, T_angleUnitTag> aAngle)
+    constexpr LinearMatrix<3, 3, T_number> rotateY(const Angle<T_number, T_angleUnitTag> aAngle)
     {
         return {
             cos(aAngle),    T_number{0.}, -sin(aAngle),
@@ -261,7 +261,7 @@ namespace trans3d {
 
 
     template <class T_number, class T_angleUnitTag>
-    constexpr Matrix<3, 3, T_number> rotateZ(const Angle<T_number, T_angleUnitTag> aAngle)
+    constexpr LinearMatrix<3, 3, T_number> rotateZ(const Angle<T_number, T_angleUnitTag> aAngle)
     {
         return {
              cos(aAngle),   sin(aAngle),    T_number{0.},
@@ -272,7 +272,7 @@ namespace trans3d {
 
 
     template <class T_number, class T_angleUnitTag>
-    constexpr Matrix<3, 3, T_number> rotate(const Angle<T_number, T_angleUnitTag> aAngle,
+    constexpr LinearMatrix<3, 3, T_number> rotate(const Angle<T_number, T_angleUnitTag> aAngle,
                                             const UnitVec<3, T_number> aAxis)
     {
         // Some compact aliases for parameters
@@ -288,7 +288,7 @@ namespace trans3d {
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> scale(const T_number aFactorX,
+    constexpr LinearMatrix<3, 3, T_number> scale(const T_number aFactorX,
                                            const T_number aFactorY,
                                            const T_number aFactorZ)
     {
@@ -302,7 +302,7 @@ namespace trans3d {
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> scale(const T_number aFactor, const UnitVec<3, T_number> aAxis)
+    constexpr LinearMatrix<3, 3, T_number> scale(const T_number aFactor, const UnitVec<3, T_number> aAxis)
     {
         // Some compact aliases for parameters
         const T_number & k = aFactor;
@@ -317,63 +317,63 @@ namespace trans3d {
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> projectOrthographicOntoXY()
+    constexpr LinearMatrix<3, 3, T_number> projectOrthographicOntoXY()
     {
         return scale(T_number{1}, T_number{1}, T_number{0});
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> projectOrthographicOntoXZ()
+    constexpr LinearMatrix<3, 3, T_number> projectOrthographicOntoXZ()
     {
         return scale(T_number{1}, T_number{0}, T_number{1});
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> projectOrthographicOntoYZ()
+    constexpr LinearMatrix<3, 3, T_number> projectOrthographicOntoYZ()
     {
         return scale(T_number{0}, T_number{1}, T_number{1});
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> projectOrthographicAlong(const UnitVec<3, T_number> aAxis)
+    constexpr LinearMatrix<3, 3, T_number> projectOrthographicAlong(const UnitVec<3, T_number> aAxis)
     {
         return scale(T_number{0}, aAxis);
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> reflectAlongX()
+    constexpr LinearMatrix<3, 3, T_number> reflectAlongX()
     {
         return scale(T_number{-1}, T_number{1}, T_number{1});
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> reflectAlongY()
+    constexpr LinearMatrix<3, 3, T_number> reflectAlongY()
     {
         return scale(T_number{1}, T_number{-1}, T_number{1});
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> reflectAlongZ()
+    constexpr LinearMatrix<3, 3, T_number> reflectAlongZ()
     {
         return scale(T_number{1}, T_number{1}, T_number{-1});
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> reflectAlong(const UnitVec<3, T_number> aAxis)
+    constexpr LinearMatrix<3, 3, T_number> reflectAlong(const UnitVec<3, T_number> aAxis)
     {
         return scale(T_number{-1}, aAxis);
     }
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> shearXY(const T_number aWeightZonX,
+    constexpr LinearMatrix<3, 3, T_number> shearXY(const T_number aWeightZonX,
                                              const T_number aWeightZonY)
     {
         return {
@@ -385,7 +385,7 @@ namespace trans3d {
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> shearXZ(const T_number aWeightYonX,
+    constexpr LinearMatrix<3, 3, T_number> shearXZ(const T_number aWeightYonX,
                                              const T_number aWeightYonZ)
     {
         return {
@@ -397,7 +397,7 @@ namespace trans3d {
 
 
     template <class T_number>
-    constexpr Matrix<3, 3, T_number> shearYZ(const T_number aWeightXonY,
+    constexpr LinearMatrix<3, 3, T_number> shearYZ(const T_number aWeightXonY,
                                              const T_number aWeightXonZ)
     {
         return {
