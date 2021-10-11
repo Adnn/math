@@ -25,6 +25,7 @@ class LinearMatrix : public ::ad::math::Matrix<TMA>
     using base_type = ::ad::math::Matrix<TMA>;
     // Ctor inheritance
     using base_type::base_type;
+    using base_type::should_noexcept;
 
 public:
     template<class T>

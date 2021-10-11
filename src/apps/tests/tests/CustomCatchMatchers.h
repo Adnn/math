@@ -9,9 +9,7 @@ class MatrixApprox : public Catch::MatcherBase<T_matrix>
     using tolerance_type = typename T_matrix::value_type;
 
 public:
-    MatrixApprox(
-            T_matrix aExpected,
-            tolerance_type aTolerance = ) :
+    MatrixApprox(T_matrix aExpected, tolerance_type aTolerance) :
         mExpected{std::move(aExpected)},
         mTolerance{std::move(aTolerance)}
     {}
@@ -40,7 +38,7 @@ private:
 template <class T_matrix>
 MatrixApprox<T_matrix> Approximates(
         T_matrix && aExpected,
-        typename T_matrix::value_type aTolerance = std::numeric_limits<T_matrix::value_type>::epsilon())
+        typename T_matrix::value_type aTolerance = std::numeric_limits<typename T_matrix::value_type>::epsilon())
 {
     return MatrixApprox(std::forward<T_matrix>(aExpected),
                         aTolerance);

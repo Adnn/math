@@ -269,13 +269,10 @@ SCENARIO("Affine matrices available operations")
     using Affine4 = AffineMatrix<4>;
     using Linear2 = LinearMatrix<2, 2>;
     using Linear3 = LinearMatrix<3, 3>;
-    using Linear4 = LinearMatrix<4, 4>;
     using Linear5 = LinearMatrix<5, 5>;
-    using Matrix2x2 = Matrix<2, 2>;
     using Matrix3x3 = Matrix<3, 3>;
     using Matrix3x4 = Matrix<3, 4>;
     using Matrix4x4 = Matrix<4, 4>;
-    using Matrix5x5 = Matrix<5, 5>;
 
     THEN("Affine matrices can be multiplied with 'plain' matrices of matching dimensions,"
          " resulting in plain matrices.")
