@@ -1,5 +1,7 @@
 #include "catch.hpp"
 
+#include "CustomCatchMatchers.h"
+
 #include <math/Base.h>
 #include <math/Constants.h>
 #include <math/Homogeneous.h>
@@ -69,6 +71,34 @@ SCENARIO("2D rotations")
 
                 APPROX_EQUAL(a * rotation, (Vec<2>{ 2.0,  0.5}));
                 APPROX_EQUAL(b * rotation, (Vec<2>{-2.0, -0.5}));
+            }
+        }
+    }
+
+    GIVEN("Homogeneous 2D vectors and positions")
+    {
+        using namespace homogeneous;
+        Vec<3> i = makeVec<3>(1., 0.);
+        Vec<3> j = makeVec<3>(0., 1.);
+
+        Position<3> a = makePosition<3>(1., 0.);
+        Position<3> b = makePosition<3>(0., 1.);
+
+        GIVEN("A center of rotation and associated -180° rotation")
+        {
+            Position<2> center{1., 0.};
+            AffineMatrix<3> rotation = trans2d::rotateAbout(-Degree<double>(180), center);
+
+            THEN("The vectors are rotated as with a rotation from the origin")
+            {
+                CHECK_THAT(i * rotation, Approximates(Vec<3>{-1.,  0., 0.}));
+                CHECK_THAT(j * rotation, Approximates(Vec<3>{ 0., -1., 0.}));
+            }
+
+            THEN("The positions are rotated about the center of rotation")
+            {
+                CHECK_THAT(a * rotation, Approximates(Position<3>{ 1.,  0., 1.}));
+                CHECK_THAT(b * rotation, Approximates(Position<3>{ 2., -1., 1.}));
             }
         }
     }

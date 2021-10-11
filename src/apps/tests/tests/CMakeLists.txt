@@ -3,6 +3,7 @@ set(TARGET_NAME ${_lower_project_name}_tests)
 
 set(${TARGET_NAME}_HEADERS
     catch.hpp
+    CustomCatchMatchers.h
     detection.h
     operation_detectors.h
 )
@@ -19,6 +20,7 @@ set(${TARGET_NAME}_SOURCES
     Constexpr_tests.cpp
     Homogeneous_tests.cpp
     Interpolation_tests.cpp
+    LinearMatrix_tests.cpp
     Matrix.cpp
     Noexcept_tests.cpp
     Polynomial.cpp
