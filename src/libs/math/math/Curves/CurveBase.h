@@ -102,11 +102,11 @@ typename CurveBase<TMA>::Position_t evaluate(CurveBase<TMA> aCurve, T_number aPa
         for (std::size_t pointId = 0; pointId != N_controlPoints - step; ++pointId)
         {
             // This is a simple lerp, not including the header atm.
-            aCurveBase[pointId] =
-                aCurveBase[pointId] + aParameter * (aCurve[pointId + 1] - aCurve[pointId]);
+            aCurve[pointId] =
+                aCurve[pointId] + aParameter * (aCurve[pointId + 1] - aCurve[pointId]);
         }
     }
-    return aCurveBase[0];
+    return aCurve[0];
 }
 
 
@@ -117,16 +117,16 @@ std::pair<CurveBase<TMA>, CurveBase<TMA>> subdivide(CurveBase<TMA> aCurve, T_num
     CurveBase<TMA> left = aCurve;
     for (std::size_t step = 1; step != N_controlPoints; ++step)
     {
-        left[step] = left[step - 1] + aParameter * (aCurveBase[1] - left[step - 1]);
+        left[step] = left[step - 1] + aParameter * (aCurve[1] - left[step - 1]);
         for (std::size_t pointId = 1; pointId != N_controlPoints - step; ++pointId)
         {
             // This is a simple lerp, not including the header atm.
-            aCurveBase[pointId] =
-                aCurveBase[pointId] + aParameter * (aCurve[pointId + 1] - aCurve[pointId]);
+            aCurve[pointId] =
+                aCurve[pointId] + aParameter * (aCurve[pointId + 1] - aCurve[pointId]);
         }
     }
-    aCurveBase[0] = left[N_controlPoints - 1];
-    return {left, aCurveBase};
+    aCurve[0] = left[N_controlPoints - 1];
+    return {left, aCurve};
 }
 
 
@@ -137,7 +137,7 @@ constexpr typename T_curve::Position_t evaluateBlending(const T_curve & aCurve, 
     auto evaluated = T_curve::Position_t::Zero();
     for (int controlId = 0; controlId != T_curve::size_v; ++controlId)
     {
-        evaluated += aCurve[controlId].as<math::Vec>() * coeffs[controlId];
+        evaluated += aCurve[controlId].template as<math::Vec>() * coeffs[controlId];
     }
     return evaluated;
 }

@@ -28,7 +28,7 @@ public:
 
     constexpr bool operator==(const CardinalCubic & aRhs) const
     { 
-        return static_cast<const CurveBase &>(*this) == static_cast<const CurveBase &>(aRhs) 
+        return static_cast<const Base &>(*this) == static_cast<const Base &>(aRhs) 
                && mSFactor == aRhs.mSFactor; 
     }
     constexpr bool operator!=(const CardinalCubic & aRhs) const
