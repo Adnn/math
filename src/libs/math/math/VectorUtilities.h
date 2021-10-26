@@ -22,11 +22,11 @@ T_angle getOrientedAngle(T_vecLeft a, T_vecRight b)
 
 /// \brief Factory for Size<2, T> from a height and the aspect ratio.
 /// \param aAspectRatio is the ratio width/height.
-template <class T_number>
-Size<2, T_number> makeSizeFromHeight(T_number aHeight, T_number aAspectRatio)
+template <class T_number, class T_ratio>
+Size<2, T_number> makeSizeFromHeight(T_number aHeight, T_ratio aAspectRatio)
 {
     return Size<2, T_number>{
-        aHeight * aAspectRatio,
+        static_cast<T_number>(aHeight * aAspectRatio),
         aHeight
     };
 }
@@ -34,12 +34,12 @@ Size<2, T_number> makeSizeFromHeight(T_number aHeight, T_number aAspectRatio)
 
 /// \brief Factory for Size<2, T> from a width and the aspect ratio.
 /// \param aAspectRatio is the ratio width/height.
-template <class T_number>
-Size<2, T_number> makeSizeFromWidth(T_number aWidth, T_number aAspectRatio)
+template <class T_number, class T_ratio>
+Size<2, T_number> makeSizeFromWidth(T_number aWidth, T_ratio aAspectRatio)
 {
     return Size<2, T_number>{
         aWidth,
-        aWidth / aAspectRatio
+        static_cast<T_number>(aWidth / aAspectRatio)
     };
 }
 
