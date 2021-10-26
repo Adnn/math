@@ -92,4 +92,11 @@ SCENARIO("Rectangle usage")
             }
         }
     }
+
+    THEN("A centered rectangle can be constructed")
+    {
+        Size<2, double> dimension{10., 100.};
+        Rectangle<double> expected{Position<2>::Zero(), dimension};
+        REQUIRE(Rectangle<double>::CenterOnOrigin(dimension) == expected.centered());
+    }
 }

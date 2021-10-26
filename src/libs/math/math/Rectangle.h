@@ -47,6 +47,8 @@ struct Rectangle
     T_number area() const
     { return mDimension.area(); }
 
+    Position<2, T_number> & origin()
+    { return mPosition; }
     Position<2, T_number> origin() const
     { return mPosition; }
 
@@ -76,6 +78,9 @@ struct Rectangle
     { return { {mPosition - static_cast<Vec<2, T_number>>(mDimension/T_number{2})},
                 mDimension }; }
 
+    /// \brief Construct a Rectangle of provided dimension, centered on origin (0, 0).
+    static Rectangle CenterOnOrigin(Size<2, T_number> aDimension);
+
     template <class T_positionValue>
     bool contains(Position<2, T_positionValue> aPosition) const;
 
@@ -84,6 +89,13 @@ struct Rectangle
     Position<2, T_number>  mPosition;
     Size<2, T_number> mDimension;
 };
+
+
+template <class T_number>
+Rectangle<T_number> Rectangle<T_number>::CenterOnOrigin(Size<2, T_number> aDimension)
+{
+    return Rectangle{ {T_number{0}, T_number{0}}, aDimension }.centered();
+}
 
 
 template <class T_number>
@@ -103,6 +115,13 @@ Position<2, T_number> Rectangle<T_number>::closestPoint(Position<2, T_number> aP
     aPosition.x() = std::min(std::max(aPosition.x(), xMin()), xMax());
     aPosition.y() = std::min(std::max(aPosition.y(), yMin()), yMax());
     return aPosition;
+}
+
+
+template <class T_number>
+std::ostream & operator<<(std::ostream & os, const Rectangle<T_number> &aRectangle)
+{
+    return os << "[ {" << aRectangle.origin() << "}, {" << aRectangle.dimension() << "} ]";
 }
 
 

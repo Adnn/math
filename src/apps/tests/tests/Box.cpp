@@ -114,4 +114,11 @@ SCENARIO("Box usage")
             }
         }
     }
+
+    THEN("A centered box can be constructed")
+    {
+        Size<3, double> dimension{10., 100., 1000.};
+        Box<double> expected{Position<3>::Zero(), dimension};
+        REQUIRE(Box<double>::CenterOnOrigin(dimension) == expected.centered());
+    }
 }

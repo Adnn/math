@@ -63,6 +63,8 @@ struct Box
     T_number volume() const
     { return mDimension.volume(); }
 
+    Position<3, T_number> & origin()
+    { return mPosition; }
     Position<3, T_number> origin() const
     { return mPosition; }
 
@@ -100,6 +102,9 @@ struct Box
 
     Box centered() const;
 
+    /// \brief Construct a Box of provided dimension, centered on origin (0, 0, 0).
+    static Box CenterOnOrigin(Size<3, T_number> aDimension);
+
     template <class T_positionValue>
     bool contains(Position<3, T_positionValue> aPosition) const;
 
@@ -120,6 +125,13 @@ Box<T_number> Box<T_number>::centered() const
 
     return { {mPosition - static_cast<Vec<3, T_number>>(dimensionDepthNegated/T_number{2})},
             mDimension };
+}
+
+
+template <class T_number>
+Box<T_number> Box<T_number>::CenterOnOrigin(Size<3, T_number> aDimension)
+{
+    return Box{ {T_number{0}, T_number{0}, T_number{0} }, aDimension }.centered();
 }
 
 
@@ -154,6 +166,13 @@ constexpr Rectangle<T_number> Box<T_number>::frontRectangle() const
         {mPosition.x(), mPosition.y()},
         {mDimension.width(), mDimension.height()}
     };
+}
+
+
+template <class T_number>
+std::ostream & operator<<(std::ostream & os, const Box<T_number> &aBox)
+{
+    return os << "[ {" << aBox.origin() << "}, {" << aBox.dimension() << "} ]";
 }
 
 
