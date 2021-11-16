@@ -964,6 +964,47 @@ SCENARIO("3D windowing transformation.")
             }
         }
     }
+
+    GIVEN("The 8 corners of the normalized device frame.")
+    {
+        using namespace homogeneous;
+
+        Box<double> normalized{{-1., -1., 1.}, {2., 2., 2.}};
+
+        Position<4> bottomLeftFront  = makePosition<4>(normalized.bottomLeftFront());
+        Position<4> bottomLeftBack   = makePosition<4>(normalized.bottomLeftBack());
+        Position<4> bottomRightFront = makePosition<4>(normalized.bottomRightFront());
+        Position<4> bottomRightBack  = makePosition<4>(normalized.bottomRightBack());
+        Position<4> topLeftFront     = makePosition<4>(normalized.topLeftFront());
+        Position<4> topLeftBack      = makePosition<4>(normalized.topLeftBack());
+        Position<4> topRightFront    = makePosition<4>(normalized.topRightFront());
+        Position<4> topRightBack     = makePosition<4>(normalized.topRightBack());
+
+        GIVEN("A viewport and both near and far planes")
+        {
+            Rectangle<double> viewport{{-100., -5.}, {50., 105.}};
+            double near = -1.;
+            double far = -1000.;
+
+            WHEN("The 8 corners are transformed using ndcToViewport().")
+            {
+                Box<double> destination{ {-100., -5., near}, {50., 105., near - far} };
+
+                AffineMatrix<4> viewportTransform = trans3d::ndcToViewport(viewport, near, far);
+                THEN("The normalized device coordinates of the 8 corners maps to extremas of the viewport.")
+                {
+                    REQUIRE(bottomLeftFront  * viewportTransform == makePosition<4>(destination.bottomLeftFront()));
+                    REQUIRE(bottomLeftBack   * viewportTransform == makePosition<4>(destination.bottomLeftBack()));
+                    REQUIRE(bottomRightFront * viewportTransform == makePosition<4>(destination.bottomRightFront()));
+                    REQUIRE(bottomRightBack  * viewportTransform == makePosition<4>(destination.bottomRightBack()));
+                    REQUIRE(topLeftFront     * viewportTransform == makePosition<4>(destination.topLeftFront()));
+                    REQUIRE(topLeftBack      * viewportTransform == makePosition<4>(destination.topLeftBack()));
+                    REQUIRE(topRightFront    * viewportTransform == makePosition<4>(destination.topRightFront()));
+                    REQUIRE(topRightBack     * viewportTransform == makePosition<4>(destination.topRightBack()));
+                }
+            }
+        }
+    }
 }
 
 

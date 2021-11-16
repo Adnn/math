@@ -229,6 +229,9 @@ namespace trans3d {
 
     /// \brief Perspective matrix.
     /// \see FoCG 3rd - 7.3 Perspective Projection (p 151)
+    /// \important: The matrix is negated compared to what is presented in FoCG
+    /// because otherwise the homogeneous (w) values of multiplied vectors will be negative,
+    /// which prevents the usual clipping test -w < x, y, z< w.
     template <class T_number>
     constexpr Matrix<4, 4, T_number>
     perspective(const T_number aNearPlaneZ, const T_number aFarPlaneZ);
@@ -238,6 +241,12 @@ namespace trans3d {
     template <class T_number>
     constexpr Matrix<4, 4, T_number>
     perspectiveInverse(const T_number aNearPlaneZ, const T_number aFarPlaneZ);
+
+
+    /// \brief Project the unit cube [-1, 1]^3 (i.e. OpenGL's) onto the viewport, while remapping depth.
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    ndcToViewport(const Rectangle<T_number> aViewPort, T_number aNear, T_number aFar);
 
 
 } // namespace trans3d

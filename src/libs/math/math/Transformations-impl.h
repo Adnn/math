@@ -533,11 +533,13 @@ namespace trans3d {
         const T_number v0 = T_number{0};
         const T_number v1 = T_number{1};
 
+        // Note: Negate the perspective matrix from p152, this way -Z is copied into W.
+        // It respects common OpenGL convetion that the clipping test is -w < x, y, z < +w.
         return {
-            n,   v0,  v0,   v0,
-            v0,  n,   v0,   v0,
-            v0,  v0,  n+f,  v1,
-            v0,  v0,  -f*n, v0
+            -n,  v0,  v0,    v0,
+            v0,  -n,  v0,    v0,
+            v0,  v0,  -n-f, -v1,
+            v0,  v0,  f*n,   v0
         };
     }
 
@@ -560,6 +562,22 @@ namespace trans3d {
         };
     }
 
+
+    template <class T_number>
+    constexpr AffineMatrix<4, T_number>
+    ndcToViewport(const Rectangle<T_number> aViewPort, T_number aNear, T_number aFar)
+    {
+        assert(aNear > aFar);
+        return window(
+            Box<T_number>{ 
+                { T_number{-1}, T_number{-1}, T_number{1} },
+                { T_number{2}, T_number{2}, T_number{2} }
+            },
+            Box<T_number>{
+                { aViewPort.origin(), aNear },
+                { aViewPort.dimension(), aNear - aFar },
+            });
+    }
 
 } // namespace trans3d
 
