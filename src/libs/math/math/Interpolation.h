@@ -105,7 +105,7 @@ public:
     {}
 
 
-    Result_type at(T_parameter aInput)
+    Result_type at(T_parameter aInput) const
     {
         return T_easeFunctor::ease(mSpeedFactor * aInput);
     }
@@ -155,6 +155,12 @@ public:
     T_value advance(T_parameter aIncrement)
     {
         return lerp(mFirst, mLast, mAnimation.advance(aIncrement));
+    }
+
+
+    T_value at(T_parameter aInput) const
+    {
+        return lerp(mFirst, mLast, mAnimation.at(aInput));
     }
 
 
