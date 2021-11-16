@@ -175,6 +175,15 @@ public:
 };
 #undef BASE
 
+
+template <class T>
+class is_position : public std::false_type
+{};
+
+template <int N_dimension, class T_number>
+class is_position<Position<N_dimension, T_number>> : public std::true_type
+{};
+
 template <int N_dimension, class T_number>
 struct addition_trait<Position<N_dimension, T_number>, Position<N_dimension, T_number>>
                      : public std::false_type

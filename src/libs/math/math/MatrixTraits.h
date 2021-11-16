@@ -56,4 +56,8 @@ template <class T>
 constexpr bool from_matrix_v = from_matrix<T>::value;
 
 
+template <class T>
+constexpr bool is_position_v = is_position<T>::value;
+
+
 }} // namespace ad::math
