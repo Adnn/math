@@ -122,3 +122,123 @@ SCENARIO("Box usage")
         REQUIRE(Box<double>::CenterOnOrigin(dimension) == expected.centered());
     }
 }
+
+
+SCENARIO("Box growing.")
+{
+    GIVEN("A box")
+    {
+        const Box<double> base{ {10., -10., 0.}, {5., 5., 5.} };
+        Box<double> growing = base;
+
+        WHEN("The box is extended to points already inside it.")
+        {
+            const Position<3> inside{11., -9., -1.};
+            const Position<3> border{10., -10., 0.};
+            REQUIRE(growing.contains(inside));
+            REQUIRE(growing.contains(border));
+
+            growing.extendTo(inside);
+            growing.extendTo(border);
+
+            THEN("It stays the same")
+            {
+                REQUIRE(growing == base);
+            }
+        }
+
+        //
+        // Front
+        //
+        GIVEN("A point outside the box")
+        {
+            const Position<3> topLeftFront{-10., 0., 5.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(topLeftFront);
+                REQUIRE(growing.topLeftFront() == topLeftFront);
+                REQUIRE(growing.bottomRightBack() == base.bottomRightBack());
+            }
+        }
+
+        GIVEN("A point outside the box")
+        {
+            const Position<3> topRightFront{100., 10., 5.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(topRightFront);
+                REQUIRE(growing.topRightFront() == topRightFront);
+                REQUIRE(growing.bottomLeftBack() == base.bottomLeftBack());
+            }
+        }
+
+        GIVEN("A point outside the box")
+        {
+            const Position<3> bottomRightFront{100., -100., 5.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(bottomRightFront);
+                REQUIRE(growing.bottomRightFront() == bottomRightFront);
+                REQUIRE(growing.topLeftBack() == base.topLeftBack());
+            }
+        }
+
+        GIVEN("A point outside the box")
+        {
+            const Position<3> bottomLeftFront{6., -50., 5.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(bottomLeftFront);
+                REQUIRE(growing.bottomLeftFront() == bottomLeftFront);
+                REQUIRE(growing.topRightBack() == base.topRightBack());
+            }
+        }
+
+        //
+        // Back
+        //
+        GIVEN("A point outside the box")
+        {
+            const Position<3> topLeftBack{-10., 0., -15.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(topLeftBack);
+                REQUIRE(growing.topLeftBack() == topLeftBack);
+                REQUIRE(growing.bottomRightFront() == base.bottomRightFront());
+            }
+        }
+
+        GIVEN("A point outside the box")
+        {
+            const Position<3> topRightBack{100., 10., -15.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(topRightBack);
+                REQUIRE(growing.topRightBack() == topRightBack);
+                REQUIRE(growing.bottomLeftFront() == base.bottomLeftFront());
+            }
+        }
+
+        GIVEN("A point outside the box")
+        {
+            const Position<3> bottomRightBack{100., -100., -15.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(bottomRightBack);
+                REQUIRE(growing.bottomRightBack() == bottomRightBack);
+                REQUIRE(growing.topLeftFront() == base.topLeftFront());
+            }
+        }
+
+        GIVEN("A point outside the box")
+        {
+            const Position<3> bottomLeftBack{6., -50., -15.};
+            THEN("It grows the box just enough.")
+            {
+                growing.extendTo(bottomLeftBack);
+                REQUIRE(growing.bottomLeftBack() == bottomLeftBack);
+                REQUIRE(growing.topRightFront() == base.topRightFront());
+            }
+        }
+    }
+}

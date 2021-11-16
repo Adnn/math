@@ -84,6 +84,9 @@ struct Rectangle
     template <class T_positionValue>
     bool contains(Position<2, T_positionValue> aPosition) const;
 
+    /// \brief If the rectangle does not include `aPosition`, grow it just enough so it does.
+    void extendTo(Position<2, T_number> aPosition);
+
     Position<2, T_number> closestPoint(Position<2, T_number> aPosition) const;
 
     Position<2, T_number>  mPosition;
@@ -106,6 +109,31 @@ bool Rectangle<T_number>::contains(Position<2, T_positionValue> aPosition) const
         && (aPosition.y() >= yMin())
         && (aPosition.x() <= xMax())
         && (aPosition.y() <= yMax());
+}
+
+
+template <class T_number>
+void Rectangle<T_number>::extendTo(Position<2, T_number> aPosition)
+{
+    if (aPosition.x() < xMin()) 
+    {
+        mDimension.width() = xMax() - aPosition.x();
+        mPosition.x() = aPosition.x();
+    }
+    else if (aPosition.x() > xMax())
+    {
+        mDimension.width() = aPosition.x() - xMin();
+    }
+
+    if (aPosition.y() < yMin()) 
+    {
+        mDimension.height() = yMax() - aPosition.y();
+        mPosition.y() = aPosition.y();
+    }
+    else if (aPosition.y() > yMax())
+    {
+        mDimension.height() = aPosition.y() - yMin();
+    }
 }
 
 

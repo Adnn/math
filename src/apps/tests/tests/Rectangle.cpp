@@ -100,3 +100,93 @@ SCENARIO("Rectangle usage")
         REQUIRE(Rectangle<double>::CenterOnOrigin(dimension) == expected.centered());
     }
 }
+
+
+SCENARIO("Rectangle growing.")
+{
+    GIVEN("A rectangle")
+    {
+        const Rectangle<double> base{ {10., -10.}, {5., 5.} };
+        Rectangle<double> growing = base;
+
+        WHEN("The rectangle is extended to points already inside it.")
+        {
+            const Position<2> inside{11., -9.};
+            const Position<2> border{10., -10.};
+            REQUIRE(growing.contains(inside));
+            REQUIRE(growing.contains(border));
+
+            growing.extendTo(inside);
+            growing.extendTo(border);
+
+            THEN("It stays the same")
+            {
+                REQUIRE(growing == base);
+            }
+        }
+
+
+        GIVEN("Points around the rectangle")
+        {
+            const Position<2> left{-10., -10.};
+            THEN("It grows the rectangle just enough.")
+            {
+                growing.extendTo(left);
+                REQUIRE(growing.bottomLeft() == left);
+                REQUIRE(growing.topRight() == base.topRight());
+            }
+
+            const Position<2> top{15., 0.};
+            THEN("It grows the rectangle just enough.")
+            {
+                growing.extendTo(top);
+                REQUIRE(growing.topRight() == top);
+                REQUIRE(growing.bottomLeft() == base.bottomLeft());
+            }
+        }
+
+        GIVEN("A point outside the rectangle")
+        {
+            const Position<2> topLeft{-10., 0.};
+            THEN("It grows the rectangle just enough.")
+            {
+                growing.extendTo(topLeft);
+                REQUIRE(growing.topLeft() == topLeft);
+                REQUIRE(growing.bottomRight() == base.bottomRight());
+            }
+        }
+
+        GIVEN("A point outside the rectangle")
+        {
+            const Position<2> topRight{100., 10.};
+            THEN("It grows the rectangle just enough.")
+            {
+                growing.extendTo(topRight);
+                REQUIRE(growing.topRight() == topRight);
+                REQUIRE(growing.bottomLeft() == base.bottomLeft());
+            }
+        }
+
+        GIVEN("A point outside the rectangle")
+        {
+            const Position<2> bottomRight{100., -100.};
+            THEN("It grows the rectangle just enough.")
+            {
+                growing.extendTo(bottomRight);
+                REQUIRE(growing.bottomRight() == bottomRight);
+                REQUIRE(growing.topLeft() == base.topLeft());
+            }
+        }
+
+        GIVEN("A point outside the rectangle")
+        {
+            const Position<2> bottomLeft{6., -50.};
+            THEN("It grows the rectangle just enough.")
+            {
+                growing.extendTo(bottomLeft);
+                REQUIRE(growing.bottomLeft() == bottomLeft);
+                REQUIRE(growing.topRight() == base.topRight());
+            }
+        }
+    }
+}

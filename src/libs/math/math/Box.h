@@ -108,6 +108,9 @@ struct Box
     template <class T_positionValue>
     bool contains(Position<3, T_positionValue> aPosition) const;
 
+    /// \brief If the box does not include `aPosition`, grow it just enough so it does.
+    void extendTo(Position<3, T_number> aPosition);
+
     Position<3, T_number> closestPoint(Position<3, T_number> aPosition) const;
 
     constexpr Rectangle<T_number> frontRectangle() const;
@@ -146,6 +149,41 @@ bool Box<T_number>::contains(Position<3, T_positionValue> aPosition) const
         && (aPosition.y() <= yMax())
         && (aPosition.z() <= zMax())
         ;
+}
+
+
+template <class T_number>
+void Box<T_number>::extendTo(Position<3, T_number> aPosition)
+{
+    if (aPosition.x() < xMin()) 
+    {
+        mDimension.width() = xMax() - aPosition.x();
+        mPosition.x() = aPosition.x();
+    }
+    else if (aPosition.x() > xMax())
+    {
+        mDimension.width() = aPosition.x() - xMin();
+    }
+
+    if (aPosition.y() < yMin()) 
+    {
+        mDimension.height() = yMax() - aPosition.y();
+        mPosition.y() = aPosition.y();
+    }
+    else if (aPosition.y() > yMax())
+    {
+        mDimension.height() = aPosition.y() - yMin();
+    }
+
+    if (aPosition.z() > zMax()) 
+    {
+        mDimension.depth() = aPosition.z() - zMin();
+        mPosition.z() = aPosition.z();
+    }
+    else if (aPosition.z() < zMin())
+    {
+        mDimension.depth() = zMax() - aPosition.z();
+    }
 }
 
 
