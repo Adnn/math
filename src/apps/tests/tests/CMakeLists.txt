@@ -18,6 +18,7 @@ set(${TARGET_NAME}_SOURCES
     CardinalCubic_tests.cpp
     Color_tests.cpp
     Constexpr_tests.cpp
+    EqualityDanger_tests.cpp
     Homogeneous_tests.cpp
     Interpolation_tests.cpp
     LinearMatrix_tests.cpp

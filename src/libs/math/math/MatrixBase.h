@@ -239,12 +239,21 @@ public:
     /// \brief The componentwise modulo
     constexpr T_derived cwMod(const T_derived &aRhs) const noexcept(should_noexcept);
 
+    // Implementer note:
+    // Those two operations were initially member functions (single explicit parameter).
+    // Yet, it prevented to use implicit conversions on arguments.
+    // Attention: 
+    // I am a bit worried by C87, in case client code would inherit somme of the T_derived types.
+    // see: https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#c87-beware-of--on-base-classes
+    // see: EqualityDanger_tests.cpp
     /// \brief Equality comparison.
     /// \attention Can be used in a constexpr context only since C++20
-    constexpr bool operator==(const MatrixBase &aRhs) const noexcept(should_noexcept);
+    friend constexpr bool operator==(const T_derived & aLhs, const T_derived &aRhs) noexcept(should_noexcept)
+    { return aLhs.mStore == aRhs.mStore; }
     /// \brief Non-equality comparison.
     /// \attention Can be used in a constexpr context only since C++20
-    constexpr bool operator!=(const MatrixBase &aRhs) const noexcept(should_noexcept);
+    friend constexpr bool operator!=(const T_derived & aLhs, const T_derived &aRhs) noexcept(should_noexcept)
+    { return !(aLhs == aRhs); }
 
     /// \brief Return true if elements of `aRhs` are all within the tolerance `aEpsilon` of corresponding
     /// elements in this matrix.

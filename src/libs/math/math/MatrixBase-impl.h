@@ -381,21 +381,6 @@ constexpr T_derived MatrixBase<TMA>::cwMod(const T_derived &aRhs) const noexcept
 }
 
 
-
-template <TMP>
-constexpr bool MatrixBase<TMA>::operator==(const MatrixBase &aRhs) const noexcept(should_noexcept)
-{
-    return mStore == aRhs.mStore;
-}
-
-
-template<TMP>
-constexpr bool MatrixBase<TMA>::operator!=(const MatrixBase &aRhs) const noexcept(should_noexcept)
-{
-    return !(*this == aRhs);
-}
-
-
 template<TMP>
 constexpr bool MatrixBase<TMA>::equalsWithinTolerance(const MatrixBase & aRhs, T_number aEpsilon) const noexcept(should_noexcept)
 {
