@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include <math/Interpolation.h>
+#include <math/Interpolation/Interpolation.h>
 #include <math/Curves/Bezier.h>
 
 

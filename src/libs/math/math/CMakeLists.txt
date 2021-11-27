@@ -6,12 +6,12 @@ set(${TARGET_NAME}_HEADERS
     Base.h
     Box.h
     Canonical.h
+    Clamped.h
     Color.h
     commons.h
     Constants.h
     Homogeneous.h
     Homogeneous-impl.h
-    Interpolation.h
     LinearMatrix.h
     Matrix.h
     Matrix-impl.h
@@ -30,6 +30,9 @@ set(${TARGET_NAME}_HEADERS
     Curves/Bezier.h
     Curves/CardinalCubic.h
     Curves/CurveBase.h
+
+    Interpolation/Interpolation.h
+    Interpolation/ParameterAnimation.h
 )
 
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR}
