@@ -71,52 +71,6 @@ SCENARIO("Linear interpolation")
 }
 
 
-SCENARIO("ParameterAnimation class")
-{
-    GIVEN("A linear ParameterAnimation and a duration")
-    {
-        float duration = 100.;
-        ParameterAnimation<float> animation{duration};
-
-        THEN("The values are linearly animated")
-        {
-            CHECK(animation.at(0.) == 0.);
-            CHECK(animation.at(50.) == 0.5);
-            CHECK(animation.at(100.) == 1);
-
-            CHECK(animation.at(-10.) == 0.);
-            CHECK(animation.at(1000.) == 1.);
-        }
-
-        THEN("The animation can be advanced, the advance is cumulative")
-        {
-            CHECK(animation.advance(0.) == 0.);
-            CHECK(animation.advance(10.) == Approx(0.1));
-            CHECK(animation.advance(10.) == Approx(0.2));
-            CHECK(animation.advance(10.) == Approx(0.3));
-
-            CHECK_FALSE(animation.isCompleted());
-
-            CHECK(animation.advance(70.) == 1.);
-            CHECK(animation.isCompleted());
-
-            CHECK(animation.advance(70.) == 1.);
-            CHECK(animation.isCompleted());
-
-            THEN("Random values can still be queried")
-            {
-                CHECK(animation.at(0.) == 0.);
-                CHECK(animation.at(50.) == 0.5);
-                CHECK(animation.at(100.) == 1);
-
-                CHECK(animation.at(-10.) == 0.);
-                CHECK(animation.at(1000.) == 1.);
-            }
-        }
-    }
-}
-
-
 SCENARIO("Interpolation class")
 {
     GIVEN("A linear and a smoothstep Interpolations betwen two vectors")
@@ -125,8 +79,8 @@ SCENARIO("Interpolation class")
         Vec<2> b{20., 40.};
 
         double duration = 10;
-        auto linear = makeInterpolation<ease::Linear>(a, b, duration);
-        auto smoothstep = makeInterpolation<ease::SmoothStep>(a, b, duration);
+        auto linear = makeInterpolation(a, b, duration);
+        auto smoothstep = makeInterpolation<None ,ease::SmoothStep>(a, b, duration);
 
         WHEN("The interpolations advances")
         {
@@ -147,8 +101,8 @@ SCENARIO("Interpolation class")
                 REQUIRE(interpolatedThreeQuarter == a + 3./4. * (b - a));
 
                 REQUIRE(interpolatedHalf         == smoothHalf);
-                REQUIRE(interpolatedThreeQuarter.x() <  smoothThreeQuarter.x()); 
-                REQUIRE(interpolatedThreeQuarter.y() <  smoothThreeQuarter.y()); 
+                REQUIRE(interpolatedThreeQuarter.x() <  smoothThreeQuarter.x());
+                REQUIRE(interpolatedThreeQuarter.y() <  smoothThreeQuarter.y());
             }
 
             WHEN("They are advanced to or past the end.")

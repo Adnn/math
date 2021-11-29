@@ -24,6 +24,7 @@ set(${TARGET_NAME}_SOURCES
     LinearMatrix_tests.cpp
     Matrix.cpp
     Noexcept_tests.cpp
+    ParameterAnimation_tests.cpp
     Polynomial.cpp
     Range.cpp
     Rectangle.cpp

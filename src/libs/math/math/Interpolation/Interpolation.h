@@ -37,11 +37,12 @@ T_value lerpUnbound(const T_value & aFirst, const T_value & aLast, const T_param
 
 /// \brief Encapsulate a complete interpolation procedure, with bounds,
 /// duration, and easing.
-template <class T_value, class T_parameter, class T_easeFunctor>
+template <class T_value, class T_parameter,
+          template <class> class TT_periodicity, template <class> class TT_easeFunctor>
 class Interpolation
 {
 public:
-    using Animation_type = ParameterAnimation<T_parameter, T_easeFunctor>;
+    using Animation_type = ParameterAnimation<T_parameter, Clamp, TT_periodicity, TT_easeFunctor>;
 
     Interpolation(T_value aFirst, T_value aLast, Animation_type aAnimation) :
         mFirst{std::move(aFirst)},
@@ -76,16 +77,20 @@ private:
 
 
 /// \brief Helper factory for Interpolation.
-template <template <class> class TT_easeFunctor, class T_value, class T_parameter>
-Interpolation<T_value, T_parameter, TT_easeFunctor<T_parameter>>
-makeInterpolation(const T_value & aFirst, const T_value & aLast, T_parameter aDuration)
+template <template <class> class TT_periodicity = None,
+          template <class> class TT_easeFunctor = None,
+          class T_value,
+          class T_parameter>
+Interpolation<T_value, T_parameter, TT_periodicity, TT_easeFunctor>
+makeInterpolation(const T_value & aFirst, const T_value & aLast, T_parameter aPeriod)
 {
     static_assert(! std::is_integral_v<T_parameter>,
                   "Using an integral parameter to interpolate between [0..1] is very likely an error.");
-    return Interpolation(
+    return Interpolation{
         aFirst,
         aLast,
-        makeParameterAnimation<TT_easeFunctor>(aDuration));
+        makeParameterAnimation<Clamp, TT_periodicity, TT_easeFunctor>(aPeriod)
+    };
 }
 
 
