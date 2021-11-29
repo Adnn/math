@@ -35,8 +35,13 @@ set(${TARGET_NAME}_HEADERS
     Interpolation/ParameterAnimation.h
 )
 
+set(${TARGET_NAME}_DOC
+    Interpolation/ParameterAnimation.md
+)
+
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR}
              FILES ${${TARGET_NAME}_HEADERS}
+                   ${${TARGET_NAME}_DOC}
 )
 
 add_library(${TARGET_NAME} INTERFACE)
@@ -45,6 +50,7 @@ add_library(${TARGET_NAME} INTERFACE)
 add_custom_target(${TARGET_NAME}_IDE
     SOURCES
         ${${TARGET_NAME}_HEADERS}
+        ${${TARGET_NAME}_DOC}
 )
 
 add_library(ad::${TARGET_NAME} ALIAS ${TARGET_NAME})
