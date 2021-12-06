@@ -75,8 +75,10 @@ private:
     Animation_type mAnimation;
 };
 
-
 /// \brief Helper factory for Interpolation.
+///
+/// \note By nature, an interpolation always relies on a **clamped** ParameterAnimation.
+/// The only parameter to forward will be a period.
 template <template <class> class TT_periodicity = None,
           template <class> class TT_easeFunctor = None,
           class T_value,
