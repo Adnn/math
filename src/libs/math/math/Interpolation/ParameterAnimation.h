@@ -111,6 +111,20 @@ class ParameterAnimation : public detail::ParameterAnimation_ResultHelper<T_para
     using typename Base_t::Result_type;
     using Base_t::mSpeed;
 
+    // Note: Clang wants these to be "instantiated" before the use in HasSpeed
+    static constexpr bool IsEasing()
+    { return !std::is_same_v<TT_easeFunctor<void>, None<void>>; }
+
+    static constexpr bool IsPeriodic()
+    { return !std::is_same_v<TT_periodicity<void>, None<void>>; }
+
+    static constexpr bool IsClamped()
+    { return N_resultRange == Clamp; }
+
+    /// \brief The trivial case does not have a notion of period, only speed.
+    static constexpr bool IsTrivial()
+    { return !IsClamped() && !IsPeriodic() && !IsEasing(); }
+
 public:
     // Note: must be available before its use in ctors.
     static constexpr bool HasSpeed()
@@ -203,19 +217,6 @@ public:
 
 
 private:
-    static constexpr bool IsEasing()
-    { return !std::is_same_v<TT_easeFunctor<void>, None<void>>; }
-
-    static constexpr bool IsPeriodic()
-    { return !std::is_same_v<TT_periodicity<void>, None<void>>; }
-
-    static constexpr bool IsClamped()
-    { return N_resultRange == Clamp; }
-
-    /// \brief The trivial case does not have a notion of period, only speed.
-    static constexpr bool IsTrivial()
-    { return !IsClamped() && !IsPeriodic() && !IsEasing(); }
-
     T_parameter mPeriod;
     T_parameter mAccumulatedInput{0};
     TT_periodicity<T_parameter> mPeriodicBehaviour; // empty class for basic initial cases (Repeat, PingPong)
