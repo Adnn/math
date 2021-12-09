@@ -108,8 +108,16 @@ template <class T_parameter,
 class ParameterAnimation : public detail::ParameterAnimation_ResultHelper<T_parameter, N_resultRange>
 {
     using Base_t = detail::ParameterAnimation_ResultHelper<T_parameter, N_resultRange>;
+    using typename Base_t::Result_type;
+    using Base_t::mSpeed;
 
 public:
+    // Note: must be available before its use in ctors.
+    static constexpr bool HasSpeed()
+    {
+        return !IsClamped();
+    }
+
     /// \brief Constructor from a period (i.e. duration). Available for clamped output.
     template <bool N_hasSpeed = HasSpeed()>
     explicit ParameterAnimation(T_parameter aPeriod, std::enable_if_t<!N_hasSpeed>* = nullptr) :
@@ -166,11 +174,6 @@ public:
     Result_type advance(T_parameter aIncrement)
     {
         return at(mAccumulatedInput += aIncrement);
-    }
-
-    static constexpr bool HasSpeed()
-    {
-        return !IsClamped();
     }
 
     /// \brief Indicates if this animation can reach completion (or if it goes on forever).
@@ -231,6 +234,7 @@ class ParameterAnimation<T_parameter, FullRange, None, None> :
     public detail::ParameterAnimation_ResultHelper<T_parameter, FullRange>
 {
     using Base_t = detail::ParameterAnimation_ResultHelper<T_parameter, FullRange>;
+    using Base_t::mSpeed;
 
 public:
     explicit ParameterAnimation(T_parameter aSpeed) :
