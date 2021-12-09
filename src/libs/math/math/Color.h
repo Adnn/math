@@ -10,9 +10,9 @@ namespace math {
 
 
 #define ACCESSOR_DIMENSION(symbol, dimension)  \
-    typename base_type::value_type & symbol()                   \
-    { return this->at(dimension-1); }       \
-    typename base_type::value_type symbol() const               \
+    constexpr typename base_type::value_type & symbol()     \
+    { return this->at(dimension-1); }                       \
+    constexpr typename base_type::value_type symbol() const \
     { return this->at(dimension-1); }
 
 
@@ -109,6 +109,7 @@ namespace sdr {
 
     using Rgba = ::ad::math::RgbAlpha_base<std::uint8_t>;
     // Please use implicit ctor from Rgb to get Rgba constants.
+    constexpr const Rgba gTransparent{gBlack, 0};
 
 
     using Grayscale = std::uint8_t;
