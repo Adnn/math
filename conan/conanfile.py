@@ -25,8 +25,6 @@ class MathConan(ConanFile):
         "build_tests": False,
     }
 
-    build_requires = ("cmake/3.20.4",)
-
     build_policy = "missing"
     generators = "cmake_paths", "CMakeToolchain"
 
