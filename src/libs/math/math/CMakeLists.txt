@@ -57,6 +57,12 @@ add_library(ad::${TARGET_NAME} ALIAS ${TARGET_NAME})
 
 cmc_target_current_include_directory(${TARGET_NAME})
 
+# Some constexpr functions rely on the current CPP version to select their implementation
+# and MSVC requires a compiler option to define _cplusplus macro.
+if(MSVC)
+    target_compile_options(${TARGET_NAME} INTERFACE "/Zc:__cplusplus")
+endif()
+
 ##
 ## Install
 ##
