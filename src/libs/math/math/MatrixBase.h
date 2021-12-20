@@ -298,11 +298,13 @@ public:
     // Implementer note: At first, this was a protected struct of Matrix template
     // yet, in some situation implementations need an un-initialized matrix of different dimensions
     // e.g. transpose operation
-    class UninitializedTag
+    // 2021/12/20 Ad Note: At second, the constructor was private, with a list of friend class templates.
+    // Yet it is also used in a few highly templated free-functions, which make the friend list hard to maintain.
+    // Make the tag usable publicly, hopefully it will not appear in user code.
+    /// \attention Users, please refrain from using this internal tag.
+    struct UninitializedTag
     {
-        template <TMT> friend class MatrixBase;
-        template <int, int, class> friend class Matrix;
-        UninitializedTag() = default;
+        constexpr UninitializedTag() = default;
     };
 
     /// \brief Like a default constructor, but inaccessible to the client code thanks to the protected tag.

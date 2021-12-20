@@ -280,6 +280,9 @@ SCENARIO("Specialized vector types can be constant expressions")
         THEN("It can be casted to a constexpr Vec of ints")
         {
             constexpr Vec<3, int> cOffset{cPosition};
+            REQUIRE(std::bool_constant<cOffset[0] == cPosition[0]>::value);
+            REQUIRE(std::bool_constant<cOffset[1] == cPosition[1]>::value);
+            REQUIRE(std::bool_constant<cOffset[2] == cPosition[2]>::value);
         }
 #endif
 
