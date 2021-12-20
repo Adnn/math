@@ -304,7 +304,7 @@ public:
     /// \attention Users, please refrain from using this internal tag.
     struct UninitializedTag
     {
-        UninitializedTag() = default;
+        constexpr UninitializedTag() = default;
     };
 
     /// \brief Like a default constructor, but inaccessible to the client code thanks to the protected tag.
