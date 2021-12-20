@@ -18,6 +18,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-11]
         cppstd: [17, 20]
+        include:
+          - os: ubuntu-latest
+            gccversion: 10
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -30,8 +33,8 @@ jobs:
       - name: Select GCC version.
         if: runner.os == 'Linux'
         run: |
-          echo "CC=gcc-10" >> $GITHUB_ENV
-          echo "CXX=g++-10" >> $GITHUB_ENV
+          echo "CC=gcc-${{ matrix.gccversion }}" >> $GITHUB_ENV
+          echo "CXX=g++-${{ matrix.gccversion }}" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
         with:
