@@ -16,7 +16,7 @@ jobs:
     name: Build, test, deploy
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-11]
         cppstd: [17, 20]
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -32,12 +32,6 @@ jobs:
         run: |
           echo "CC=gcc-10" >> $GITHUB_ENV
           echo "CXX=g++-10" >> $GITHUB_ENV
-
-      - name: Select Clang version.
-        if: runner.os == 'macOS'
-        run: |
-          echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
-          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
         with:
