@@ -17,8 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        include:
-          - cppstd: 17
+        cppstd: [17, 20]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
