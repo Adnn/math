@@ -135,8 +135,10 @@ namespace hdr {
     constexpr const Rgb gCyan   {gGreen + gBlue};
     constexpr const Rgb gMagenta{gBlue  + gRed};
 
+    using Rgba = ::ad::math::RgbAlpha_base<double>;
 
     sdr::Rgb to_sdr(Rgb aHdr);
+} // namespace hdr
 
 
 } // namespace sdr

@@ -59,4 +59,44 @@ SCENARIO("RGBA colors constructions")
             }
         }
     }
+    
+    GIVEN("An hdr RGB color")
+    {
+        hdr::Rgb rgb{0.2, 0.645, 0.003};
+
+        THEN("It can be implicitly converted to hdr RGBA")
+        {
+            hdr::Rgba rgba = rgb;
+
+            REQUIRE(rgba.r() == rgb.r());
+            REQUIRE(rgba.g() == rgb.g());
+            REQUIRE(rgba.b() == rgb.b());
+            REQUIRE(rgba.a() == 1.0);
+
+            THEN("Equality can be tested between RGBA and RGB, relying on implicit conversion.")
+            {
+                REQUIRE(rgba == rgb);
+                REQUIRE_FALSE(rgba != rgb);
+
+                // The test is order independent.
+                REQUIRE_FALSE(rgba == hdr::gBlack);
+                REQUIRE_FALSE(hdr::gBlack == rgba);
+                REQUIRE(rgba != hdr::gBlack);
+                REQUIRE(hdr::gBlack != rgba);
+            }
+
+            WHEN("RGBA alpha is changed to not be 100%")
+            {
+                rgba.a() = 0.5;
+
+                THEN("RGBA does not compare equal to RGB anymore")
+                {
+                    REQUIRE(rgba != rgb);
+                    REQUIRE_FALSE(rgba == rgb);
+                    REQUIRE(rgb != rgba);
+                    REQUIRE_FALSE(rgb == rgba);
+                }
+            }
+        }
+    }
 }
