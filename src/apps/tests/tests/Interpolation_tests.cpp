@@ -94,6 +94,16 @@ SCENARIO("Interpolation class")
 
             REQUIRE_FALSE(linear.isCompleted());
             REQUIRE_FALSE(smoothstep.isCompleted());
+            REQUIRE(linear.getOvershoot() == 0.);
+            REQUIRE(smoothstep.getOvershoot() == 0.);
+
+            THEN("They can be reset")
+            {
+                linear.reset();
+                REQUIRE(linear.advance(0.) == a);
+                smoothstep.reset();
+                REQUIRE(smoothstep.advance(0.) == a);
+            }
 
             THEN("The result is interpolated")
             {
@@ -113,7 +123,19 @@ SCENARIO("Interpolation class")
                 THEN("They indicate completion")
                 {
                     REQUIRE(linear.isCompleted());
+                    REQUIRE(linear.getOvershoot() == 0.);
                     REQUIRE(smoothstep.isCompleted());
+                    REQUIRE(smoothstep.getOvershoot() == 3./4. * duration);
+
+                    THEN("They can be reset")
+                    {
+                        linear.reset();
+                        REQUIRE_FALSE(linear.isCompleted());
+                        REQUIRE(linear.advance(0.) == a);
+                        smoothstep.reset();
+                        REQUIRE_FALSE(smoothstep.isCompleted());
+                        REQUIRE(smoothstep.advance(0.) == a);
+                    }
                 }
             }
         }

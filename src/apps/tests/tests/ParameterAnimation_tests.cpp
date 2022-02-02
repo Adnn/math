@@ -41,6 +41,16 @@ SCENARIO("ParameterAnimation class")
             CHECK(animation.advance(70.) == 1.);
             CHECK(animation.isCompleted());
 
+            THEN("The animation can be reset.")
+            {
+                // Sanity check
+                REQUIRE(animation.advance(0.) != 0.);
+
+                animation.reset(); 
+                CHECK_FALSE(animation.isCompleted());
+                CHECK(animation.advance(0.) == 0.);
+            }
+
             THEN("Random values can still be queried")
             {
                 CHECK(animation.at(0.) == 0.);
@@ -91,12 +101,19 @@ SCENARIO("Clamped ParameterAnimation combinations.")
             {
                 CHECK(animation.advance(0.) == animation.at(0.));
                 CHECK_FALSE(animation.isCompleted());
+                CHECK(animation.getOvershoot() == 0.f);
 
                 CHECK(animation.advance(period / 2.) == animation.at(period / 2.));
                 CHECK_FALSE(animation.isCompleted());
+                CHECK(animation.getOvershoot() == 0.f);
 
                 CHECK(animation.advance(period / 2.) == animation.at(period));
                 CHECK(animation.isCompleted());
+                CHECK(animation.getOvershoot() == 0.f);
+
+                // Overshoot by two periods
+                CHECK(animation.advance(2 * period) == animation.at(period));
+                CHECK(animation.getOvershoot() == 2 * period);
             }
         }
     }
@@ -140,6 +157,11 @@ SCENARIO("Clamped ParameterAnimation combinations.")
 
                 CHECK(animation.advance(period / 2.) == animation.at(period));
                 CHECK(animation.isCompleted());
+                CHECK(animation.getOvershoot() == 0.f);
+
+                // Overshoot by half period
+                CHECK(animation.advance(period / 2.) == animation.at(period));
+                CHECK(animation.getOvershoot() == period / 2.);
             }
         }
     }
@@ -264,6 +286,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
                     CHECK(animation.advance(reachValue / 2.) == animation.at(reachValue));
                     // It is not finite.
                     CHECK_FALSE(animation.isCompleted());
+                    CHECK(animation.getOvershoot() == 0.f);
                 }
             }
         }
@@ -310,6 +333,11 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
 
                     CHECK(animation.advance(period / 2.) == animation.at(period));
                     CHECK(animation.isCompleted());
+                    CHECK(animation.getOvershoot() == 0.f);
+
+                    // Overshoot by one periods
+                    CHECK(animation.advance(period) == animation.at(period));
+                    CHECK(animation.getOvershoot() == period);
                 }
             }
         } 
@@ -355,6 +383,11 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
 
                     CHECK(animation.advance(completionValue / 2.) == animation.at(completionValue));
                     CHECK(animation.isCompleted());
+                    CHECK(animation.getOvershoot() == 0.f);
+
+                    // Overshoot by two periods
+                    CHECK(animation.advance(2 * period) == animation.at(period));
+                    CHECK(animation.getOvershoot() == 2 * period);
                 }
             }
         }

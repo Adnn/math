@@ -38,7 +38,7 @@ T_value lerpUnbound(const T_value & aFirst, const T_value & aLast, const T_param
 /// \brief Encapsulate a complete interpolation procedure, with bounds,
 /// duration, and easing.
 template <class T_value, class T_parameter,
-          template <class> class TT_periodicity, template <class> class TT_easeFunctor>
+          template <class> class TT_periodicity = None, template <class> class TT_easeFunctor = None>
 class Interpolation
 {
 public:
@@ -63,9 +63,21 @@ public:
     }
 
 
+    void reset()
+    {
+        mAnimation.reset();
+    }
+
+
     bool isCompleted() const
     {
         return mAnimation.isCompleted();
+    }
+
+
+    T_parameter getOvershoot() const
+    {
+        return mAnimation.getOvershoot();
     }
 
 

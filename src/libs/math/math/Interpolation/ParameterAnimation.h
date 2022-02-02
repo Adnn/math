@@ -100,7 +100,7 @@ namespace detail
 /// \brief Animate a 1D parameter value, with speed factor, and optional easing and periodicity.
 /// The output might be clamped to [0 1] (notably useful for lerp()), or full range.
 /// 
-/// This is intended to cover most realistic cases, thanks to the different comibinations availables.
+/// This is intended to cover most realistic cases, thanks to the different available combinations.
 template <class T_parameter,
           AnimationResult N_resultRange,
           template <class> class TT_periodicity = None,
@@ -190,6 +190,13 @@ public:
         return at(mAccumulatedInput += aIncrement);
     }
 
+
+    void reset()
+    {
+        mAccumulatedInput = 0;
+    }
+
+
     /// \brief Indicates if this animation can reach completion (or if it goes on forever).
     static constexpr bool IsFinite()
     {
@@ -212,6 +219,22 @@ public:
         else
         {
             return false;
+        }
+    }
+
+
+    /// \brief Returns how much excess advance is left after completion.
+    ///
+    /// This is usefull to chain parameter animations, to carry-over the overshoot.
+    T_parameter getOvershoot() const
+    {
+        if constexpr(IsFinite())
+        {
+            return std::max<T_parameter>(0, mAccumulatedInput - (mPeriod / mSpeed));
+        }
+        else
+        {
+            return T_parameter{0};
         }
     }
 
@@ -252,6 +275,11 @@ public:
         return at(mAccumulatedInput += aIncrement);
     }
 
+    void reset()
+    {
+        mAccumulatedInput = 0;
+    }
+
     static constexpr bool HasSpeed()
     { return true; }
 
@@ -260,6 +288,11 @@ public:
 
     bool isCompleted() const
     { return false; }
+
+    T_parameter getOvershoot() const
+    {
+        return T_parameter{0};
+    }
 
 private:
     T_parameter mAccumulatedInput{0};
