@@ -100,3 +100,67 @@ SCENARIO("RGBA colors constructions")
         }
     }
 }
+
+
+SCENARIO("Conversions between HDR and SDR.")
+{
+    GIVEN("A SDR rgb color")
+    {
+        sdr::Rgb rgb_sdr{5, 50, 150};
+
+        THEN("It can be converted to HDR rgb")
+        {
+            hdr::Rgb rgb_hdr{to_hdr(rgb_sdr)};
+
+            REQUIRE(rgb_hdr.r() == 5./255);
+            REQUIRE(rgb_hdr.g() == 50./255);
+            REQUIRE(rgb_hdr.b() == 150./255);
+        }
+    }
+
+    GIVEN("A SDR rgba color")
+    {
+        sdr::Rgba rgba_sdr{5, 50, 150, 33};
+
+        THEN("It can be converted to HDR rgba")
+        {
+            hdr::Rgba rgba_hdr{to_hdr(rgba_sdr)};
+
+            REQUIRE(rgba_hdr.r() == 5./255);
+            REQUIRE(rgba_hdr.g() == 50./255);
+            REQUIRE(rgba_hdr.b() == 150./255);
+            REQUIRE(rgba_hdr.a() == 33./255);
+        }
+    }
+
+    GIVEN("A HDR rgb color")
+    {
+        // Overshoot in blue
+        hdr::Rgb rgb_hdr{0.5, 0.001, 1.2};
+
+        THEN("It can be converted to SDR rgb")
+        {
+            sdr::Rgb rgb_sdr{to_sdr(rgb_hdr)};
+
+            REQUIRE(rgb_sdr.r() == 127);
+            REQUIRE(rgb_sdr.g() == 0);
+            REQUIRE(rgb_sdr.b() == 255);
+        }
+    }
+    
+    GIVEN("A HDR rgba color")
+    {
+        // Overshoot in blue
+        hdr::Rgba rgba_hdr{0.5, 0.001, 1.2, 1./255};
+
+        THEN("It can be converted to SDR rgba")
+        {
+            sdr::Rgba rgba_sdr{to_sdr(rgba_hdr)};
+
+            REQUIRE(rgba_sdr.r() == 127);
+            REQUIRE(rgba_sdr.g() == 0);
+            REQUIRE(rgba_sdr.b() == 255);
+            REQUIRE(rgba_sdr.a() == 1);
+        }
+    }
+}

@@ -137,11 +137,16 @@ namespace hdr {
 
     using Rgba = ::ad::math::RgbAlpha_base<double>;
 
-    sdr::Rgb to_sdr(Rgb aHdr);
 } // namespace hdr
 
 
-} // namespace sdr
+sdr::Rgb to_sdr(hdr::Rgb aHdr);
+
+sdr::Rgba to_sdr(hdr::Rgba aHdr);
+
+hdr::Rgb to_hdr(sdr::Rgb aSdr);
+
+hdr::Rgba to_hdr(sdr::Rgba aSdr);
 
 
 // CAUTION: For ADL, aRgb parameter is seen as the "aliased type", i.e. ::ad::math::Rgb_base
@@ -173,6 +178,35 @@ inline sdr::Rgb to_sdr(hdr::Rgb aHdr)
         static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.r()) * 255),
         static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.g()) * 255),
         static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.b()) * 255),
+    };
+}
+
+inline sdr::Rgba to_sdr(hdr::Rgba aHdr)
+{
+    return {
+        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.r()) * 255),
+        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.g()) * 255),
+        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.b()) * 255),
+        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.a()) * 255),
+    };
+}
+
+inline hdr::Rgb to_hdr(sdr::Rgb aSdr)
+{
+    return {
+        static_cast<hdr::Rgb::value_type>(aSdr.r()) / 255,
+        static_cast<hdr::Rgb::value_type>(aSdr.g()) / 255,
+        static_cast<hdr::Rgb::value_type>(aSdr.b()) / 255,
+    };
+}
+
+inline hdr::Rgba to_hdr(sdr::Rgba aSdr)
+{
+    return {
+        static_cast<hdr::Rgb::value_type>(aSdr.r()) / 255,
+        static_cast<hdr::Rgb::value_type>(aSdr.g()) / 255,
+        static_cast<hdr::Rgb::value_type>(aSdr.b()) / 255,
+        static_cast<hdr::Rgb::value_type>(aSdr.a()) / 255,
     };
 }
 
