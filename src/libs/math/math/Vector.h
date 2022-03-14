@@ -60,6 +60,8 @@ public:
     /*constexpr*/ T_number getNorm() const;
 
     // Implementer's note: Not constexpr, because getNorm() is not
+    // TODO Ad 2022/03/11 Should return the Unit version of T_derived
+    // In fact, does it make sense for anything else than Vec derived type?
     /// \brief Compound normalization
     /*constexpr*/ T_derived & normalize();
 
@@ -126,6 +128,11 @@ public:
 #undef BASE
 
 
+template <int N_dimension, class T_number>
+class is_vec<Vec<N_dimension, T_number>> : public std::true_type
+{};
+
+
 /// \brief Unit vector class, ensuring an instance of this class has norm 1.
 template <int N_dimension, class T_number=real_number>
 class UnitVec : public Vec<N_dimension, T_number>
@@ -176,10 +183,6 @@ public:
 #undef BASE
 
 
-template <class T>
-class is_position : public std::false_type
-{};
-
 template <int N_dimension, class T_number>
 class is_position<Position<N_dimension, T_number>> : public std::true_type
 {};
@@ -227,6 +230,11 @@ public:
     {static_assert(N_dimension==3, "Disabled when dimension != 3"); return width()*height()*depth();}
 };
 #undef BASE
+
+
+template <int N_dimension, class T_number>
+class is_size<Size<N_dimension, T_number>> : public std::true_type
+{};
 
 
 #undef ACCESSOR_DIMENSION

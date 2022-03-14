@@ -59,12 +59,49 @@ constexpr bool from_matrix_v = from_matrix<T>::value;
 /// \brief Defines a static constexpr boolean `value`, true if T is a Position<> template instantiation.
 /// false otherwise.
 ///
-/// \note Implemented in Vector.h
+/// \note Specialized in Vector.h
 template <class T>
-class is_position;
+class is_position : public std::false_type
+{};
 
 template <class T>
 constexpr bool is_position_v = is_position<T>::value;
+
+
+/// \brief Defines a static constexpr boolean `value`, true if T is a Vec<> template instantiation.
+/// false otherwise.
+///
+/// \note Specialized in Vector.h
+template <class T>
+class is_vec : public std::false_type
+{};
+
+template <class T>
+constexpr bool is_vec_v = is_vec<T>::value;
+
+
+/// \brief Defines a static constexpr boolean `value`, true if T is a Size<> template instantiation.
+/// false otherwise.
+///
+/// \note Specialized in Vector.h
+template <class T>
+class is_size : public std::false_type
+{};
+
+template <class T>
+constexpr bool is_size_v = is_size<T>::value;
+
+
+/// \brief Defines a static constexpr boolean `value`, true if T is an instantiation of a Color template.
+/// false otherwise.
+///
+/// \note Specialized in Vector.h
+template <class T>
+class is_color : public std::false_type
+{};
+
+template <class T>
+constexpr bool is_color_v = is_color<T>::value;
 
 
 }} // namespace ad::math

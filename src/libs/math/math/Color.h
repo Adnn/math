@@ -60,6 +60,11 @@ public:
 #undef BASE
 
 
+template <class T_number>
+class is_color<Rgb_base<T_number>> : public std::true_type
+{};
+
+
 #define BASE Vector<RgbAlpha_base<T_number>, 4, T_number>
 template <class T_number>
 class RgbAlpha_base : public BASE
@@ -91,6 +96,44 @@ public:
 };
 #undef BASE
 
+
+template <class T_number>
+class is_color<RgbAlpha_base<T_number>> : public std::true_type
+{};
+
+
+// Note: Implemented as inheriting of a vector type instead of just hosting the scalar
+// for uniformity, and to support matrix operations of matching dimension.
+#define BASE Vector<Grayscale_base<T_number>, 1, T_number>
+template <class T_number>
+class Grayscale_base : public BASE
+{
+    /// \todo Disable most of the available functions
+    typedef BASE base_type;
+    // No constructor inheritance (see note on explicit constructor).
+
+public:
+    template<class T>
+    using derived_type = Grayscale_base<T>;
+
+    /// \brief Constructor taking the value for the single channel.
+    /// \note This constructor is explicitly defined instead of relying
+    /// on usual constructor inheritance, because otherwise the constexprness
+    /// of literals is lost, causing "narrowing" errors on byte based colors instantiations.
+    constexpr Grayscale_base(T_number aLevel) :
+        base_type{aLevel}
+    {}
+
+    ACCESSOR_DIMENSION(v, 1)
+};
+#undef BASE
+
+
+template <class T_number>
+class is_color<Grayscale_base<T_number>> : public std::true_type
+{};
+
+
 namespace sdr {
 
 
@@ -112,7 +155,7 @@ namespace sdr {
     constexpr const Rgba gTransparent{gBlack, 0};
 
 
-    using Grayscale = std::uint8_t;
+    using Grayscale = ::ad::math::Grayscale_base<std::uint8_t>;
 
 
 } // namespace sdr
@@ -136,6 +179,9 @@ namespace hdr {
     constexpr const Rgb gMagenta{gBlue  + gRed};
 
     using Rgba = ::ad::math::RgbAlpha_base<double>;
+
+    using Grayscale = ::ad::math::Grayscale_base<double>;
+
 
 } // namespace hdr
 
