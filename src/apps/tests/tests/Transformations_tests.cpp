@@ -559,20 +559,20 @@ SCENARIO("3D rotations")
 
         GIVEN("A third of a revolution rotation matrix about diagonal vector")
         {
-            Matrix<3, 3> rotation = trans3d::rotate(2*pi<Radian<double>>/3, UnitVec<3>{{-1., 1., -1.}});
+            Matrix<3, 3> rotation = trans3d::rotate(UnitVec<3>{{-1., 1., -1.}}, 2*pi<Radian<double>>/3);
 
             THEN("The rotation matrix is equivalent to a negative 2/3 of a revolution rotation matrix about the same diagonal")
             {
                 APPROX_EQUAL(rotation,
-                             trans3d::rotate(-2*2*pi<Radian<double>>/3,
-                                             UnitVec<3>{{-1., 1., -1.}}));
+                             trans3d::rotate(UnitVec<3>{{-1., 1., -1.}},
+                                             -2*2*pi<Radian<double>>/3));
             }
 
             THEN("The rotation matrix is equivalent to a positive 2/3 of a revolution rotation matrix about the diagonal in opposite direction")
             {
                 APPROX_EQUAL(rotation,
-                             trans3d::rotate(2*2*pi<Radian<double>>/3,
-                                             UnitVec<3>{{1., -1., 1.}}));
+                             trans3d::rotate(UnitVec<3>{{1., -1., 1.}},
+                                             2*2*pi<Radian<double>>/3));
             }
 
             THEN("The vectors can be rotated")

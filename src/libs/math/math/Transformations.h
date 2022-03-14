@@ -136,8 +136,8 @@ namespace trans3d {
     constexpr LinearMatrix<3, 3, T_number> rotateZ(const Angle<T_number, T_angleUnitTag> aAngle);
 
     template <class T_number, class T_angleUnitTag=void>
-    constexpr LinearMatrix<3, 3, T_number> rotate(const Angle<T_number, T_angleUnitTag> aAngle,
-                                                  const UnitVec<3, T_number> aAxis);
+    constexpr LinearMatrix<3, 3, T_number> rotate(const UnitVec<3, T_number> aAxis,
+                                                  const Angle<T_number, T_angleUnitTag> aAngle);
 
 
     template <class T_number>

@@ -282,8 +282,8 @@ namespace trans3d {
 
 
     template <class T_number, class T_angleUnitTag>
-    constexpr LinearMatrix<3, 3, T_number> rotate(const Angle<T_number, T_angleUnitTag> aAngle,
-                                            const UnitVec<3, T_number> aAxis)
+    constexpr LinearMatrix<3, 3, T_number> rotate(const UnitVec<3, T_number> aAxis,
+                                                  const Angle<T_number, T_angleUnitTag> aAngle)
     {
         // Some compact aliases for parameters
         const Angle<T_number, T_angleUnitTag> & O = aAngle;
@@ -534,7 +534,7 @@ namespace trans3d {
         const T_number v1 = T_number{1};
 
         // Note: Negate the perspective matrix from p152, this way -Z is copied into W.
-        // It respects common OpenGL convetion that the clipping test is -w < x, y, z < +w.
+        // It respects common OpenGL convention that the clipping test is -w < x, y, z < +w.
         return {
             -n,  v0,  v0,    v0,
             v0,  -n,  v0,    v0,
