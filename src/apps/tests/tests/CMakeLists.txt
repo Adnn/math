@@ -26,6 +26,7 @@ set(${TARGET_NAME}_SOURCES
     Noexcept_tests.cpp
     ParameterAnimation_tests.cpp
     Polynomial.cpp
+    Quaternion_tests.cpp
     Range.cpp
     Rectangle.cpp
     Traits.cpp

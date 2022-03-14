@@ -18,6 +18,8 @@ set(${TARGET_NAME}_HEADERS
     MatrixBase.h
     MatrixBase-impl.h
     MatrixTraits.h
+    Quaternion.h
+    Quaternion-impl.h
     Range.h
     Rectangle.h
     Transformations.h
