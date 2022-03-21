@@ -29,9 +29,16 @@ namespace trans2d {
     constexpr LinearMatrix<2, 2, T_number> scale(const T_number aFactorX, const T_number aFactorY)
     {
         return {
-            aFactorX,         0.,
-                  0.,   aFactorY,
+            aFactorX,       T_number{0},
+            T_number{0},    aFactorY,
         };
+    }
+
+
+    template <class T_number>
+    constexpr LinearMatrix<2, 2, T_number> scale(Size<2, T_number> aFactors)
+    {
+        return scale(aFactors[0], aFactors[1]);
     }
 
 
@@ -43,8 +50,8 @@ namespace trans2d {
         const UnitVec<2, T_number> & n = aAxis;
 
         return {
-            1 + (k-1) * std::pow(n.x(), 2),                (k-1) * n.x()*n.y(),
-                       (k-1) * n.x()*n.y(),     1 + (k-1) * std::pow(n.y(), 2),
+            1 + (k-1) * std::pow(n.x(), 2),     (k-1) * n.x()*n.y(),
+            (k-1) * n.x()*n.y(),                1 + (k-1) * std::pow(n.y(), 2),
         };
     }
 
@@ -299,15 +306,22 @@ namespace trans3d {
 
     template <class T_number>
     constexpr LinearMatrix<3, 3, T_number> scale(const T_number aFactorX,
-                                           const T_number aFactorY,
-                                           const T_number aFactorZ)
+                                                 const T_number aFactorY,
+                                                 const T_number aFactorZ)
     {
         return {
-            aFactorX,         0.,         0.,
-                  0.,   aFactorY,         0.,
-                  0.,         0.,   aFactorZ,
+            aFactorX,       T_number{0},    T_number{0},
+            T_number{0},    aFactorY,       T_number{0},
+            T_number{0},    T_number{0},    aFactorZ,
         };
 
+    }
+
+
+    template <class T_number>
+    constexpr LinearMatrix<3, 3, T_number> scale(Size<3, T_number> aFactors)
+    {
+        return scale(aFactors[0], aFactors[1], aFactors[2]);
     }
 
 

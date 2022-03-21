@@ -31,6 +31,9 @@ namespace trans2d {
     constexpr LinearMatrix<2, 2, T_number> scale(const T_number aFactorX, const T_number aFactorY);
 
     template <class T_number>
+    constexpr LinearMatrix<2, 2, T_number> scale(Size<2, T_number> aFactors);
+
+    template <class T_number>
     constexpr LinearMatrix<2, 2, T_number> scale(const T_number aFactor, const UnitVec<2, T_number> aAxis);
 
 
@@ -144,6 +147,10 @@ namespace trans3d {
     constexpr LinearMatrix<3, 3, T_number> scale(const T_number aFactorX,
                                                  const T_number aFactorY,
                                                  const T_number aFactorZ);
+
+    template <class T_number>
+    constexpr LinearMatrix<3, 3, T_number> scale(Size<3, T_number> aFactors);
+
 
     template <class T_number>
     constexpr LinearMatrix<3, 3, T_number> scale(const T_number aFactor, const UnitVec<3, T_number> aAxis);

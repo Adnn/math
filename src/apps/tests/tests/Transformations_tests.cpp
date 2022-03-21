@@ -129,6 +129,11 @@ SCENARIO("2D scaling")
                 APPROX_EQUAL(a * scaling, (Vec<2>{a.x()*3, a.y()*2}));
                 APPROX_EQUAL(b * scaling, (Vec<2>{b.x()*3, b.y()*2}));
             }
+
+            THEN("It is equal to the matrix obtained from a Size vector {3, 2}")
+            {
+                REQUIRE(scaling == trans2d::scale(Size<2, double>{3., 2.}));
+            }
         }
     }
 
@@ -612,6 +617,11 @@ SCENARIO("3D scaling")
 
                 APPROX_EQUAL(a * scaling, (Vec<3>{a.x()*3, a.y()*2, a.z()*-0.5}));
                 APPROX_EQUAL(b * scaling, (Vec<3>{b.x()*3, b.y()*2, b.z()*-0.5}));
+            }
+
+            THEN("It is equal to the matrix obtained from a Size vector {3, 2, -0.5}")
+            {
+                REQUIRE(scaling == trans3d::scale(Size<3, double>{3., 2., -0.5}));
             }
         }
     }
