@@ -124,7 +124,7 @@ SCENARIO("Box usage")
 }
 
 
-SCENARIO("Box growing.")
+SCENARIO("Box growing from points.")
 {
     GIVEN("A box")
     {
@@ -238,6 +238,54 @@ SCENARIO("Box growing.")
                 growing.extendTo(bottomLeftBack);
                 REQUIRE(growing.bottomLeftBack() == bottomLeftBack);
                 REQUIRE(growing.topRightFront() == base.topRightFront());
+            }
+        }
+    }
+}
+
+
+SCENARIO("Box boolean operations.")
+{
+    GIVEN("A box")
+    {
+        const Box<double> base{ {10., -10., 0.}, {5., 5., 5.} };
+        Box<double> growing = base;
+
+        THEN("Self union results in the same box.")
+        {
+            CHECK(base.unite(base) == base);
+        }
+
+        GIVEN("Another box entirely contained in the first")
+        {
+            const Box<double> other{ {11., -8., 0.}, {2., 2., 5.} };
+
+            THEN("Union gives the original box, in both directions.")
+            {
+                CHECK(base.unite(other) == base);
+                CHECK(other.unite(base) == base);
+            }
+        }
+
+        GIVEN("A distinct box (not contained).")
+        {
+            const Box<double> other{ {80., 80., 120.}, {10., 20., 20.} };
+
+            THEN("Union gives the the expected grown box.")
+            {
+                const Box<double> expected{ {10., -10., 120.}, {80., 110., 125.} };
+                CHECK(base.unite(other) == expected);
+                CHECK(other.unite(base) == expected);
+
+                THEN("Assignment-union mutates the left operand to match expectations.")
+                {
+                    auto otherCopy = other;
+                    REQUIRE(otherCopy == other); // Sanity check
+
+                    CHECK(otherCopy.uniteAssign(base) == expected);
+                    CHECK(otherCopy == expected);
+                    CHECK(otherCopy != other);
+                }
             }
         }
     }

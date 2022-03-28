@@ -100,6 +100,8 @@ struct Box
     bool operator!=(const Box &aRhs) const
     { return !(*this == aRhs); }
 
+    static Box Zero();
+
     Box centered() const;
 
     /// \brief Construct a Box of provided dimension, centered on origin (0, 0, 0).
@@ -111,6 +113,10 @@ struct Box
     /// \brief If the box does not include `aPosition`, grow it just enough so it does.
     void extendTo(Position<3, T_number> aPosition);
 
+    // Note: union is a reserved keywoard
+    Box unite(Box aOther) const;
+    Box & uniteAssign(const Box & aOther);
+
     Position<3, T_number> closestPoint(Position<3, T_number> aPosition) const;
 
     constexpr Rectangle<T_number> frontRectangle() const;
@@ -118,6 +124,14 @@ struct Box
     Position<3, T_number>  mPosition;
     Size<3, T_number> mDimension;
 };
+
+
+template <class T_number>
+Box<T_number> Box<T_number>::Zero()
+{
+    T_number z{0};
+    return {{z, z, z}, {z, z, z}};
+}
 
 
 template <class T_number>
@@ -152,6 +166,8 @@ bool Box<T_number>::contains(Position<3, T_positionValue> aPosition) const
 }
 
 
+// TODO Ad 2022/03/27: I suspect there is room for optimization
+// in the extension and boolean operations implementations.
 template <class T_number>
 void Box<T_number>::extendTo(Position<3, T_number> aPosition)
 {
@@ -184,6 +200,22 @@ void Box<T_number>::extendTo(Position<3, T_number> aPosition)
     {
         mDimension.depth() = zMax() - aPosition.z();
     }
+}
+
+
+template <class T_number>
+Box<T_number> Box<T_number>::unite(Box aOther) const
+{
+   return aOther.uniteAssign(*this);
+}
+
+
+template <class T_number>
+Box<T_number> & Box<T_number>::uniteAssign(const Box & aOther)
+{
+    extendTo(aOther.bottomLeftFront());
+    extendTo(aOther.topRightBack());
+    return *this;
 }
 
 
