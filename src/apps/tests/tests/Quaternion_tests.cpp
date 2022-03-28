@@ -5,6 +5,8 @@
 #include <math/Quaternion.h>
 #include <math/Transformations.h>
 
+#include <math/Interpolation/QuaternionInterpolation.h>
+
 
 using namespace ad::math;
 
@@ -96,6 +98,16 @@ SCENARIO("Quaternion conjugate and inverse.")
             REQUIRE(conjugate.y() == -q.y());
             REQUIRE(conjugate.z() == -q.z());
             REQUIRE(conjugate.w() ==  q.w());
+        }
+
+        THEN("It negation is as expected.")
+        {
+            Quaternion negation = -q;
+
+            REQUIRE(negation.x() == -q.x());
+            REQUIRE(negation.y() == -q.y());
+            REQUIRE(negation.z() == -q.z());
+            REQUIRE(negation.w() == -q.w());
         }
 
         THEN("The conjugate of unit quaternion is also the inverse.")
@@ -227,6 +239,85 @@ SCENARIO("Quaternion rotation.")
                     CHECK(q.rotate(pos).equalsWithinTolerance(pos * rotation, 10E-12));
                 }
             }
+        }
+    }
+}
+
+
+SCENARIO("Quaternion interpolation.")
+{
+    GIVEN("Two quaternions representing different rotations around the same axis.")
+    {
+        UnitVec<3, double> axis{{1., 1., 1.}};
+        Degree<double> angle1{90.};
+        Degree<double> increment{180.};
+        Degree<double> angle2 = angle1 + increment;
+
+        Quaternion q1{axis, angle1};
+        Quaternion q2{axis, angle2};
+
+        THEN("They can be interpolated.")
+        {
+            double parameter = 0.5;
+            REQUIRE(lerp(q1, q2, Clamped{parameter})
+                .equalsWithinTolerance(Quaternion{axis, angle1 + increment * parameter}, gEpsilon));
+
+            // Only midpoint is correct with linear interpolation
+            THEN("Linear interpolation is diverging away from the expected values.")
+            {
+                parameter = 0.1;
+                REQUIRE_FALSE(lerp(q1, q2, Clamped{parameter})
+                    .equalsWithinTolerance(Quaternion{axis, angle1 + increment * parameter}, gEpsilon));
+
+                parameter = 0.78;
+                REQUIRE_FALSE(lerp(q1, q2, Clamped{parameter})
+                    .equalsWithinTolerance(Quaternion{axis, angle1 + increment * parameter}, gEpsilon));
+            }
+        }
+
+        THEN("They can be spherically interpolated.")
+        {
+            double parameter = 0.5;
+            REQUIRE(slerp(q1, q2, Clamped{parameter})
+                .equalsWithinTolerance(Quaternion{axis, angle1 + increment * parameter}, gEpsilon));
+
+            // All points are correct
+            parameter = 0.1;
+            REQUIRE(slerp(q1, q2, Clamped{parameter})
+                .equalsWithinTolerance(Quaternion{axis, angle1 + increment * parameter}, gEpsilon));
+
+            parameter = 0.78;
+            REQUIRE(slerp(q1, q2, Clamped{parameter})
+                .equalsWithinTolerance(Quaternion{axis, angle1 + increment * parameter}, gEpsilon));
+        }
+    }
+
+    GIVEN("Two quaternions 90 degrees appart.")
+    {
+        UnitVec<3, double> axis{{0., 0., 1.}};
+        Degree<double> angle1{270.};
+        Degree<double> angle2{0.};
+        Degree<double> difference{90.};
+
+        Quaternion q1{axis, angle1};
+        Quaternion q2{axis, angle2};
+
+        THEN("They lerp along the shortest path.")
+        {
+            double parameter = 0.5;
+
+            // NOTE: This negates the resulting quaternion, but it corresponds to the same rotation.
+            REQUIRE(lerp(q1, q2, Clamped{parameter})
+                .equalsWithinTolerance(-Quaternion{axis, angle1 + difference * parameter}, gEpsilon));
+        }
+
+        THEN("They spherically interpolate along the shortest path.")
+        {
+            double parameter = 0.5;
+
+            // NOTE: This negates the resulting quaternion, but it corresponds to the same rotation.
+            REQUIRE(slerp(q1, q2, Clamped{parameter})
+                .equalsWithinTolerance(-Quaternion{axis, angle1 + difference * parameter}, gEpsilon));
         }
     }
 }

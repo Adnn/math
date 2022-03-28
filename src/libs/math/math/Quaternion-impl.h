@@ -95,6 +95,15 @@ constexpr T_number Quaternion<T_number>::w() const noexcept(should_noexcept)
 { return mW; }
 
 
+
+template <class T_number>
+constexpr Quaternion<T_number> Quaternion<T_number>::operator-() 
+noexcept(should_noexcept)
+{
+    return {-mVector, -mW};
+}
+
+
 template <class T_number>
 constexpr Quaternion<T_number> & Quaternion<T_number>::operator*=(const Quaternion & aRhs) 
 noexcept(should_noexcept)
@@ -155,6 +164,14 @@ noexcept(should_noexcept)
 }
 
 
+template <class T_number>
+constexpr Vec<4, T_number> Quaternion<T_number>::asVec() const 
+noexcept(should_noexcept)
+{
+    return {mVector, mW};
+}
+
+
 //
 // Free functions
 //
@@ -164,6 +181,14 @@ operator*(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs)
 noexcept(decltype(aLhs)::should_noexcept)
 {
     return aLhs *= aRhs;
+}
+
+
+template <class T_number>
+T_number getCosineBetween(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs)
+noexcept(decltype(aLhs)::should_noexcept)
+{
+    return aLhs.asVec().dot(aRhs.asVec());
 }
 
 

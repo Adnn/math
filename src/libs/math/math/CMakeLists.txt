@@ -34,6 +34,7 @@ set(${TARGET_NAME}_HEADERS
     Curves/CurveBase.h
 
     Interpolation/Interpolation.h
+    Interpolation/QuaternionInterpolation.h
     Interpolation/ParameterAnimation.h
 )
 

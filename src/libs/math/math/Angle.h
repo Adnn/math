@@ -131,22 +131,22 @@ T_representation tan(const ANGLE aAngle)
     return std::tan(Radian<T_representation>{aAngle}.value());
 }
 
-template <class T_representation, class T_unitTag>
-T_representation asin(const ANGLE aAngle)
+template <class T_unitTag, class T_representation>
+ANGLE asin(const T_representation aSine)
 {
-    return std::asin(Radian<T_representation>{aAngle}.value());
+    return ANGLE{std::asin(aSine)};
 }
 
-template <class T_representation, class T_unitTag>
-T_representation acos(const ANGLE aAngle)
+template <class T_unitTag, class T_representation>
+ANGLE acos(const T_representation aCosine)
 {
-    return std::acos(Radian<T_representation>{aAngle}.value());
+    return ANGLE{std::acos(aCosine)};
 }
 
-template <class T_representation, class T_unitTag>
-T_representation atan(const ANGLE aAngle)
+template <class T_unitTag, class T_representation>
+ANGLE atan(const T_representation aTangent)
 {
-    return std::atan(Radian<T_representation>{aAngle}.value());
+    return ANGLE{std::atan(aTangent)};
 }
 
 template <class T_representation, class T_unitTag>

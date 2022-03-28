@@ -2,6 +2,7 @@
 
 
 #include "Angle.h"
+#include "Clamped.h"
 #include "Vector.h"
 
 
@@ -45,6 +46,8 @@ public:
     constexpr T_number z() const noexcept(should_noexcept);
     constexpr T_number w() const noexcept(should_noexcept);
 
+    constexpr Quaternion operator-() noexcept(should_noexcept);
+
     constexpr Quaternion & operator*=(const Quaternion & aRhs) noexcept(should_noexcept);
 
     /// \brief Return antoher Quaternion, which is the conjugate of this.
@@ -72,6 +75,8 @@ public:
     /// \note This can be used to test if two instances are almost equal.
     constexpr bool equalsWithinTolerance(const Quaternion & aRhs, T_number aEpsilon) const noexcept(should_noexcept);
 
+    constexpr Vec<4, T_number> asVec() const noexcept(should_noexcept);
+
 private:
     constexpr Quaternion(Vec<3, T_number> aVector, T_number aW)  noexcept(should_noexcept);
 
@@ -84,6 +89,12 @@ private:
 template <class T_number>
 constexpr Quaternion<T_number>
 operator*(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs) 
+noexcept(decltype(aLhs)::should_noexcept);
+
+
+/// \brief The cosine of the angle between two (unit length) quaternions.
+template <class T_number>
+T_number getCosineBetween(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs)
 noexcept(decltype(aLhs)::should_noexcept);
 
 
