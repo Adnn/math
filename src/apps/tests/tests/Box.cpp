@@ -9,13 +9,13 @@ SCENARIO("Box usage")
 {
     GIVEN("A box instance")
     {
-        Box<double> box{ {0., 5., 10.}, {20., 30., 40.} };
+        Box<double> box{ {0., 5., -30.}, {20., 30., 40.} };
 
         THEN("Its position and dimensions are readable")
         {
             REQUIRE(box.x() == 0.);
             REQUIRE(box.y() == 5.);
-            REQUIRE(box.z() == 10.);
+            REQUIRE(box.z() == -30.);
 
             REQUIRE(box.width()  == 20.);
             REQUIRE(box.height() == 30.);
@@ -25,7 +25,7 @@ SCENARIO("Box usage")
 
         THEN("It can be assigned from another box")
         {
-            Box<double> other{ {10., 10., 10.}, {200., 200., 200.} };
+            Box<double> other{ {10., 10., -190.}, {200., 200., 200.} };
             REQUIRE(box != other);
             box = other;
             REQUIRE(box == other);
@@ -33,7 +33,7 @@ SCENARIO("Box usage")
 
         THEN("Its corners are accessible")
         {
-            REQUIRE(box.origin() == Position<3>{0., 5., 10.});
+            REQUIRE(box.origin() == Position<3>{0., 5., -30.});
 
             REQUIRE(box.bottomLeftFront()  == Position<3>{ 0.,  5.,  10.});
             REQUIRE(box.bottomLeftBack()   == Position<3>{ 0.,  5., -30.});
@@ -48,7 +48,7 @@ SCENARIO("Box usage")
 
         THEN("It can generate a centered box")
         {
-            Box<double> expected{ {-10., -10., 30.}, {20., 30., 40.} };
+            Box<double> expected{ {-10., -10., -50.}, {20., 30., 40.} };
             REQUIRE(box.centered() == expected);
         }
 
@@ -128,7 +128,7 @@ SCENARIO("Box growing from points.")
 {
     GIVEN("A box")
     {
-        const Box<double> base{ {10., -10., 0.}, {5., 5., 5.} };
+        const Box<double> base{ {10., -10., -5.}, {5., 5., 5.} };
         Box<double> growing = base;
 
         WHEN("The box is extended to points already inside it.")
@@ -248,7 +248,7 @@ SCENARIO("Box boolean operations.")
 {
     GIVEN("A box")
     {
-        const Box<double> base{ {10., -10., 0.}, {5., 5., 5.} };
+        const Box<double> base{ {10., -10., -5.}, {5., 5., 5.} };
         Box<double> growing = base;
 
         THEN("Self union results in the same box.")
@@ -258,7 +258,7 @@ SCENARIO("Box boolean operations.")
 
         GIVEN("Another box entirely contained in the first")
         {
-            const Box<double> other{ {11., -8., 0.}, {2., 2., 5.} };
+            const Box<double> other{ {11., -8., -5.}, {2., 2., 5.} };
 
             THEN("Union gives the original box, in both directions.")
             {
@@ -269,11 +269,11 @@ SCENARIO("Box boolean operations.")
 
         GIVEN("A distinct box (not contained).")
         {
-            const Box<double> other{ {80., 80., 120.}, {10., 20., 20.} };
+            const Box<double> other{ {80., 80., 120.}, {10., 20., 30.} };
 
             THEN("Union gives the the expected grown box.")
             {
-                const Box<double> expected{ {10., -10., 120.}, {80., 110., 125.} };
+                const Box<double> expected{ {10., -10., -5.}, {80., 110., 155.} };
                 CHECK(base.unite(other) == expected);
                 CHECK(other.unite(base) == expected);
 

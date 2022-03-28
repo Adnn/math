@@ -534,7 +534,7 @@ namespace trans3d {
     orthographicProjection(const Box<T_number> aProjected)
     {
         return window(aProjected,
-                      { { T_number{-1}, T_number{-1}, T_number{+1} },
+                      { { T_number{-1}, T_number{-1}, T_number{-1} },
                         { T_number{2},  T_number{2},  T_number{2}  } });
     }
 

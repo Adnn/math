@@ -7,8 +7,7 @@ namespace ad {
 namespace math {
 
 
-/// \brief
-/// \important The origin is **front** bottom left.
+/// \important The origin is the bottom left **back** in a right handed frame.
 template <class T_number>
 struct Box
 {
@@ -37,9 +36,9 @@ struct Box
     { return y() + height(); }
 
     T_number zMin() const
-    { return z() - depth(); }
-    T_number zMax() const
     { return z(); }
+    T_number zMax() const
+    { return z() + depth(); }
 
     T_number & width()
     { return mDimension.width(); }
@@ -68,32 +67,32 @@ struct Box
     Position<3, T_number> origin() const
     { return mPosition; }
 
-    Position<3, T_number> bottomLeftFront() const
+    Position<3, T_number> bottomLeftBack() const
     { return origin(); }
 
-    Position<3, T_number> topLeftFront() const
+    Position<3, T_number> topLeftBack() const
     { return mPosition + Vec<3, T_number>{T_number(0), mDimension.height(), T_number{0}}; }
 
-    Position<3, T_number> bottomRightFront() const
+    Position<3, T_number> bottomRightBack() const
     { return mPosition + Vec<3, T_number>{mDimension.width(), T_number{0}, T_number{0}}; }
 
-    Position<3, T_number> topRightFront() const
+    Position<3, T_number> topRightBack() const
     { return mPosition + Vec<3, T_number>{mDimension.width(), mDimension.height(), T_number{0}}; }
 
-    Position<3, T_number> bottomLeftBack() const
-    { return mPosition + Vec<3, T_number>{T_number{0}, T_number{0}, - mDimension.depth()}; }
+    Position<3, T_number> bottomLeftFront() const
+    { return mPosition + Vec<3, T_number>{T_number{0}, T_number{0}, mDimension.depth()}; }
 
-    Position<3, T_number> topLeftBack() const
-    { return mPosition + Vec<3, T_number>{T_number{0}, mDimension.height(), - mDimension.depth()}; }
+    Position<3, T_number> topLeftFront() const
+    { return mPosition + Vec<3, T_number>{T_number{0}, mDimension.height(), mDimension.depth()}; }
 
-    Position<3, T_number> bottomRightBack() const
-    { return mPosition + Vec<3, T_number>{mDimension.width(), T_number{0}, - mDimension.depth()}; }
+    Position<3, T_number> bottomRightFront() const
+    { return mPosition + Vec<3, T_number>{mDimension.width(), T_number{0}, mDimension.depth()}; }
 
-    Position<3, T_number> topRightBack() const
-    { return mPosition + Vec<3, T_number>{mDimension.width(), mDimension.height(), - mDimension.depth()}; }
+    Position<3, T_number> topRightFront() const
+    { return mPosition + Vec<3, T_number>{mDimension.width(), mDimension.height(), mDimension.depth()}; }
 
     Position<3, T_number> center() const
-    { return mPosition + (Vec<3, T_number>{mDimension.width(), mDimension.height(), - mDimension.depth()} / 2); }
+    { return mPosition + (Vec<3, T_number>{mDimension.width(), mDimension.height(), mDimension.depth()} / 2); }
 
     bool operator==(const Box &aRhs) const
     { return mPosition == aRhs.mPosition && mDimension == aRhs.mDimension; }
@@ -137,10 +136,7 @@ Box<T_number> Box<T_number>::Zero()
 template <class T_number>
 Box<T_number> Box<T_number>::centered() const
 { 
-    auto dimensionDepthNegated{mDimension};
-    dimensionDepthNegated.depth() = - dimensionDepthNegated.depth();
-
-    return { {mPosition - static_cast<Vec<3, T_number>>(dimensionDepthNegated/T_number{2})},
+    return { {mPosition - static_cast<Vec<3, T_number>>(mDimension/T_number{2})},
             mDimension };
 }
 
@@ -191,14 +187,14 @@ void Box<T_number>::extendTo(Position<3, T_number> aPosition)
         mDimension.height() = aPosition.y() - yMin();
     }
 
-    if (aPosition.z() > zMax()) 
-    {
-        mDimension.depth() = aPosition.z() - zMin();
-        mPosition.z() = aPosition.z();
-    }
-    else if (aPosition.z() < zMin())
+    if (aPosition.z() < zMin())
     {
         mDimension.depth() = zMax() - aPosition.z();
+        mPosition.z() = aPosition.z();
+    }
+    else if (aPosition.z() > zMax()) 
+    {
+        mDimension.depth() = aPosition.z() - zMin();
     }
 }
 
