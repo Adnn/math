@@ -49,7 +49,7 @@ SCENARIO("Matrix type traits")
         THEN("It is recognized as a form of MatrixBase")
         {
             REQUIRE(from_matrix_v<sdr::Rgba>);
-            REQUIRE(from_matrix_v<hdr::Rgb>);
+            REQUIRE(from_matrix_v<hdr::Rgb_d>);
         }
     }
     GIVEN("A Matrix type")
@@ -93,7 +93,7 @@ SCENARIO("Position type traits.")
         THEN("It is not a position.")
         {
             REQUIRE_FALSE(is_position_v<sdr::Rgba>);
-            REQUIRE_FALSE(is_position_v<hdr::Rgb>);
+            REQUIRE_FALSE(is_position_v<hdr::Rgb_d>);
         }
     }
     GIVEN("A Matrix type")
@@ -147,7 +147,7 @@ SCENARIO("Vec type traits.")
         THEN("It is not a Vec.")
         {
             REQUIRE_FALSE(is_vec_v<sdr::Rgba>);
-            REQUIRE_FALSE(is_vec_v<hdr::Rgb>);
+            REQUIRE_FALSE(is_vec_v<hdr::Rgb_d>);
         }
     }
     GIVEN("A Matrix type")
@@ -201,7 +201,7 @@ SCENARIO("Size type traits.")
         THEN("It is not a Size.")
         {
             REQUIRE_FALSE(is_size_v<sdr::Rgba>);
-            REQUIRE_FALSE(is_size_v<hdr::Rgb>);
+            REQUIRE_FALSE(is_size_v<hdr::Rgb_d>);
         }
     }
     GIVEN("A Matrix type")
@@ -273,8 +273,8 @@ SCENARIO("Color type traits.")
             REQUIRE(is_color_v<sdr::Rgba>);
             REQUIRE(is_color_v<sdr::Grayscale>);
 
-            REQUIRE(is_color_v<hdr::Rgb>);
-            REQUIRE(is_color_v<hdr::Rgba>);
+            REQUIRE(is_color_v<hdr::Rgb_d>);
+            REQUIRE(is_color_v<hdr::Rgba_d>);
             REQUIRE(is_color_v<hdr::Grayscale>);
 
 

@@ -164,21 +164,37 @@ namespace sdr {
 namespace hdr {
 
 
-    using Rgb = ::ad::math::Rgb_base<double>;
+    template <class T_number = double>
+    using Rgb = ::ad::math::Rgb_base<T_number>;
+
+    using Rgb_d = Rgb<double>;
+    using Rgb_f = Rgb<float>;
 
 
-    constexpr const Rgb gBlack{0., 0., 0.};
-    constexpr const Rgb gWhite{1., 1., 1.};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gBlack{0., 0., 0.};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gWhite{1., 1., 1.};
 
-    constexpr const Rgb gRed  {1., 0., 0.};
-    constexpr const Rgb gGreen{0., 1., 0.};
-    constexpr const Rgb gBlue {0., 0., 1.};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gRed  {1., 0., 0.};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gGreen{0., 1., 0.};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gBlue {0., 0., 1.};
 
-    constexpr const Rgb gYellow {gRed   + gGreen};
-    constexpr const Rgb gCyan   {gGreen + gBlue};
-    constexpr const Rgb gMagenta{gBlue  + gRed};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gYellow {gRed<T_number>   + gGreen<T_number>};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gCyan   {gGreen<T_number> + gBlue<T_number>};
+    template <class T_number = double>
+    constexpr const Rgb<T_number> gMagenta{gBlue<T_number>  + gRed<T_number>};
 
-    using Rgba = ::ad::math::RgbAlpha_base<double>;
+    template <class T_number = double>
+    using Rgba = ::ad::math::RgbAlpha_base<T_number>;
+
+    using Rgba_d = Rgba<double>;
+    using Rgba_f = Rgba<float>;
 
     using Grayscale = ::ad::math::Grayscale_base<double>;
 
@@ -186,13 +202,17 @@ namespace hdr {
 } // namespace hdr
 
 
-sdr::Rgb to_sdr(hdr::Rgb aHdr);
+template <class T_hdrNumber = double>
+sdr::Rgb to_sdr(hdr::Rgb<T_hdrNumber> aHdr);
 
-sdr::Rgba to_sdr(hdr::Rgba aHdr);
+template <class T_hdrNumber = double>
+sdr::Rgba to_sdr(hdr::Rgba<T_hdrNumber> aHdr);
 
-hdr::Rgb to_hdr(sdr::Rgb aSdr);
+template <class T_hdrNumber = double>
+hdr::Rgb<T_hdrNumber> to_hdr(sdr::Rgb aSdr);
 
-hdr::Rgba to_hdr(sdr::Rgba aSdr);
+template <class T_hdrNumber = double>
+hdr::Rgba<T_hdrNumber> to_hdr(sdr::Rgba aSdr);
 
 
 // CAUTION: For ADL, aRgb parameter is seen as the "aliased type", i.e. ::ad::math::Rgb_base
@@ -218,7 +238,8 @@ inline std::ostream & operator<<(std::ostream & os, const sdr::Rgba &aRgba)
 }
 
 
-inline sdr::Rgb to_sdr(hdr::Rgb aHdr)
+template <class T_hdrNumber>
+sdr::Rgb to_sdr(hdr::Rgb<T_hdrNumber> aHdr)
 {
     return {
         static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.r()) * 255),
@@ -227,7 +248,8 @@ inline sdr::Rgb to_sdr(hdr::Rgb aHdr)
     };
 }
 
-inline sdr::Rgba to_sdr(hdr::Rgba aHdr)
+template <class T_hdrNumber>
+sdr::Rgba to_sdr(hdr::Rgba<T_hdrNumber> aHdr)
 {
     return {
         static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.r()) * 255),
@@ -237,22 +259,24 @@ inline sdr::Rgba to_sdr(hdr::Rgba aHdr)
     };
 }
 
-inline hdr::Rgb to_hdr(sdr::Rgb aSdr)
+template <class T_hdrNumber>
+hdr::Rgb<T_hdrNumber> to_hdr(sdr::Rgb aSdr)
 {
     return {
-        static_cast<hdr::Rgb::value_type>(aSdr.r()) / 255,
-        static_cast<hdr::Rgb::value_type>(aSdr.g()) / 255,
-        static_cast<hdr::Rgb::value_type>(aSdr.b()) / 255,
+        static_cast<hdr::Rgb<T_hdrNumber>::value_type>(aSdr.r()) / 255,
+        static_cast<hdr::Rgb<T_hdrNumber>::value_type>(aSdr.g()) / 255,
+        static_cast<hdr::Rgb<T_hdrNumber>::value_type>(aSdr.b()) / 255,
     };
 }
 
-inline hdr::Rgba to_hdr(sdr::Rgba aSdr)
+template <class T_hdrNumber>
+hdr::Rgba<T_hdrNumber> to_hdr(sdr::Rgba aSdr)
 {
     return {
-        static_cast<hdr::Rgb::value_type>(aSdr.r()) / 255,
-        static_cast<hdr::Rgb::value_type>(aSdr.g()) / 255,
-        static_cast<hdr::Rgb::value_type>(aSdr.b()) / 255,
-        static_cast<hdr::Rgb::value_type>(aSdr.a()) / 255,
+        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.r()) / 255,
+        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.g()) / 255,
+        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.b()) / 255,
+        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.a()) / 255,
     };
 }
 

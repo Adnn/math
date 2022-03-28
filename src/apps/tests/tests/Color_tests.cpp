@@ -79,10 +79,10 @@ SCENARIO("RGBA colors constructions")
                 REQUIRE_FALSE(rgba != rgb);
 
                 // The test is order independent.
-                REQUIRE_FALSE(rgba == hdr::gBlack);
-                REQUIRE_FALSE(hdr::gBlack == rgba);
-                REQUIRE(rgba != hdr::gBlack);
-                REQUIRE(hdr::gBlack != rgba);
+                REQUIRE_FALSE(rgba == hdr::gBlack<>);
+                REQUIRE_FALSE(hdr::gBlack<> == rgba);
+                REQUIRE(rgba != hdr::gBlack<>);
+                REQUIRE(hdr::gBlack<> != rgba);
             }
 
             WHEN("RGBA alpha is changed to not be 100%")
