@@ -263,9 +263,9 @@ template <class T_hdrNumber>
 hdr::Rgb<T_hdrNumber> to_hdr(sdr::Rgb aSdr)
 {
     return {
-        static_cast<hdr::Rgb<T_hdrNumber>::value_type>(aSdr.r()) / 255,
-        static_cast<hdr::Rgb<T_hdrNumber>::value_type>(aSdr.g()) / 255,
-        static_cast<hdr::Rgb<T_hdrNumber>::value_type>(aSdr.b()) / 255,
+        static_cast<typename hdr::Rgb<T_hdrNumber>::value_type>(aSdr.r()) / 255,
+        static_cast<typename hdr::Rgb<T_hdrNumber>::value_type>(aSdr.g()) / 255,
+        static_cast<typename hdr::Rgb<T_hdrNumber>::value_type>(aSdr.b()) / 255,
     };
 }
 
@@ -273,10 +273,10 @@ template <class T_hdrNumber>
 hdr::Rgba<T_hdrNumber> to_hdr(sdr::Rgba aSdr)
 {
     return {
-        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.r()) / 255,
-        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.g()) / 255,
-        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.b()) / 255,
-        static_cast<hdr::Rgba<T_hdrNumber>::value_type>(aSdr.a()) / 255,
+        static_cast<typename hdr::Rgba<T_hdrNumber>::value_type>(aSdr.r()) / 255,
+        static_cast<typename hdr::Rgba<T_hdrNumber>::value_type>(aSdr.g()) / 255,
+        static_cast<typename hdr::Rgba<T_hdrNumber>::value_type>(aSdr.b()) / 255,
+        static_cast<typename hdr::Rgba<T_hdrNumber>::value_type>(aSdr.a()) / 255,
     };
 }
 

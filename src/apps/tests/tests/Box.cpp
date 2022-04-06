@@ -249,7 +249,6 @@ SCENARIO("Box boolean operations.")
     GIVEN("A box")
     {
         const Box<double> base{ {10., -10., -5.}, {5., 5., 5.} };
-        Box<double> growing = base;
 
         THEN("Self union results in the same box.")
         {

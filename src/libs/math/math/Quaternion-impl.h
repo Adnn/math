@@ -137,7 +137,7 @@ T_derived Quaternion<T_number>::rotate(const Vector<T_derived, 3, T_number> & aV
 noexcept(should_noexcept)
 {
     return static_cast<T_derived>(
-        (*this * Quaternion{aVector.as<Vec>(), T_number{0}} * this->conjugate()).mVector);
+        (*this * Quaternion{aVector.template as<Vec>(), T_number{0}} * this->conjugate()).mVector);
 }
 
 
