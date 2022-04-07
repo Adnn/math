@@ -1,7 +1,10 @@
 #include "catch.hpp"
 
+#include "CustomCatchMatchers.h"
+
 #include <math/Box.h>
 #include <math/Transformations.h>
+
 
 using namespace ad::math;
 
@@ -331,8 +334,8 @@ SCENARIO("Box transformations.")
             {
                 const double sq2 = std::sqrt(2);
                 Box<double> transformed = cube * rotation;
-                CHECK(transformed.origin() == origin.cwMul({sq2, 1., sq2}));
-                CHECK(transformed.dimension() == cube.dimension().cwMul({sq2, 1., sq2}));
+                CHECK_THAT(transformed.origin(), Approximates(origin.cwMul({sq2, 1., sq2})));
+                CHECK_THAT(transformed.dimension(), Approximates(cube.dimension().cwMul({sq2, 1., sq2})));
             }
         }
     }
@@ -349,8 +352,8 @@ SCENARIO("Box transformations.")
             {
                 const double sq2 = std::sqrt(2);
                 Box<double> transformed = cube * rotation;
-                CHECK(transformed.origin() == Position<3>{0., 0., -sq2 / 2.});
-                CHECK(transformed.dimension() == cube.dimension().cwMul({sq2, 1., sq2}));
+                CHECK_THAT(transformed.origin(), Approximates(Position<3>{0., 0., -sq2 / 2.}));
+                CHECK_THAT(transformed.dimension(), Approximates(cube.dimension().cwMul({sq2, 1., sq2})));
             }
         }
     }
