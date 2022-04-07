@@ -394,6 +394,75 @@ constexpr bool MatrixBase<TMA>::equalsWithinTolerance(const MatrixBase & aRhs, T
 
 
 template<TMP>
+template <class T_extracted, std::size_t... VN_indices>
+T_extracted MatrixBase<TMA>::extract(std::index_sequence<VN_indices...> aIndices) const 
+noexcept(should_noexcept)
+{
+    return T_extracted{at(VN_indices)...};
+}
+
+
+/*
+ * Component-wise operations
+ */
+namespace {
+
+    template <std::size_t... VN_indices, TMP>
+    T_derived binaryOp(const MatrixBase<TMA> & aLhs,
+                       const MatrixBase<TMA> & aRhs, 
+                       const T_number &(* aOperation)(const T_number &, const T_number &),
+                       std::index_sequence<VN_indices...>)
+    {
+        return {aOperation(aLhs.at(VN_indices), aRhs.at(VN_indices))...}; 
+    }
+
+    template <std::size_t... VN_indices, TMP>
+    T_derived unaryOp(const MatrixBase<TMA> & aMatrix,
+                      const T_number &(* aOperation)(const T_number &),
+                      std::index_sequence<VN_indices...>)
+    {
+        return {aOperation(aMatrix.at(VN_indices))...}; 
+    }
+
+    template <std::size_t... VN_indices, TMP>
+    T_derived unaryOp(const MatrixBase<TMA> & aMatrix,
+                      T_number(* aOperation)(T_number),
+                      std::index_sequence<VN_indices...>)
+    {
+        return {aOperation(aMatrix.at(VN_indices))...}; 
+    }
+
+} // anonymous namespace
+
+
+template <TMP>
+T_derived min(const MatrixBase<TMA> & aLhs, const MatrixBase<TMA> & aRhs) 
+noexcept(T_derived::should_noexcept)
+{
+   return binaryOp(aLhs, aRhs, std::min, std::make_index_sequence<N_rows * N_cols>());
+}
+
+
+template <TMP>
+T_derived max(const MatrixBase<TMA> & aLhs, const MatrixBase<TMA> & aRhs) 
+noexcept(T_derived::should_noexcept)
+{
+   return binaryOp(aLhs, aRhs, std::max, std::make_index_sequence<N_rows * N_cols>());
+}
+
+
+template <TMP>
+T_derived abs(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept)
+{
+    return unaryOp(aMatrix, std::abs, std::make_index_sequence<N_rows * N_cols>());
+}
+
+
+/*
+ * Output operator
+ */
+template<TMP>
 std::ostream & operator<<(std::ostream & os, const MatrixBase<TMA> &aMatrix)
 {
     auto printRow = [&](std::size_t row)

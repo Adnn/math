@@ -194,9 +194,12 @@ public:
     constexpr iterator getMaxMagnitudeElement() noexcept(should_noexcept);
     constexpr const_iterator getMaxMagnitudeElement() const noexcept(should_noexcept);
 
-    /// \brief Checked access to an element by its linear index, i.e. `row*N_rows + column`
+    // TODO Ad 2022/04/07: Should at change to the usual meaning of **checked** access?
+    // In which case, a non-checked alternative should still be provided, and existing
+    // code in this lib should be changed to use it.
+    /// \brief Unchecked access to an element by its linear index, i.e. `row*N_rows + column`
     constexpr T_number & at(std::size_t aIndex);
-    /// \brief Checked access to an element by its row and column index.
+    /// \brief Unchecked access to an element by its row and column index.
     /// \note The order of parameters (row then column) matches usual M_ij mathematical notation.
     constexpr T_number & at(std::size_t aRow, std::size_t aColumn);
     constexpr T_number at(std::size_t aIndex) const;
@@ -290,6 +293,9 @@ protected:
     MatrixBase(MatrixBase && aRhs) = default;
     MatrixBase & operator=(MatrixBase && aRhs) = default;
 
+    template <class T_extracted, std::size_t... VN_indices>
+    T_extracted extract(std::index_sequence<VN_indices...> aIndices) const noexcept(should_noexcept);
+
 public:
     /// \note The default default-ctor would return unitialized memory.
     /// This is usefull in implementation details, but we make it more explicit with a ctor taking a tag
@@ -345,6 +351,24 @@ template <TMP, class T_scalar>
 constexpr std::enable_if_t<! from_matrix_v<T_scalar>, T_derived>
 operator/(const MatrixBase<TMA> &aLhs, T_scalar aScalar)
 /*noexcept(T_derived::should_noexcept)*/;
+
+
+/*
+ * Component-wise operations
+ */
+template <TMP>
+T_derived min(const MatrixBase<TMA> & aLhs, const MatrixBase<TMA> & aRhs) 
+noexcept(T_derived::should_noexcept);
+
+
+template <TMP>
+T_derived max(const MatrixBase<TMA> & aLhs, const MatrixBase<TMA> & aRhs)
+noexcept(T_derived::should_noexcept);
+
+
+template <TMP>
+T_derived abs(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept);
 
 
 /*

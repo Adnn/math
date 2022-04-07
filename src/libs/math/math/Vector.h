@@ -15,9 +15,11 @@ class Vector : public MatrixBase<T_derived, 1, N_dimension, T_number>
 {
     typedef MatrixBase<T_derived, 1, N_dimension, T_number> base_type;
     using base_type::base_type;
-    using base_type::should_noexcept;
 
 public:
+    // Public so free functions can use it
+    using base_type::should_noexcept;
+
     static constexpr std::size_t Dimension{N_dimension};
 
     /// \brief Constructor from a head vector of lower dimension, with explicit tail element to complete.

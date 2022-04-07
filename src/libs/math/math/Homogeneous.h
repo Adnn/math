@@ -62,6 +62,11 @@ public:
     explicit constexpr AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept);
 
     //
+    // Accessors and analysis
+    //
+    constexpr Vec<N_dimension-1, T_number> getAffine() const noexcept(should_noexcept);
+
+    //
     // Disable the modifying operations incompatible with AffineMatrix specialized case
     //
     base_type & operator+=(const Matrix<N_dimension, N_dimension, T_number> & aRhs) = delete;

@@ -407,6 +407,46 @@ SCENARIO("Matrix extreme magnitude elements.")
 }
 
 
+SCENARIO("Matrix operations on components.")
+{
+    GIVEN("Two 2x2 Matrices")
+    {
+        Matrix<2, 2> left{
+            1.,     -1., 
+            -28.,   100.,
+        };
+
+        Matrix<2, 2> right{
+            0.,     2., 
+            0.,     2.,
+        };
+
+        THEN("A matrix of minimum elements can be obtained.")
+        {
+            REQUIRE(min(left, right) == Matrix<2, 2>{0., -1., -28., 2.});
+        }
+
+        THEN("A matrix of maximum elements can be obtained.")
+        {
+            REQUIRE(max(left, right) == Matrix<2, 2>{1., 2., 0., 100.});
+        }
+    }
+
+    GIVEN("A 2x2 Matrices")
+    {
+        Matrix<2, 2> matrix{
+            1.,     -1., 
+            -28.,   100.,
+        };
+
+        THEN("A matrix of absolute values can be obtained.")
+        {
+            REQUIRE(abs(matrix) == Matrix<2, 2>{1., 1., 28., 100.});
+        }
+    }
+}
+
+
 SCENARIO("Matrix special cases analysis.")
 {
     GIVEN("A diagonal 4x4 Matrix")

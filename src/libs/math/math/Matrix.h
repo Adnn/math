@@ -18,10 +18,10 @@ class Matrix : public MatrixBase<Matrix<TMP>, N_rows, N_cols, T_number>
 {
     typedef MatrixBase<Matrix<TMP>, N_rows, N_cols, T_number> base_type;
 
-protected:
+public:
+    // Public so free functions can use it
     using base_type::should_noexcept;
 
-public:
     // If not moved in the public section, VisualStudio erros on LinearMatrix compilation
     using base_type::base_type;
 

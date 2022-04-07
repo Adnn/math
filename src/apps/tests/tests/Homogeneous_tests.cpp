@@ -179,11 +179,17 @@ SCENARIO("Affine matrices construction")
             REQUIRE(homoVec.equalsWithinTolerance(Vec<3>{1., 0., 0.}, 
                                                   std::numeric_limits<double>::epsilon()));
         }
+
+        THEN("Its affine part is the zero vector")
+        {
+            REQUIRE(homoRotation.getAffine() == Vec<2>::Zero());
+        }
     }
 
     GIVEN("An affine matrix of dimension 3 made from a rotation and a translation transformations.")
     {
-        AffineMatrix<3> homoTransformation{trans2d::rotate(Degree<double>{90.}), Vec<2>{10., -10.}};
+        Vec<2> translation{10., -10.};
+        AffineMatrix<3> homoTransformation{trans2d::rotate(Degree<double>{90.}), translation};
 
         THEN("It has expected elements")
         {
@@ -209,6 +215,11 @@ SCENARIO("Affine matrices construction")
             homoVec *= homoTransformation;
             REQUIRE(homoVec.equalsWithinTolerance(Vec<3>{1., 0., 0.}, 
                                                   std::numeric_limits<double>::epsilon()));
+        }
+
+        THEN("Its affine part is the translation vector")
+        {
+            REQUIRE(homoTransformation.getAffine() == translation);
         }
     }
 }

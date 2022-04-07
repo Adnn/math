@@ -1,3 +1,5 @@
+#include "Utilities.h"
+
 namespace ad {
 namespace math {
 
@@ -56,6 +58,17 @@ template <TMP>
 constexpr AffineMatrix<TMA>::AffineMatrix(typename base_type::UninitializedTag) noexcept(should_noexcept) :
     base_type{typename base_type::UninitializedTag{}}
 {}
+
+
+template <TMP>
+constexpr Vec<N_dimension - 1, T_number> AffineMatrix<TMA>::getAffine() const noexcept(should_noexcept)
+{
+    return this->template extract<Vec<N_dimension - 1, T_number>>(
+        makeIndexSequence<N_dimension - 1, 
+                          N_dimension * (N_dimension - 1)>()
+    );
+}
+
 
 template <TMP>
 constexpr AffineMatrix<TMA> AffineMatrix<TMA>::Identity() noexcept(should_noexcept)
