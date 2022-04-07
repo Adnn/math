@@ -40,9 +40,24 @@ noexcept(decltype(aLhs)::should_noexcept)
         aLhs = -aLhs;
         cosine = -cosine;
     }
-    Angle theta = acos<Radian_tag>(cosine);
-    T_parameter lhsParam = sin((T_parameter{1} - aParameter) * theta) / sin(theta);
-    T_parameter rhsParam = sin(aParameter * theta) / sin(theta);
+
+    T_parameter lhsParam;
+    T_parameter rhsParam;
+
+    // If the two quaternions are too close, division by sin(theta) might divide by zero.
+    // Fall back to linear interpolation.
+    // See: 3MPGGD p262
+    if (cosine > T_number{0.9999})
+    {
+        lhsParam = T_parameter{1} - aParameter;
+        rhsParam = aParameter;
+    }
+    else
+    {
+        Angle theta = acos<Radian_tag>(cosine);
+        lhsParam = sin((T_parameter{1} - aParameter) * theta) / sin(theta);
+        rhsParam = sin(aParameter * theta) / sin(theta);
+    }
     Vec<4, T_number> interpolated = lhsParam * aLhs.asVec() + rhsParam * aRhs.asVec();
     return {interpolated.x(), interpolated.y(), interpolated.z(), interpolated.w()};
 }

@@ -320,4 +320,25 @@ SCENARIO("Quaternion interpolation.")
                 .equalsWithinTolerance(-Quaternion{axis, angle1 + difference * parameter}, gEpsilon));
         }
     }
+
+    GIVEN("A single quaternion")
+    {
+        UnitVec<3, double> axis{{1., 1., 1.}};
+        Degree<double> angle{90.};
+        Quaternion q{axis, angle};
+
+
+        THEN("Linear interpolation with itself in the same quaterion.")
+        {
+            double parameter = 0.5;
+            CHECK(lerp(q, q, Clamped{parameter}).equalsWithinTolerance(q, gEpsilon));
+        }
+
+        THEN("Spherical interpolation with itself in the same quaterion.")
+        {
+            // Note: tests the extreme case where angle between quaternions might tend toward zero.
+            double parameter = 0.5;
+            CHECK(slerp(q, q, Clamped{parameter}).equalsWithinTolerance(q, gEpsilon));
+        }
+    }
 }
