@@ -79,10 +79,10 @@ SCENARIO("2D rotations")
     {
         using namespace homogeneous;
         Vec<3> i = makeVec<3>(1., 0.);
-        Vec<3> j = makeVec<3>(0., 1.);
+        Vec<3> j = makeVec(Vec<2>{0., 1.});
 
         Position<3> a = makePosition<3>(1., 0.);
-        Position<3> b = makePosition<3>(0., 1.);
+        Position<3> b = makePosition(Position<2>{0., 1.});
 
         GIVEN("A center of rotation and associated -180° rotation")
         {
@@ -99,6 +99,23 @@ SCENARIO("2D rotations")
             {
                 CHECK_THAT(a * rotation, Approximates(Position<3>{ 1.,  0., 1.}));
                 CHECK_THAT(b * rotation, Approximates(Position<3>{ 2., -1., 1.}));
+            }
+        }
+
+        GIVEN("A translation.")
+        {
+            AffineMatrix<3> translation = trans2d::translate(Vec<2>{10., -10.});
+
+            THEN("The vectors are not modified by translation.")
+            {
+                CHECK(i * translation == i);
+                CHECK(j * translation == j);
+            }
+
+            THEN("The positions are translated.")
+            {
+                CHECK_THAT(a * translation, Approximates(Position<3>{11., -10., 1.}));
+                CHECK_THAT(b * translation, Approximates(Position<3>{10.,  -9., 1.}));
             }
         }
     }
@@ -415,10 +432,10 @@ SCENARIO("2D windowing transformation.")
         Rectangle<double> source{{-5., 2.}, {10., 8.}};
 
         using namespace homogeneous;
-        Position<3> bottomLeft  = makePosition<3>(source.bottomLeft());
-        Position<3> bottomRight = makePosition<3>(source.bottomRight());
-        Position<3> topLeft     = makePosition<3>(source.topLeft());
-        Position<3> topRight    = makePosition<3>(source.topRight());
+        Position<3> bottomLeft  = makePosition(source.bottomLeft());
+        Position<3> bottomRight = makePosition(source.bottomRight());
+        Position<3> topLeft     = makePosition(source.topLeft());
+        Position<3> topRight    = makePosition(source.topRight());
 
         GIVEN("A windowing transformation to a destination rectangle.")
         {
@@ -427,10 +444,10 @@ SCENARIO("2D windowing transformation.")
 
             THEN("The 4 source corners are moved to the 4 destination corners by the transformation.")
             {
-                REQUIRE(bottomLeft * windowing == makePosition<3>(destination.bottomLeft()));
-                REQUIRE(bottomRight * windowing == makePosition<3>(destination.bottomRight()));
-                REQUIRE(topLeft * windowing == makePosition<3>(destination.topLeft()));
-                REQUIRE(topRight * windowing == makePosition<3>(destination.topRight()));
+                REQUIRE(bottomLeft * windowing  == makePosition(destination.bottomLeft()));
+                REQUIRE(bottomRight * windowing == makePosition(destination.bottomRight()));
+                REQUIRE(topLeft * windowing     == makePosition(destination.topLeft()));
+                REQUIRE(topRight * windowing    == makePosition(destination.topRight()));
             }
         }
 
@@ -930,14 +947,14 @@ SCENARIO("3D windowing transformation.")
         Box<double> source{{-5., 2., 0.5}, {10., 8., 0.5}};
 
         using namespace homogeneous;
-        Position<4> bottomLeftFront  = makePosition<4>(source.bottomLeftFront());
-        Position<4> bottomLeftBack   = makePosition<4>(source.bottomLeftBack());
-        Position<4> bottomRightFront = makePosition<4>(source.bottomRightFront());
-        Position<4> bottomRightBack  = makePosition<4>(source.bottomRightBack());
-        Position<4> topLeftFront     = makePosition<4>(source.topLeftFront());
-        Position<4> topLeftBack      = makePosition<4>(source.topLeftBack());
-        Position<4> topRightFront    = makePosition<4>(source.topRightFront());
-        Position<4> topRightBack     = makePosition<4>(source.topRightBack());
+        Position<4> bottomLeftFront  = makePosition(source.bottomLeftFront());
+        Position<4> bottomLeftBack   = makePosition(source.bottomLeftBack());
+        Position<4> bottomRightFront = makePosition(source.bottomRightFront());
+        Position<4> bottomRightBack  = makePosition(source.bottomRightBack());
+        Position<4> topLeftFront     = makePosition(source.topLeftFront());
+        Position<4> topLeftBack      = makePosition(source.topLeftBack());
+        Position<4> topRightFront    = makePosition(source.topRightFront());
+        Position<4> topRightBack     = makePosition(source.topRightBack());
 
         GIVEN("A windowing transformation to a destination box.")
         {
@@ -946,14 +963,14 @@ SCENARIO("3D windowing transformation.")
 
             THEN("The 8 source corners are moved to the 8 destination corners by the transformation.")
             {
-                REQUIRE(bottomLeftFront * windowing  == makePosition<4>(destination.bottomLeftFront()));
-                REQUIRE(bottomLeftBack * windowing   == makePosition<4>(destination.bottomLeftBack()));
-                REQUIRE(bottomRightFront * windowing == makePosition<4>(destination.bottomRightFront()));
-                REQUIRE(bottomRightBack * windowing  == makePosition<4>(destination.bottomRightBack()));
-                REQUIRE(topLeftFront * windowing     == makePosition<4>(destination.topLeftFront()));
-                REQUIRE(topLeftBack * windowing      == makePosition<4>(destination.topLeftBack()));
-                REQUIRE(topRightFront * windowing    == makePosition<4>(destination.topRightFront()));
-                REQUIRE(topRightBack * windowing     == makePosition<4>(destination.topRightBack()));
+                REQUIRE(bottomLeftFront * windowing  == makePosition(destination.bottomLeftFront()));
+                REQUIRE(bottomLeftBack * windowing   == makePosition(destination.bottomLeftBack()));
+                REQUIRE(bottomRightFront * windowing == makePosition(destination.bottomRightFront()));
+                REQUIRE(bottomRightBack * windowing  == makePosition(destination.bottomRightBack()));
+                REQUIRE(topLeftFront * windowing     == makePosition(destination.topLeftFront()));
+                REQUIRE(topLeftBack * windowing      == makePosition(destination.topLeftBack()));
+                REQUIRE(topRightFront * windowing    == makePosition(destination.topRightFront()));
+                REQUIRE(topRightBack * windowing     == makePosition(destination.topRightBack()));
             }
         }
 
@@ -981,14 +998,14 @@ SCENARIO("3D windowing transformation.")
 
         Box<double> normalized{{-1., -1., 1.}, {2., 2., 2.}};
 
-        Position<4> bottomLeftFront  = makePosition<4>(normalized.bottomLeftFront());
-        Position<4> bottomLeftBack   = makePosition<4>(normalized.bottomLeftBack());
-        Position<4> bottomRightFront = makePosition<4>(normalized.bottomRightFront());
-        Position<4> bottomRightBack  = makePosition<4>(normalized.bottomRightBack());
-        Position<4> topLeftFront     = makePosition<4>(normalized.topLeftFront());
-        Position<4> topLeftBack      = makePosition<4>(normalized.topLeftBack());
-        Position<4> topRightFront    = makePosition<4>(normalized.topRightFront());
-        Position<4> topRightBack     = makePosition<4>(normalized.topRightBack());
+        Position<4> bottomLeftFront  = makePosition(normalized.bottomLeftFront());
+        Position<4> bottomLeftBack   = makePosition(normalized.bottomLeftBack());
+        Position<4> bottomRightFront = makePosition(normalized.bottomRightFront());
+        Position<4> bottomRightBack  = makePosition(normalized.bottomRightBack());
+        Position<4> topLeftFront     = makePosition(normalized.topLeftFront());
+        Position<4> topLeftBack      = makePosition(normalized.topLeftBack());
+        Position<4> topRightFront    = makePosition(normalized.topRightFront());
+        Position<4> topRightBack     = makePosition(normalized.topRightBack());
 
         GIVEN("A viewport and both near and far planes")
         {
@@ -1003,14 +1020,14 @@ SCENARIO("3D windowing transformation.")
                 AffineMatrix<4> viewportTransform = trans3d::ndcToViewport(viewport, near, far);
                 THEN("The normalized device coordinates of the 8 corners maps to extremas of the viewport.")
                 {
-                    REQUIRE(bottomLeftFront  * viewportTransform == makePosition<4>(destination.bottomLeftFront()));
-                    REQUIRE(bottomLeftBack   * viewportTransform == makePosition<4>(destination.bottomLeftBack()));
-                    REQUIRE(bottomRightFront * viewportTransform == makePosition<4>(destination.bottomRightFront()));
-                    REQUIRE(bottomRightBack  * viewportTransform == makePosition<4>(destination.bottomRightBack()));
-                    REQUIRE(topLeftFront     * viewportTransform == makePosition<4>(destination.topLeftFront()));
-                    REQUIRE(topLeftBack      * viewportTransform == makePosition<4>(destination.topLeftBack()));
-                    REQUIRE(topRightFront    * viewportTransform == makePosition<4>(destination.topRightFront()));
-                    REQUIRE(topRightBack     * viewportTransform == makePosition<4>(destination.topRightBack()));
+                    REQUIRE(bottomLeftFront  * viewportTransform == makePosition(destination.bottomLeftFront()));
+                    REQUIRE(bottomLeftBack   * viewportTransform == makePosition(destination.bottomLeftBack()));
+                    REQUIRE(bottomRightFront * viewportTransform == makePosition(destination.bottomRightFront()));
+                    REQUIRE(bottomRightBack  * viewportTransform == makePosition(destination.bottomRightBack()));
+                    REQUIRE(topLeftFront     * viewportTransform == makePosition(destination.topLeftFront()));
+                    REQUIRE(topLeftBack      * viewportTransform == makePosition(destination.topLeftBack()));
+                    REQUIRE(topRightFront    * viewportTransform == makePosition(destination.topRightFront()));
+                    REQUIRE(topRightBack     * viewportTransform == makePosition(destination.topRightBack()));
                 }
             }
         }

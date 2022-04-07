@@ -111,10 +111,14 @@ namespace homogeneous
 {
 
 /// \brief Factory for homogeneous positions.
+/// \note This has to be used with an explicit N_dimension template argument.
 template<int N_dimension, class T_number = real_number, class... VT_elements>
-Position<N_dimension, T_number> makePosition(VT_elements && ... aElements)
+std::enable_if_t< // Intended to avoid selecting this when providing a N_dimension-1 position as argument
+    N_dimension == sizeof...(VT_elements) + 1,
+    Position<N_dimension, T_number>> 
+makePosition(VT_elements && ... aElements)
 {
-    return Position<N_dimension, T_number>{std::forward<VT_elements>(aElements)..., T_number{1}};
+    return Position<N_dimension, T_number>{ std::forward<VT_elements>(aElements)..., T_number{1} };
 }
 
 template<int N_lowerDimension, class T_number = real_number>
@@ -124,16 +128,20 @@ Position<N_lowerDimension+1, T_number> makePosition(const Position<N_lowerDimens
 }
 
 /// \brief Factory for homogeneous vectors (in the sense of "displacement").
+/// \note This has to be used with an explicit N_dimension template argument.
 template<int N_dimension, class T_number = real_number, class... VT_elements>
-Vec<N_dimension, T_number> makeVec(VT_elements && ... aElements)
+std::enable_if_t< // Intended to avoid selecting this when providing a N_dimension-1 vector as argument
+    N_dimension == sizeof...(VT_elements) + 1,
+    Vec<N_dimension, T_number>> 
+makeVec(VT_elements && ... aElements)
 {
-    return Vec<N_dimension, T_number>{std::forward<VT_elements>(aElements)..., T_number{0}};
+    return Vec<N_dimension, T_number>{ std::forward<VT_elements>(aElements)..., T_number{0} };
 }
 
 template<int N_lowerDimension, class T_number = real_number>
 Vec<N_lowerDimension+1, T_number> makeVec(const Vec<N_lowerDimension, T_number> & aPosition)
 {
-    return Vec<N_lowerDimension+1, T_number>{aPosition, T_number{1}};
+    return Vec<N_lowerDimension+1, T_number>{aPosition, T_number{0}};
 }
 
 
