@@ -1,7 +1,9 @@
 #pragma once
 
+
 #include "MatrixBase.h"
 #include "Matrix.h"
+
 
 namespace ad {
 namespace math {
@@ -27,8 +29,21 @@ public:
               class... VT_tailElements,
               class /*enabler*/ = std::enable_if_t<(N_headDimension < N_dimension)
                                                    && sizeof...(VT_tailElements) == (N_dimension - N_headDimension)>>
-    constexpr Vector(const Vector<T_otherDerived, N_headDimension, T_number> & aHead, VT_tailElements && ... aTail) noexcept(should_noexcept) :
+    constexpr Vector(const Vector<T_otherDerived, N_headDimension, T_number> & aHead, VT_tailElements && ... aTail)
+    noexcept(should_noexcept) :
             Vector{aHead, std::make_index_sequence<N_headDimension>(), std::forward<VT_tailElements>(aTail)...}
+    {}
+
+    /// \brief Constructor from another vector of larger dimension (swizzling constructor).
+    ///
+    /// \note Currently accept a larger vector of different logic type (e.g. `Position` vs `Vec`) as long as
+    /// the element types exactly match. This might be later restricted if the need arises.
+    template <class T_otherDerived,
+              int N_otherDimension,
+              class /*enabler*/ = std::enable_if_t<(N_otherDimension > N_dimension)>>
+    constexpr explicit Vector(const Vector<T_otherDerived, N_otherDimension, T_number> & aLarger)
+    noexcept(should_noexcept) :
+            Vector{aLarger, std::make_index_sequence<N_dimension>()}
     {}
 
     template <template <int, class> class TT_derivedVector, class T_targetNumber=T_number>
@@ -94,6 +109,12 @@ constexpr T_derived operator*(const Vector<T_derived, N_dimension, T_number> aLh
     constexpr T_number symbol() const/* requires (N_dimension>=dimension)*/ \
     {static_assert(N_dimension>=dimension, "Disabled when dimensions <" #dimension); return this->at(dimension-1);}
 
+#define SWIZZLE_DIMENSION(dimension, type, function, ...)   \
+    ENABLER(>= dimension)                                   \
+    constexpr type<dimension-1, T_number> function() const  \
+    {return {__VA_ARGS__};}
+
+
 
 #define BASE Vector<Vec<N_dimension, T_number>, N_dimension, T_number>
 template <int N_dimension, class T_number=real_number>
@@ -120,6 +141,10 @@ public:
     ACCESSOR_DIMENSION(y, 2)
     ACCESSOR_DIMENSION(z, 3)
     ACCESSOR_DIMENSION(w, 4)
+
+    SWIZZLE_DIMENSION(5, Vec, xyzw, x(), y(), z(), w());
+    SWIZZLE_DIMENSION(4, Vec, xyz,  x(), y(), z());
+    SWIZZLE_DIMENSION(3, Vec, xy,   x(), y());
 
     /// \todo Could be extended to all dimensions >= 3?
     Vec & crossAssign(const Vec &aRhs) /*requires(N_dimension==3)*/;
@@ -179,6 +204,10 @@ public:
     ACCESSOR_DIMENSION(y, 2)
     ACCESSOR_DIMENSION(z, 3)
     ACCESSOR_DIMENSION(w, 4)
+
+    SWIZZLE_DIMENSION(5, Position, xyzw, x(), y(), z(), w());
+    SWIZZLE_DIMENSION(4, Position, xyz,  x(), y(), z());
+    SWIZZLE_DIMENSION(3, Position, xy,   x(), y());
 };
 #undef BASE
 

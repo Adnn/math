@@ -35,6 +35,7 @@ set(${TARGET_NAME}_SOURCES
     Utilities_tests.cpp
     Vector.cpp
     VectorOfAngle.cpp
+    VectorSwizzling_tests.cpp
 )
 
 add_executable(${TARGET_NAME}
