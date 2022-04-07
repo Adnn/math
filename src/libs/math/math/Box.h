@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Homogeneous.h"
 #include "Rectangle.h"
 #include "Vector.h"
 
@@ -106,6 +107,9 @@ struct Box
     /// \brief Construct a Box of provided dimension, centered on origin (0, 0, 0).
     static Box CenterOnOrigin(Size<3, T_number> aDimension);
 
+    Box & operator*=(const LinearMatrix<3, 3, T_number> & aTransform);
+    Box & operator*=(const AffineMatrix<4, T_number> & aTransform);
+
     template <class T_positionValue>
     bool contains(Position<3, T_positionValue> aPosition) const;
 
@@ -126,6 +130,16 @@ struct Box
 
 
 template <class T_number>
+Box<T_number> operator*(Box<T_number> aBox, const LinearMatrix<3, 3, T_number> & aTransform);
+
+template <class T_number>
+Box<T_number> operator*(Box<T_number> aBox, const AffineMatrix<4, T_number> & aTransform);
+
+
+//
+// Implementations
+//
+template <class T_number>
 Box<T_number> Box<T_number>::Zero()
 {
     T_number z{0};
@@ -145,6 +159,74 @@ template <class T_number>
 Box<T_number> Box<T_number>::CenterOnOrigin(Size<3, T_number> aDimension)
 {
     return Box{ {T_number{0}, T_number{0}, T_number{0} }, aDimension }.centered();
+}
+
+
+template <class T_number>
+Box<T_number> & Box<T_number>::operator*=(const LinearMatrix<3, 3, T_number> & aTransform)
+{
+    // see: https://dev.theomader.com/transform-bounding-boxes/
+    // see: http://www.realtimerendering.com/resources/GraphicsGems/gems/TransBox.c
+    Position<3, T_number> right{
+        aTransform[0][0],
+        aTransform[0][1],
+        aTransform[0][2],
+    };
+    auto xa = xMin() * right;
+    auto xb = xMax() * right;
+
+    Position<3, T_number> up{
+        aTransform[1][0],
+        aTransform[1][1],
+        aTransform[1][2],
+    };
+    auto ya = yMin() * up;
+    auto yb = yMax() * up;
+
+    Position<3, T_number> back{
+        aTransform[2][0],
+        aTransform[2][1],
+        aTransform[2][2],
+    };
+    auto za = zMin() * back;
+    auto zb = zMax() * back;
+
+    Position<3, T_number> origin = min(xa, xb) + min(ya, yb).template as<Vec>() + min(za, zb).template as<Vec>();
+    Position<3, T_number> end =  max(xa, xb) + max(ya, yb).template as<Vec>() + max(za, zb).template as<Vec>();
+
+    mPosition = origin;
+    mDimension = (end-origin).template as<Size>();
+
+    return *this;
+}
+
+
+template <class T_number>
+Box<T_number> & Box<T_number>::operator*=(const AffineMatrix<4, T_number> & aTransform)
+{
+    (*this) *= LinearMatrix<3, 3, T_number>{
+        aTransform[0][0], aTransform[0][1], aTransform[0][2],
+        aTransform[1][0], aTransform[1][1], aTransform[1][2],
+        aTransform[2][0], aTransform[2][1], aTransform[2][2],
+    };
+
+    mPosition += aTransform.getAffine();
+
+    return *this;
+}
+
+
+template <class T_number>
+Box<T_number> operator*(Box<T_number> aBox, const LinearMatrix<3, 3, T_number> & aTransform)
+{
+    return aBox *= aTransform;
+}
+
+
+template <class T_number>
+Box<T_number> operator*(Box<T_number> aBox, const AffineMatrix<4, T_number> & aTransform)
+{
+    return aBox *= aTransform;
 }
 
 

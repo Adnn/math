@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include <math/Box.h>
+#include <math/Transformations.h>
 
 using namespace ad::math;
 
@@ -285,6 +286,71 @@ SCENARIO("Box boolean operations.")
                     CHECK(otherCopy == expected);
                     CHECK(otherCopy != other);
                 }
+            }
+        }
+    }
+}
+
+
+SCENARIO("Box transformations.")
+{
+    GIVEN("A box")
+    {
+        const Box<double> base{ {0., 10., -10.}, {20., 10., 20.} };
+        GIVEN("A translation and scaling transformation.")
+        {
+            Size<3> scaling{2., -1., 0.5};
+            Vec<3> translation{10., -10., 10.};
+
+            AffineMatrix<4> transformation = trans3d::scale(scaling) * trans3d::translate(translation);
+
+            THEN("The box can be transformed.")
+            {
+                Box<double> transformed = base * transformation;
+                //CHECK(transformed.origin() == Position<3>{10., -20., 5.});
+                //CHECK(transformed.dimension() == base.dimension().cwMul(scaling));
+                CHECK(transformed.origin() == Position<3>{10., -30., 5.});
+                CHECK(transformed.dimension() == Size<3>{40., 10., 10.});
+            }
+        }
+    }
+
+    GIVEN("A cube centered on origin")
+    {
+        const auto cube = Box<double>::CenterOnOrigin({10., 10., 10.});
+        Position<3> origin{-5., -5., -5.};
+
+        // Sanity check
+        REQUIRE(cube.origin() == origin);
+
+        GIVEN("A 45deg rotation transformation (not axis aligned).")
+        {
+            LinearMatrix<3, 3> rotation = trans3d::rotateY(Radian{pi<double>/4});
+
+            THEN("The box can be transformed.")
+            {
+                const double sq2 = std::sqrt(2);
+                Box<double> transformed = cube * rotation;
+                CHECK(transformed.origin() == origin.cwMul({sq2, 1., sq2}));
+                CHECK(transformed.dimension() == cube.dimension().cwMul({sq2, 1., sq2}));
+            }
+        }
+    }
+
+    GIVEN("A unit cube whose origin is at the origin")
+    {
+        const auto cube = Box<double>({0., 0., 0.}, {1., 1., 1.});
+
+        GIVEN("A 45deg rotation transformation (not axis aligned).")
+        {
+            LinearMatrix<3, 3> rotation = trans3d::rotateY(Radian{pi<double>/4});
+
+            THEN("The box can be transformed.")
+            {
+                const double sq2 = std::sqrt(2);
+                Box<double> transformed = cube * rotation;
+                CHECK(transformed.origin() == Position<3>{0., 0., -sq2 / 2.});
+                CHECK(transformed.dimension() == cube.dimension().cwMul({sq2, 1., sq2}));
             }
         }
     }
