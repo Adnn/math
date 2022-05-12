@@ -33,6 +33,7 @@ public:
 
     static constexpr LinearMatrix Identity() noexcept(should_noexcept);
 
+    constexpr LinearMatrix inverse() const noexcept(should_noexcept);
 
 private:
     // Even though the conversion ctor is explicit and private
@@ -57,7 +58,14 @@ constexpr LinearMatrix<TMA> LinearMatrix<TMA>::Identity() noexcept(should_noexce
     return LinearMatrix<TMA>{Matrix<TMA>::Identity(), Dummy{}};
 }
 
+
+template <TMP>
+constexpr LinearMatrix<TMA> LinearMatrix<TMA>::inverse() const noexcept(should_noexcept)
+{
+    return LinearMatrix<TMA>{this->base_type::inverse(), Dummy{}};
+}
  
+
 #undef TMA
 #undef TMP_D
 #undef TMP

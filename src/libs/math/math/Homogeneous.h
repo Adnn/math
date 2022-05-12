@@ -66,6 +66,8 @@ public:
     //
     constexpr Vec<N_dimension-1, T_number> getAffine() const noexcept(should_noexcept);
 
+    constexpr LinearMatrix<N_dimension-1, N_dimension-1, T_number> getLinear() const noexcept(should_noexcept);
+
     //
     // Disable the modifying operations incompatible with AffineMatrix specialized case
     //
@@ -90,6 +92,8 @@ public:
     // see: https://stackoverflow.com/a/9789036/1027706
     friend constexpr AffineMatrix<TMA> operator*(const AffineMatrix &aLhs, const AffineMatrix &aRhs)
     { return aLhs.multiply_impl(aRhs); }
+
+    constexpr AffineMatrix inverse() const noexcept(should_noexcept);
 
 private:
     constexpr AffineMatrix<TMA> multiply_impl(const AffineMatrix<TMA> &aRhs) const;

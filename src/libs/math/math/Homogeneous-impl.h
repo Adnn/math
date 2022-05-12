@@ -71,6 +71,24 @@ constexpr Vec<N_dimension - 1, T_number> AffineMatrix<TMA>::getAffine() const no
 
 
 template <TMP>
+constexpr LinearMatrix<N_dimension-1, N_dimension-1, T_number> AffineMatrix<TMA>::getLinear() const 
+noexcept(should_noexcept)
+{
+    LinearMatrix<N_dimension-1, N_dimension-1, T_number> result{
+        typename LinearMatrix<N_dimension-1, N_dimension-1, T_number>::UninitializedTag{}
+    };
+    for (std::size_t row = 0; row != N_dimension-1; ++row) 
+    {
+        for (std::size_t col = 0; col != N_dimension-1; ++col)
+        {
+            result.at(row, col) = this->at(row,col);
+        }
+    }
+    return result;
+}
+
+
+template <TMP>
 constexpr AffineMatrix<TMA> AffineMatrix<TMA>::Identity() noexcept(should_noexcept)
 {
     return AffineMatrix{LinearMatrix<N_dimension-1, N_dimension-1, T_number>::Identity()};
@@ -92,6 +110,18 @@ constexpr AffineMatrix<TMA> & AffineMatrix<TMA>::operator*=(const AffineMatrix &
 {
     *this = *this * aRhs;
     return *this;
+}
+
+
+template <TMP>
+constexpr AffineMatrix<TMA> AffineMatrix<TMA>::inverse() const noexcept(should_noexcept)
+{
+    //see: https://stackoverflow.com/a/2625420/1027706
+    auto linearInverse = getLinear().inverse();
+    return {
+        linearInverse,
+        -getAffine() * linearInverse 
+    };
 }
 
 

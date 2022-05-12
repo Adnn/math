@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "CustomCatchMatchers.h"
 #include "operation_detectors.h"
 
 #include <math/Angle.h>
@@ -188,8 +189,9 @@ SCENARIO("Affine matrices construction")
 
     GIVEN("An affine matrix of dimension 3 made from a rotation and a translation transformations.")
     {
+        LinearMatrix<2, 2> rotation = trans2d::rotate(Degree<double>{90.});
         Vec<2> translation{10., -10.};
-        AffineMatrix<3> homoTransformation{trans2d::rotate(Degree<double>{90.}), translation};
+        AffineMatrix<3> homoTransformation{rotation, translation};
 
         THEN("It has expected elements")
         {
@@ -220,6 +222,11 @@ SCENARIO("Affine matrices construction")
         THEN("Its affine part is the translation vector")
         {
             REQUIRE(homoTransformation.getAffine() == translation);
+        }
+
+        THEN("Its linear part is the rotation matrix")
+        {
+            REQUIRE(homoTransformation.getLinear() == rotation);
         }
     }
 }
@@ -683,6 +690,30 @@ SCENARIO("Affine matrices addition/substraction.")
                 Matrix<3, 3, int> firstPlain{matrix};
                 firstPlain -= second;
                 REQUIRE(firstPlain == expectedSub);
+            }
+        }
+    }
+}
+
+
+SCENARIO("Affine matrices inversion.")
+{
+    GIVEN("An affine matrix of dimension 4.")
+    {
+        AffineMatrix<4, double> affine{
+            { 1.,  0.,   5.,
+              3.,  1.5, -2.,
+             -0., -1.5,  2.},
+            {0., 1., -8.8}
+        };
+
+        WHEN("It is converted to a 'plain' matrix with the same values.")
+        {
+            Matrix<4, 4, double> plain{affine};
+
+            THEN("Both inverses are equal.")
+            {
+                CHECK_THAT(affine.inverse(), Approximates(plain.inverse()));
             }
         }
     }
