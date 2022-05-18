@@ -32,6 +32,13 @@ SCENARIO("Angles operations")
             REQUIRE(circle.value() == value);
         }
 
+        THEN("The underlying data can be accessed and manipulated")
+        {
+            REQUIRE(circle.data() == value);
+            circle.data() += value;
+            REQUIRE(circle.data() == 2 * value);
+        }
+
         THEN("Its absolute value is itself, since it is positive")
         {
             REQUIRE(abs(circle) == circle);

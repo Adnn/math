@@ -547,8 +547,9 @@ namespace trans3d {
         const T_number v0 = T_number{0};
         const T_number v1 = T_number{1};
 
-        // Note: Negate the perspective matrix from p152, this way -Z is copied into W.
+        // IMPORTANT: Negate the perspective matrix from p152, this way -Z is copied into W.
         // It respects common OpenGL convention that the clipping test is -w < x, y, z < +w.
+        // This does **not** change handed-ness, but negates the whole transformed vector.
         return {
             -n,  v0,  v0,    v0,
             v0,  -n,  v0,    v0,

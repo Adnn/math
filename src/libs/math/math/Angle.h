@@ -57,6 +57,11 @@ public:
         return mValue;
     }
 
+    T_representation & data()
+    {
+        return mValue;
+    }
+
     constexpr Angle & operator+=(const Angle aRhs);
     constexpr Angle & operator-=(const Angle aRhs);
     template <class T_factor>
