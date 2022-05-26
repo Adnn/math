@@ -36,7 +36,7 @@ class MathConan(ConanFile):
         "submodule": "recursive",
     }
 
-    python_requires="shred_conan_base/0.0.1@adnn/develop"
+    python_requires="shred_conan_base/0.0.2@adnn/develop"
     python_requires_extend="shred_conan_base.ShredBaseConanFile"
 
 
@@ -54,16 +54,6 @@ class MathConan(ConanFile):
         # The path of the CMakeLists.txt we want to export is one level above
         folder = path.join(self.recipe_folder, "..")
         copy(self, "*.txt", folder, self.export_sources_folder)
-
-
-    def source(self):
-        # we can see that the CMakeLists.txt is inside the source folder
-        cmake = load(self, "CMakeLists.txt")
-
-    def build(self):
-        # The build() method can also access the CMakeLists.txt in the source folder
-        path = path.join(self.source_folder, "CMakeLists.txt")
-        cmake = load(self, path)
 
 
     def _configure_cmake(self):
@@ -92,3 +82,5 @@ class MathConan(ConanFile):
     def package_info(self):
         if self.folders.build_folder:
             self.cpp_info.builddirs = [self.folders.build_folder]
+        elif self.folders._base_package:
+            self.cpp_info.builddirs = [self.folders._base_package]
