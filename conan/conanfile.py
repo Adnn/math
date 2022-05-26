@@ -47,7 +47,7 @@ class MathConan(ConanFile):
             # avoid path.join, on Windows it outputs '\', which is a string escape sequence.
             #config.write("include(\"{}\")\n".format("${CMAKE_CURRENT_LIST_DIR}/conan_paths.cmake"))
             config.write("set({} {})\n".format("BUILD_tests", self.options.build_tests))
-            config.write("set(CMAKE_EXPORT_COMPILE_COMMANDS 1)\n".format("BUILD_tests", self.options.build_tests))
+            config.write("set(CMAKE_EXPORT_COMPILE_COMMANDS 1)\n")
 
 
     def _configure_cmake(self):
@@ -75,4 +75,3 @@ class MathConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.builddirs = [self.folders.build_folder]
-        self.conf.define("tools.cmake.cmaketoolchain:user_toolchain", [path.join(self.folders.build_folder, "conanuser_config.cmake")])
