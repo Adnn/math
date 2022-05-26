@@ -1,5 +1,6 @@
 from conans import ConanFile, tools
 from conan.tools.cmake import CMake
+from conan.tools.files import load, copy
 
 
 from os import path
@@ -49,6 +50,21 @@ class MathConan(ConanFile):
             config.write("set({} {})\n".format("BUILD_tests", self.options.build_tests))
             config.write("set(CMAKE_EXPORT_COMPILE_COMMANDS 1)\n")
 
+    def export_sources(self):
+        # The path of the CMakeLists.txt we want to export is one level above
+        folder = path.join(self.recipe_folder, "..")
+        copy(self, "*.txt", folder, self.export_sources_folder)
+
+
+    def source(self):
+        # we can see that the CMakeLists.txt is inside the source folder
+        cmake = load(self, "CMakeLists.txt")
+
+    def build(self):
+        # The build() method can also access the CMakeLists.txt in the source folder
+        path = path.join(self.source_folder, "CMakeLists.txt")
+        cmake = load(self, path)
+
 
     def _configure_cmake(self):
         cmake = CMake(self)
@@ -74,4 +90,5 @@ class MathConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.builddirs = [self.folders.build_folder]
+        if self.folders.build_folder:
+            self.cpp_info.builddirs = [self.folders.build_folder]
