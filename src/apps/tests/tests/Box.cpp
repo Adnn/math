@@ -328,7 +328,7 @@ SCENARIO("Box transformations.")
 
         GIVEN("A 45deg rotation transformation (not axis aligned).")
         {
-            LinearMatrix<3, 3> rotation = trans3d::rotateY(Radian{pi<double>/4});
+            LinearMatrix<3, 3> rotation = trans3d::rotateY(Radian<double>{pi<double>/4});
 
             THEN("The box can be transformed.")
             {
@@ -342,11 +342,11 @@ SCENARIO("Box transformations.")
 
     GIVEN("A unit cube whose origin is at the origin")
     {
-        const auto cube = Box<double>({0., 0., 0.}, {1., 1., 1.});
+        const auto cube = Box<double>{{0., 0., 0.}, {1., 1., 1.}};
 
         GIVEN("A 45deg rotation transformation (not axis aligned).")
         {
-            LinearMatrix<3, 3> rotation = trans3d::rotateY(Radian{pi<double>/4});
+            LinearMatrix<3, 3> rotation = trans3d::rotateY(Radian<double>{pi<double>/4});
 
             THEN("The box can be transformed.")
             {

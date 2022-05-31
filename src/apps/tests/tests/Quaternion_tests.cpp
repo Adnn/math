@@ -16,7 +16,7 @@ const double gEpsilon = std::numeric_limits<double>::epsilon();
 
 SCENARIO("Quaternion instantiation, access, comparison.")
 {
-    GIVEN("The 4 component values of a quaternion rotating 180° about Y.")
+    GIVEN("The 4 component values of a quaternion rotating 180Â° about Y.")
     {
         double x = 0., y = 1., z = 0., w = 0.;
 
@@ -47,7 +47,7 @@ SCENARIO("Quaternion instantiation, access, comparison.")
             THEN("It is equivalent to a quaternion instantiated from axis and angle.")
             {
                 REQUIRE(q.equalsWithinTolerance(
-                            Quaternion{UnitVec{Vec<3>{0., 1., 0.}}, Radian{pi<double>}},
+                            Quaternion{UnitVec{Vec<3>{0., 1., 0.}}, Radian<double>{pi<double>}},
                             gEpsilon));
             }
         }
@@ -121,7 +121,7 @@ SCENARIO("Quaternion conjugate and inverse.")
 
 SCENARIO("Quaternion multiplication.")
 {
-    GIVEN("A quaternion rotating 180° about Y.")
+    GIVEN("A quaternion rotating 180Â° about Y.")
     {
         Quaternion y{0., 1., 0., 0.};
 
@@ -145,9 +145,9 @@ SCENARIO("Quaternion multiplication.")
             REQUIRE((y.inverse() *= y) == identity);
         }
 
-        THEN("It is equal to the multiplication of two quaternion rotation 90° about Y.")
+        THEN("It is equal to the multiplication of two quaternion rotation 90Â° about Y.")
         {
-            Quaternion half{UnitVec{Vec<3>{0., 1., 0.}}, Degree{90.}};
+            Quaternion half{UnitVec{Vec<3>{0., 1., 0.}}, Degree<double>{90.}};
             REQUIRE(y.equalsWithinTolerance(half * half, gEpsilon));
         }
     }
@@ -184,7 +184,7 @@ SCENARIO("Quaternion multiplication.")
 
 SCENARIO("Quaternion rotation.")
 {
-    GIVEN("A quaternion rotating 180° about Y.")
+    GIVEN("A quaternion rotating 180Â° about Y.")
     {
         Quaternion y{0., 1., 0., 0.};
 
@@ -208,7 +208,7 @@ SCENARIO("Quaternion rotation.")
 
         THEN("It matches the corresponding rotation matrix.")
         {
-            LinearMatrix<3, 3, double> rotation = trans3d::rotateY(Degree{180.});
+            LinearMatrix<3, 3, double> rotation = trans3d::rotateY(Degree<double>{180.});
             REQUIRE(y.toRotationMatrix().equalsWithinTolerance(rotation, gEpsilon));
         }
     }
