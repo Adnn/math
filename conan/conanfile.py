@@ -1,7 +1,6 @@
 from conans import ConanFile, tools
 from conan.tools.cmake import CMake
 from conan.tools.files import load, copy
-from conan.tools.cmake import CMakeToolchain
 
 
 from os import path
@@ -69,10 +68,6 @@ class MathConan(ConanFile):
 
     def generate(self):
         self._generate_cmake_configfile()
-
-        tc = CMakeToolchain(self)
-        tc.blocks['find_paths']
-
 
 
     def build(self):
