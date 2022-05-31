@@ -80,7 +80,8 @@ class MathConan(ConanFile):
         cmake.install()
 
     def package_info(self):
+        self.cpp_info.set_property("cmake_find_mode", "none")
         if self.folders.build_folder:
-            self.cpp_info.builddirs = [self.folders.build_folder]
-        elif self.folders._base_package:
-            self.cpp_info.builddirs = [self.folders._base_package]
+            self.cpp_info.builddirs.append(self.folders.build_folder)
+        else:
+            self.cpp_info.builddirs.append(path.join('lib', 'cmake'))
