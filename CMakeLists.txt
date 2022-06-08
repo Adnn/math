@@ -11,4 +11,7 @@ include(cmc-install)
 cmc_install_root_component_config(${PROJECT_NAME})
 cmc_register_source_package(${PROJECT_NAME})
 
+# Export compile commands by default
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 add_subdirectory(src)
