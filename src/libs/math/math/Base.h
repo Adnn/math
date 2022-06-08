@@ -121,7 +121,7 @@ OrthonormalBase<3, T_number>::MakeFromSingleVector(Vec<3, T_number> aWDirection)
 template <class T_number>
 constexpr OrthonormalBase<3, T_number>
 OrthonormalBase<3, T_number>::MakeFromTwoVectors(Vec<3, T_number> aWDirection,
-                                                  Vec<3, T_number> aUpDirection)
+                                                 Vec<3, T_number> aUpDirection)
 {
     using UnitVec = UnitVec<3, T_number>;
     UnitVec w{aWDirection};

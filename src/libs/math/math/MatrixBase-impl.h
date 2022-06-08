@@ -228,6 +228,13 @@ constexpr T_number MatrixBase<TMA>::at(std::size_t aRow, std::size_t aColumn) co
 
 
 template <TMP>
+constexpr T_number * MatrixBase<TMA>::data() noexcept
+{
+    return mStore.data();
+}
+
+
+template <TMP>
 constexpr const T_number * MatrixBase<TMA>::data() const noexcept
 {
     return mStore.data();

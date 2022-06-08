@@ -102,8 +102,19 @@ SCENARIO("Basic operations are available on Matrix instances")
 
         THEN("Its raw data can be accessed as a pointer to first element")
         {
-            REQUIRE(*matrix.data() == 1.);
-            REQUIRE(*(matrix.data() + 8) == 1.15);
+            const auto & constMatrix = matrix;
+            REQUIRE(*constMatrix.data() == 1.);
+            REQUIRE(*(constMatrix.data() + 8) == 1.15);
+        }
+
+        THEN("Its raw data can be mutated throught a pointer to first element")
+        {
+            double * storage = matrix.data();
+            *storage += 1.;
+            *(storage + 8) = 2.;
+
+            REQUIRE(*matrix.data() == 2.);
+            REQUIRE(*(matrix.data() + 8) == 2.);
         }
 
         GIVEN("A scalar factor")

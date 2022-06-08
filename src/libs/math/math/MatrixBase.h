@@ -206,6 +206,7 @@ public:
     constexpr T_number at(std::size_t aRow, std::size_t aColumn) const;
 
     /// \brief Returns a pointer to the matrix storage, a contiguous sequence of elements.
+    constexpr T_number * data() noexcept;
     constexpr const T_number * data() const noexcept;
 
 
