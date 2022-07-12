@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 
 namespace ad {
 namespace math {
