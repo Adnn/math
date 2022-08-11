@@ -1,61 +1,37 @@
-# common
+# common #
 *.*~
 
-# Cmake
+# Build folders #
 /build/
 /build_*/
 /build-*/
-
-# Conan
 /conan/test_package/build/
-/conan/graph_info.json
+
+# CMake
 CMakeUserPresets.json
 
+# Conan
+# It tends to put those files in the working directory
+conan.lock
+conanbuildinfo.txt
+conaninfo.txt
+graph_info.json
+
 # Clang tooling #
-.clangd/
+.clangd
+.cache/clangd/
 compile_commands.json
 
-# Vim
+# Vim #
 *.swp
 *.swo
 
-# Prerequisites
-*.d
+# Node/NPM #
+node_modules/
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# OS X#
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-
-# OS X
-
-## system
+## system ##
 *.DS_Store
 
 ## XCode ##
@@ -65,10 +41,9 @@ compile_commands.json
 xcuserdata/
 *.dSYM
 
+# Windows #
 
-# Windows
-
-## system
+## system ##
 Thumbs.db
 
 ## Visual Studio ##
@@ -78,4 +53,3 @@ Thumbs.db
 *.user
 ipch
 .vscode
-/.cache/
