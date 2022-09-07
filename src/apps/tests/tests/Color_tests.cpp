@@ -150,8 +150,8 @@ SCENARIO("Conversions between HDR and SDR.")
     
     GIVEN("A HDR rgba color")
     {
-        // Overshoot in blue
-        hdr::Rgba_d rgba_hdr{0.5, 0.001, 1.2, 1./255};
+        // Overshoot in blue, undershoot in green
+        hdr::Rgba_d rgba_hdr{0.5, -0.01, 1.2, 1./255};
 
         THEN("It can be converted to SDR rgba")
         {

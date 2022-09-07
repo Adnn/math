@@ -161,6 +161,8 @@ namespace sdr {
 } // namespace sdr
 
 
+// TODO: change default HDR channel from double **to** float
+// This will better align with Hdr images
 namespace hdr {
 
 
@@ -242,9 +244,9 @@ template <class T_hdrNumber>
 sdr::Rgb to_sdr(hdr::Rgb<T_hdrNumber> aHdr)
 {
     return {
-        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.r()) * 255),
-        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.g()) * 255),
-        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.b()) * 255),
+        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.r(), 0., 1.) * 255),
+        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.g(), 0., 1.) * 255),
+        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.b(), 0., 1.) * 255),
     };
 }
 
@@ -252,10 +254,10 @@ template <class T_hdrNumber>
 sdr::Rgba to_sdr(hdr::Rgba<T_hdrNumber> aHdr)
 {
     return {
-        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.r()) * 255),
-        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.g()) * 255),
-        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.b()) * 255),
-        static_cast<sdr::Rgb::value_type>(std::min(1., aHdr.a()) * 255),
+        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.r(), 0., 1.) * 255),
+        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.g(), 0., 1.) * 255),
+        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.b(), 0., 1.) * 255),
+        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.a(), 0., 1.) * 255),
     };
 }
 
