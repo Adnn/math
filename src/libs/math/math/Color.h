@@ -31,7 +31,7 @@ struct RgbTrait
         }
     }
 };
-    
+
 
 #define BASE Vector<Rgb_base<T_number>, 3, T_number>
 template <class T_number>
@@ -44,6 +44,9 @@ class Rgb_base : public BASE
 public:
     template<class T>
     using derived_type = Rgb_base<T>;
+
+    /// \brief Initialize channels to zero.
+    constexpr Rgb_base() = default;
 
     /// \brief Constructor taking each channel value independently.
     /// \note This constructor is explicitly defined instead of relying
@@ -76,6 +79,9 @@ class RgbAlpha_base : public BASE
 public:
     template<class T>
     using derived_type = RgbAlpha_base<T>;
+
+    /// \brief Initialize channels to zero.
+    constexpr RgbAlpha_base() = default;
 
     /// \brief Constructor taking each channel value independently.
     /// \note This constructor is explicitly defined instead of relying

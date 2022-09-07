@@ -98,6 +98,13 @@ protected:
     static constexpr bool should_noexcept = std::is_arithmetic<value_type>::value;
 
 public:
+    /// \brief Default constructor initializes to zero.
+    /// \note Initially there was no default constructor.
+    /// Yet having default construction behave like zero init of built-in type simplify generic programming.
+    /// \note The defaulted default-ctor would return unitialized memory.
+    constexpr MatrixBase() noexcept(should_noexcept)
+    { setZero(); }
+
     // Implementer note:
     // I don't feel confident enought with my understanding of aggregate initialization
     // (see: https://en.cppreference.com/w/cpp/language/aggregate_initialization)
@@ -246,7 +253,7 @@ public:
     // Implementer note:
     // Those two operations were initially member functions (single explicit parameter).
     // Yet, it prevented to use implicit conversions on arguments.
-    // Attention: 
+    // Attention:
     // I am a bit worried by C87, in case client code would inherit somme of the T_derived types.
     // see: https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#c87-beware-of--on-base-classes
     // see: EqualityDanger_tests.cpp
@@ -298,9 +305,6 @@ protected:
     T_extracted extract(std::index_sequence<VN_indices...> aIndices) const noexcept(should_noexcept);
 
 public:
-    /// \note The default default-ctor would return unitialized memory.
-    /// This is usefull in implementation details, but we make it more explicit with a ctor taking a tag
-    MatrixBase() = delete;
 
     // Implementer note: At first, this was a protected struct of Matrix template
     // yet, in some situation implementations need an un-initialized matrix of different dimensions
@@ -358,7 +362,7 @@ operator/(const MatrixBase<TMA> &aLhs, T_scalar aScalar)
  * Component-wise operations
  */
 template <TMP>
-T_derived min(const MatrixBase<TMA> & aLhs, const MatrixBase<TMA> & aRhs) 
+T_derived min(const MatrixBase<TMA> & aLhs, const MatrixBase<TMA> & aRhs)
 noexcept(T_derived::should_noexcept);
 
 

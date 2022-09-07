@@ -62,6 +62,16 @@ SCENARIO("Matrices have a different factories")
             REQUIRE(std::all_of(zero.begin(), zero.end(), [](double aValue){ return aValue == 0; }));
         }
     }
+
+
+    WHEN("Using the default constructor")
+    {
+        Matrix<6,5> def;
+        THEN("All elements are 0")
+        {
+            REQUIRE(def == Matrix<6,5>::Zero());
+        }
+    }
 }
 
 
