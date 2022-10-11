@@ -22,6 +22,7 @@ set(${TARGET_NAME}_HEADERS
     Quaternion-impl.h
     Range.h
     Rectangle.h
+    StructuredBindings.h
     Transformations.h
     Transformations-impl.h
     Utilities.h
