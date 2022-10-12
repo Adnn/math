@@ -1,5 +1,4 @@
 #include "catch.hpp"
-#include <bits/utility.h>
 #include <math/Matrix.h>
 #include <math/Vector.h>
 #include <math/StructuredBindings.h>
