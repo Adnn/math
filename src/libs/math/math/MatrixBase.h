@@ -34,7 +34,10 @@ class CastTag
 template <TMP>
 class MatrixBase
 {
+public:
     static constexpr int size_value = N_rows*N_cols;
+
+private:
     typedef std::array<T_number, size_value> store_type;
 
 public:

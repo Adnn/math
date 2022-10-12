@@ -29,6 +29,7 @@ set(${TARGET_NAME}_SOURCES
     Quaternion_tests.cpp
     Range.cpp
     Rectangle.cpp
+    StructuredBindings_tests.cpp
     Traits.cpp
     Transformations_tests.cpp
     TransformNormal_tests.cpp
