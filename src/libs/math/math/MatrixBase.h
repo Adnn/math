@@ -401,6 +401,7 @@ class from_matrix : public decltype(detail::test_matrix_convertible(std::declval
 } // namespace math
 } // namespace ad
 
+
 #include "MatrixBase-impl.h"
 
 
