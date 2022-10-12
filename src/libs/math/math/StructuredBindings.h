@@ -71,24 +71,8 @@ get(T_matrix & aMatrix)
 }
 
 template <std::size_t Index, typename T_matrix>
-typename T_matrix::value_type
-get(T_matrix && aMatrix)
-{
-    static_assert(Index < std::decay_t<T_matrix>::size_value);
-    return aMatrix.at(Index);
-}
-
-template <std::size_t Index, typename T_matrix>
-typename T_matrix::value_type
+const typename T_matrix::value_type
 get(const T_matrix & aMatrix)
-{
-    static_assert(Index < std::decay_t<T_matrix>::size_value);
-    return aMatrix.at(Index);
-}
-
-template <std::size_t Index, typename T_matrix>
-typename T_matrix::value_type
-get(const T_matrix && aMatrix)
 {
     static_assert(Index < std::decay_t<T_matrix>::size_value);
     return aMatrix.at(Index);
