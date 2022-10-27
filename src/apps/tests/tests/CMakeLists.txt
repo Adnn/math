@@ -50,8 +50,9 @@ target_link_libraries(${TARGET_NAME} PRIVATE
     ad::math
 )
 
-include(cmc-cpp)
-cmc_cpp_all_warnings_as_errors(${TARGET_NAME})
+cmc_cpp_all_warnings_as_errors(${TARGET_NAME} ENABLED ${BUILD_CONF_WarningAsError})
+
+cmc_cpp_sanitizer(${TARGET_NAME} ${BUILD_CONF_Sanitizer})
 
 
 ##

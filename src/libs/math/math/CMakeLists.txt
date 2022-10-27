@@ -67,6 +67,11 @@ if(MSVC)
     target_compile_options(${TARGET_NAME} INTERFACE "/Zc:__cplusplus")
 endif()
 
+# Cannot enable warning as error on interface targets (as they do not compile).
+
+cmc_cpp_sanitizer(${TARGET_NAME} ${BUILD_CONF_Sanitizer})
+
+
 ##
 ## Install
 ##

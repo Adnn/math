@@ -187,7 +187,7 @@ public:
     constexpr const_Row operator[](std::size_t aRow) const;
 
 
-    /// \breif Iterate one line at a time, going through each column in the line
+    /// \brief Iterate one line at a time, going through each column in the line
     /// before descending to the next line.
     constexpr const_iterator cbegin() const noexcept;
     constexpr const_iterator cend() const noexcept;
