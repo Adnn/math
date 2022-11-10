@@ -1043,7 +1043,7 @@ SCENARIO("3D coordinate frame transformation.")
     {
         Frame<3> localFrame{
             {10., 10., 1.5},
-            OrthonormalBase<3>::MakeFromTwoVectors(/*w*/{0., 0., 1.}, /*up*/{-1., -1., 0.})
+            OrthonormalBase<3>::MakeFromWUp(/*w*/{0., 0., 1.}, /*up*/{-1., -1., 0.})
         };
 
         GIVEN("A few vectors in both spaces")

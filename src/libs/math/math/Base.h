@@ -73,8 +73,10 @@ class OrthonormalBase<3, T_number>
 {
 public:
     static constexpr OrthonormalBase MakeFromSingleVector(Vec<3, T_number> aWDirection);
-    static constexpr OrthonormalBase MakeFromTwoVectors(Vec<3, T_number> aWDirection,
-                                                        Vec<3, T_number> aUpDirection);
+    static constexpr OrthonormalBase MakeFromWUp(Vec<3, T_number> aWDirection,
+                                                 Vec<3, T_number> aUpDirection);
+    static constexpr OrthonormalBase MakeFromWSide(Vec<3, T_number> aWDirection,
+                                                   Vec<3, T_number> aSideDirection);
 
     constexpr UnitVec<3, T_number> u() const noexcept
     { return mU; }
@@ -120,15 +122,30 @@ OrthonormalBase<3, T_number>::MakeFromSingleVector(Vec<3, T_number> aWDirection)
 
 template <class T_number>
 constexpr OrthonormalBase<3, T_number>
-OrthonormalBase<3, T_number>::MakeFromTwoVectors(Vec<3, T_number> aWDirection,
-                                                 Vec<3, T_number> aUpDirection)
+OrthonormalBase<3, T_number>::MakeFromWUp(Vec<3, T_number> aWDirection,
+                                         Vec<3, T_number> aUpDirection)
 {
     using UnitVec = UnitVec<3, T_number>;
     UnitVec w{aWDirection};
 
     UnitVec u{aUpDirection.cross(w)};
 
+    // Note: w x u is already normalized, since w and u are orthogonal unit vectors.
     return {u, UnitVec::MakeFromUnitLength(w.cross(u)), w };
+}
+
+
+template <class T_number>
+constexpr OrthonormalBase<3, T_number>
+OrthonormalBase<3, T_number>::MakeFromWSide(Vec<3, T_number> aWDirection,
+                                            Vec<3, T_number> aSideDirection)
+{
+    using UnitVec = UnitVec<3, T_number>;
+    UnitVec w{aWDirection};
+
+    UnitVec v{w.cross(aSideDirection)};
+
+    return {UnitVec::MakeFromUnitLength(v.cross(w)), v, w };
 }
 
 
