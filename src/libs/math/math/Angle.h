@@ -172,7 +172,7 @@ constexpr ANGLE & ANGLE::operator+=(const Angle aRhs)
 template <class T_representation, class T_leftUnitTag, class T_rightUnitTag>
 constexpr ANGLE_LEFT operator+(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs)
 {
-    return aLhs += aRhs.as<decltype(aLhs)::unit>();
+    return aLhs += aRhs.template as<decltype(aLhs)::template unit>();
 }
 
 template <class T_representation, class T_unitTag>
@@ -185,7 +185,7 @@ constexpr ANGLE & ANGLE::operator-=(const Angle aRhs)
 template <class T_representation, class T_leftUnitTag, class T_rightUnitTag>
 constexpr ANGLE_LEFT operator-(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs)
 {
-    return aLhs -= aRhs.as<decltype(aLhs)::unit>();
+    return aLhs -= aRhs.template as<decltype(aLhs)::template unit>();
 }
 
 template <class T_representation, class T_unitTag>

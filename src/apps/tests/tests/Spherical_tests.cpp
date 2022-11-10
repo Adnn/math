@@ -13,8 +13,8 @@ SCENARIO("Spherical construction and access.")
     GIVEN("A radius and two angles.")
     {
         float r = 10.f;
-        Radian polar{pi<float>/4};
-        Degree azimuthal{360.f};
+        Radian<float> polar{pi<float>/4};
+        Degree<float> azimuthal{360.f};
         WHEN("A Spherical position is instantiated.")
         {
             Spherical s{r, polar, azimuthal};
@@ -30,10 +30,10 @@ SCENARIO("Spherical construction and access.")
             {
                 s.radius() *= 2;
                 CHECK(s.radius() == 2 * r);
-                s.polar() += Degree{10.f};
-                CHECK(s.polar() == polar + Degree{10.f});
-                s.azimuthal() = Radian{0.f};
-                CHECK(s.azimuthal() == Radian{0.f});
+                s.polar() += Degree<float>{10.f};
+                CHECK(s.polar() == polar + Degree<float>{10.f});
+                s.azimuthal() = Radian<float>{0.f};
+                CHECK(s.azimuthal() == Radian<float>{0.f});
             }
         }
     }
@@ -44,7 +44,7 @@ SCENARIO("Spherical to cartesian.")
 {
     GIVEN("A spherical (X)")
     {
-        Spherical spherical{1., Degree{90.}, Degree{90.}};
+        Spherical spherical{1., Degree<double>{90.}, Degree<double>{90.}};
 
         WHEN("It is converted to cartesian.")
         {
@@ -61,7 +61,7 @@ SCENARIO("Spherical to cartesian.")
 
     GIVEN("A spherical (5 * Y)")
     {
-        Spherical spherical{5., Degree{0.}, Degree{90.}};
+        Spherical spherical{5., Degree<double>{0.}, Degree<double>{90.}};
 
         WHEN("It is converted to cartesian.")
         {
@@ -89,7 +89,7 @@ SCENARIO("Spherical tangent base.")
 {
     GIVEN("A spherical position")
     {
-        Spherical spherical{6.5, Radian{pi<float> * 3./4.}, Degree{180.}};
+        Spherical spherical{6.5, Radian<double>{pi<float> * 3./4.}, Degree<double>{180.}};
 
         WHEN("The corresponding tangent frame is computed.")
         {
@@ -106,8 +106,8 @@ SCENARIO("Spherical tangent base.")
                 // TODO This commented-out line should be able to replace our custom macro with Catch v3.x
                 //CHECK(base.u() == Catch::Matchers::AllMatch(Vec<3, double>{-1., 0., 0.})); 
                 APPROX_VEC(base.u(), (Vec<3, double>{-1., 0., 0.}), 1E-10);
-                APPROX_VEC(base.v(), (Vec<3, double>{0., 1., 0.} * trans3d::rotateX(Degree{-45.})), 1E-5);
-                APPROX_VEC(base.w(), (Vec<3, double>{0., 0., 1.} * trans3d::rotateX(Degree{135.})), 1E-5);
+                APPROX_VEC(base.v(), (Vec<3, double>{0., 1., 0.} * trans3d::rotateX(Degree<double>{-45.})), 1E-5);
+                APPROX_VEC(base.w(), (Vec<3, double>{0., 0., 1.} * trans3d::rotateX(Degree<double>{135.})), 1E-5);
 
             }
         }

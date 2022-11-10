@@ -84,10 +84,10 @@ constexpr Frame<3, T_value> Spherical<T_value>::computeTangentFrame() const
     // but we simply do not support them atm.
     assert(mRadius > 0);
 
-    Vec<3, T_value> w = toCartesian().as<Vec>();
+    Vec<3, T_value> w = toCartesian().template as<Vec>();
     Vec<3, T_value> u{cos(azimuthal()), T_value{0}, -sin(azimuthal())};
     return Frame<3, T_value>{
-        .origin = w.as<Position>(),
+        .origin = w.template as<Position>(),
         .base = OrthonormalBase<3, T_value>::MakeFromWSide(w, u)
     };
 }
