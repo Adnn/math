@@ -111,6 +111,8 @@ private:
 // Operations
 //
 #define ANGLE Angle<T_representation, T_unitTag>
+#define ANGLE_LEFT Angle<T_representation, T_leftUnitTag>
+#define ANGLE_RIGHT Angle<T_representation, T_rightUnitTag>
 
 template <class T_representation, class T_unitTag>
 constexpr ANGLE abs(const ANGLE aAngle)
@@ -167,10 +169,10 @@ constexpr ANGLE & ANGLE::operator+=(const Angle aRhs)
     return *this;
 }
 
-template <class T_representation, class T_unitTag>
-constexpr ANGLE operator+(ANGLE aLhs, const ANGLE aRhs)
+template <class T_representation, class T_leftUnitTag, class T_rightUnitTag>
+constexpr ANGLE_LEFT operator+(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs)
 {
-    return aLhs += aRhs;
+    return aLhs += aRhs.as<decltype(aLhs)::unit>();
 }
 
 template <class T_representation, class T_unitTag>
@@ -180,10 +182,10 @@ constexpr ANGLE & ANGLE::operator-=(const Angle aRhs)
     return *this;
 }
 
-template <class T_representation, class T_unitTag>
-constexpr ANGLE operator-(ANGLE aLhs, const ANGLE aRhs)
+template <class T_representation, class T_leftUnitTag, class T_rightUnitTag>
+constexpr ANGLE_LEFT operator-(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs)
 {
-    return aLhs -= aRhs;
+    return aLhs -= aRhs.as<decltype(aLhs)::unit>();
 }
 
 template <class T_representation, class T_unitTag>
@@ -231,6 +233,8 @@ constexpr ANGLE reduce(ANGLE aLhs)
     return aLhs - ANGLE{std::ceil((aLhs.value() - halfRevolution) / revolution) * revolution};
 }
 
+#undef ANGLE_RIGHT
+#undef ANGLE_LEFT
 #undef ANGLE
 
 

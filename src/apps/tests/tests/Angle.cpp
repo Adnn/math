@@ -109,6 +109,35 @@ SCENARIO("Angles operations")
     }
 }
 
+
+SCENARIO("Angles heterogeneous operations.")
+{
+    GIVEN("An angle in Radian, another in Degree.")
+    {
+        Radian rad{pi<double>};
+        Degree deg{180.};
+
+        THEN("They can be added.")
+        {
+            REQUIRE(rad + deg == Degree{360.});
+            REQUIRE(rad + deg == Radian{2 * pi<double>});
+
+            REQUIRE(deg + rad == Degree{360.});
+            REQUIRE(deg + rad == Radian{2 * pi<double>});
+        }
+
+        THEN("They can be substracted.")
+        {
+            REQUIRE(rad - deg == Degree{0.});
+            REQUIRE(rad - deg == Radian{0.});
+
+            REQUIRE(deg - rad == Degree{0.});
+            REQUIRE(deg - rad == Radian{0.});
+        }
+    }
+}
+
+
 SCENARIO("Angles conversions and io")
 {
     GIVEN("An angle in degrees")
