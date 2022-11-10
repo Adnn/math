@@ -10,6 +10,26 @@ using namespace ad::math;
 
 SCENARIO("Spherical construction and access.")
 {
+    GIVEN("A radius.")
+    {
+        float r = 28.4f;
+
+        WHEN("A Spherical position is instantiated from this radius only.")
+        {
+            Spherical s{r};
+
+            THEN("The radius has provided value.")
+            {
+                CHECK(s.radius() == r);
+            }
+            THEN("The angles have default values.")
+            {
+                CHECK(s.polar() == Degree<float>{90.f});
+                CHECK(s.azimuthal() == Degree<float>{0.f});
+            }
+        }
+    }
+
     GIVEN("A radius and two angles.")
     {
         float r = 10.f;

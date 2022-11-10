@@ -16,7 +16,7 @@ template <std::floating_point T_value>
 class Spherical
 {
 public:
-    template <class T_polarUnitTag, class T_azimuthalUnitTag>
+    template <class T_polarUnitTag = Radian_tag, class T_azimuthalUnitTag = Radian_tag>
     explicit constexpr Spherical(
         T_value aRadius,
         Angle<T_value, T_polarUnitTag> aPolar = Radian<T_value>{pi<T_value> / 2.},
