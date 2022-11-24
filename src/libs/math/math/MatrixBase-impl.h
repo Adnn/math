@@ -276,6 +276,9 @@ MatrixBase<TMA>::operator*=(T_scalar aScalar) noexcept(should_noexcept)
 {
     for(std::size_t elementId = 0; elementId != N_rows*N_cols; ++elementId)
     {
+        // TODO Ad 2022/11/15: Should it be transformed to (T_value) element * aScalar?
+        // Currently, this prevents applying a floating point factor to an integral type (with warning as error).
+        // Yet, I am also worried that it could silence legitimate errors (e.g. multiplying a sdr color by a non-normalized float).
         mStore[elementId] *= aScalar;
     }
     return *derivedThis();
