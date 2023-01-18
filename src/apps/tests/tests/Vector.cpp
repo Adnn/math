@@ -61,7 +61,7 @@ SCENARIO("Vectors can be constructed and manipulated")
             REQUIRE(std::all_of(vec3.begin(), vec3.end(), [](double aValue){ return aValue == 0; }));
         }
     }
-   
+
     WHEN("Using constructor from lower dimension vector")
     {
         Vec<2, int> v2{1, 2};
@@ -111,7 +111,7 @@ SCENARIO("There is a separate UnitVec type to model unit vectors")
 
             THEN("The unit vector norm is 1")
             {
-                REQUIRE(unit4.getNorm() == 1.);
+                REQUIRE(unit4.getNorm() == Approx(1.));
             }
         }
     }
@@ -315,7 +315,7 @@ SCENARIO("Vec class operations")
         THEN("The norm of the vector can be computed")
         {
             double expected = std::sqrt(5.*5. + 6.*6. + 15.*15.);
-            REQUIRE(vector.getNorm() == expected);
+            REQUIRE(vector.getNorm() == Approx(expected));
         }
 
         THEN("The vector can be normalized")
