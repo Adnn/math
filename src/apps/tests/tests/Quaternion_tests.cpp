@@ -244,6 +244,72 @@ SCENARIO("Quaternion rotation.")
 }
 
 
+SCENARIO("Quaternion difference.")
+{
+    GIVEN("A quaternion rotating 180° about Y.")
+    {
+        Quaternion y{0., 1., 0., 0.};
+
+        WHEN("It rotates orientations represented as quaternions.")
+        {
+            constexpr Quaternion o_1{Quaternion<double>::Identity()};
+            /*constexpr*/ Quaternion o_2{UnitVec<3>{{3., 2., 1.}}, Degree<double>{16.}};
+
+            Quaternion r_1 = y * o_1;
+            Quaternion r_2 = y * o_2;
+
+            THEN("The difference between the two orientations is the rotation quaternion.")
+            {
+                CHECK(difference(o_1, r_1) == y);
+                CHECK(difference(o_2, r_2).equalsWithinTolerance(y, gEpsilon));
+            }
+
+            THEN("The difference from the destionation orientation to the source orientation is the opposite angulare deplacement.")
+            {
+                CHECK(difference(r_1, o_1).equalsWithinTolerance(y.conjugate(), gEpsilon));
+                CHECK(difference(r_2, o_2).equalsWithinTolerance(y.conjugate(), gEpsilon));
+            }
+
+            THEN("The difference between an orientation and itself is the identity.")
+            {
+                CHECK(difference(o_1, o_1).equalsWithinTolerance(Quaternion<double>::Identity(), gEpsilon));
+                CHECK(difference(o_2, o_2).equalsWithinTolerance(Quaternion<double>::Identity(), gEpsilon));
+                CHECK(difference(r_1, r_1).equalsWithinTolerance(Quaternion<double>::Identity(), gEpsilon));
+                CHECK(difference(r_2, r_2).equalsWithinTolerance(Quaternion<double>::Identity(), gEpsilon));
+            }
+        }
+    }
+
+    GIVEN("A non-trivial rotation quaternion.")
+    {
+        Vec<3> axis{1., 2., 3.};
+        Degree<double> angle{58.};
+        Quaternion q{UnitVec{axis}, angle};
+
+        WHEN("It rotates orientations represented as quaternions.")
+        {
+            constexpr Quaternion o_1{Quaternion<double>::Identity()};
+            /*constexpr*/ Quaternion o_2{UnitVec<3>{{3., 2., 1.}}, Degree<double>{16.}};
+
+            Quaternion r_1 = q * o_1;
+            Quaternion r_2 = q * o_2;
+
+            THEN("The difference between the two orientations is the rotation quaternion.")
+            {
+                CHECK(difference(o_1, r_1).equalsWithinTolerance(q, gEpsilon));
+                CHECK(difference(o_2, r_2).equalsWithinTolerance(q, gEpsilon));
+            }
+
+            THEN("The difference from the destionation orientation to the source orientation is the opposite angulare deplacement.")
+            {
+                CHECK(difference(r_1, o_1).equalsWithinTolerance(q.conjugate(), gEpsilon));
+                CHECK(difference(r_2, o_2).equalsWithinTolerance(q.conjugate(), gEpsilon));
+            }
+        }
+    }
+}
+
+
 SCENARIO("Quaternion interpolation.")
 {
     GIVEN("Two quaternions representing different rotations around the same axis.")

@@ -7,7 +7,6 @@ namespace math {
 //
 // Member functions
 //
-/// \brief Intended to represent rotations, so unit quaternions.
 template <class T_number>
 constexpr Quaternion<T_number>::Quaternion(T_number aX, T_number aY, T_number aZ, T_number aW)
 noexcept(should_noexcept) :
@@ -185,7 +184,14 @@ noexcept(decltype(aLhs)::should_noexcept)
 
 
 template <class T_number>
-T_number getCosineBetween(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs)
+constexpr Quaternion<T_number>
+difference(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs) 
+noexcept(decltype(aLhs)::should_noexcept)
+{
+    return aRhs * aLhs.inverse();
+}
+
+
 noexcept(decltype(aLhs)::should_noexcept)
 {
     return aLhs.asVec().dot(aRhs.asVec());

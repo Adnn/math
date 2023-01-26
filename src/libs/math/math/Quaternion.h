@@ -32,6 +32,7 @@ public:
     constexpr Quaternion(UnitVec<3, T_number> aRotationAxis,
                          Angle<T_number, T_unitTag> aRotationAngle) noexcept(should_noexcept);
 
+    /// \brief Constructs a zero-rotation unit quaternion.
     static constexpr Quaternion Identity() noexcept(should_noexcept);
 
     constexpr bool operator==(const Quaternion &aRhs) const noexcept(should_noexcept);
@@ -52,10 +53,12 @@ public:
     constexpr Quaternion & operator*=(const Quaternion & aRhs) noexcept(should_noexcept);
 
     /// \brief Return antoher Quaternion, which is the conjugate of this.
-    /// \important For unit quaternions, the conjugate is the inverse.
+    /// \note The conjugate represents the opposite angular displacement.
+    /// \note For unit quaternions, the conjugate is the inverse.
     constexpr Quaternion conjugate() const noexcept(should_noexcept);
 
     /// \brief Return antoher Quaternion, which is the inverse of this.
+    /// \note Multiplying a quaternion by its inverse yields the identity quaternion.
     constexpr Quaternion inverse() const noexcept(should_noexcept);
 
     // TODO Ad 2022/03/11: Implement the conversion to axis-angle.
@@ -86,16 +89,22 @@ private:
 };
 
 
-/// \brief Quaternion multiplication
+/// \brief Quaternion multiplication, composing rotations.
+/// \warning Quaternion multiplication performs the rotations from right to left.
 template <class T_number>
 constexpr Quaternion<T_number>
 operator*(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs) 
 noexcept(decltype(aLhs)::should_noexcept);
 
 
-/// \brief The cosine of the angle between two (unit length) quaternions.
+/// \brief Quaternion difference gives the angular
+/// displacement from the orientation lhs to orientation rhs.
 template <class T_number>
-T_number getCosineBetween(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs)
+constexpr Quaternion<T_number>
+difference(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs) 
+noexcept(decltype(aLhs)::should_noexcept);
+
+
 noexcept(decltype(aLhs)::should_noexcept);
 
 

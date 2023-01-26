@@ -176,10 +176,11 @@ class UnitVec : public Vec<N_dimension, T_number>
     {}
 
 public:
+    // Cannot be used in a constexpr context atm, because normalize is not (because std::sqrt is not).
     explicit constexpr UnitVec(base_type aVec) : base_type{aVec.normalize()}
     {}
 
-    static UnitVec MakeFromUnitLength(base_type aNormalizedVec)
+    static constexpr UnitVec MakeFromUnitLength(base_type aNormalizedVec)
     {
         return UnitVec{aNormalizedVec, already_normalized{}};
     }
