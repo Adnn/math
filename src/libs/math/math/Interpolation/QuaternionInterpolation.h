@@ -18,12 +18,21 @@ Quaternion<T_number> lerp(Quaternion<T_number> aLhs,
 noexcept(decltype(aLhs)::should_noexcept)
 {
     // TODO is there a cheaper test in this situation (as we won't need the cosine later).
-    if (getCosineBetween(aLhs, aRhs) < 0)
+    if (getCosineHalfAngle(aLhs, aRhs) < 0)
     {
         aLhs = -aLhs;
     }
     Vec<4, T_number> interpolated = lerp(aLhs.asVec(), aRhs.asVec(), aParameter).normalize();
     return {interpolated.x(), interpolated.y(), interpolated.z(), interpolated.w()};
+}
+
+
+template <class T_number, class T_parameter>
+Quaternion<T_number> lerp(Quaternion<T_number> aLhs,
+                          Quaternion<T_number> aRhs,
+                          T_parameter & aParameter)
+{
+    return lerp(aLhs, aRhs, Clamped<T_parameter>{aParameter});
 }
 
 
@@ -34,7 +43,7 @@ Quaternion<T_number> slerp(Quaternion<T_number> aLhs,
                            const Clamped<T_parameter> & aParameter)
 noexcept(decltype(aLhs)::should_noexcept)
 {
-    T_number cosine = getCosineBetween(aLhs, aRhs);
+    T_number cosine = getCosineHalfAngle(aLhs, aRhs);
     if (cosine < 0)
     {
         aLhs = -aLhs;
@@ -60,6 +69,15 @@ noexcept(decltype(aLhs)::should_noexcept)
     }
     Vec<4, T_number> interpolated = lhsParam * aLhs.asVec() + rhsParam * aRhs.asVec();
     return {interpolated.x(), interpolated.y(), interpolated.z(), interpolated.w()};
+}
+
+
+template <class T_number, class T_parameter>
+Quaternion<T_number> slerp(Quaternion<T_number> aLhs,
+                           Quaternion<T_number> aRhs,
+                           T_parameter & aParameter)
+{
+    return slerp(aLhs, aRhs, Clamped<T_parameter>{aParameter});
 }
 
 

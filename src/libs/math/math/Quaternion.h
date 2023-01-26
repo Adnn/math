@@ -105,6 +105,8 @@ difference(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs)
 noexcept(decltype(aLhs)::should_noexcept);
 
 
+template <class T_number>
+T_number getCosineHalfAngle(Quaternion<T_number> aLhs, const Quaternion<T_number> & aRhs)
 noexcept(decltype(aLhs)::should_noexcept);
 
 
