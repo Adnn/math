@@ -3,6 +3,7 @@
 
 #include "Angle.h"
 #include "Clamped.h"
+#include "LinearMatrix.h"
 #include "Vector.h"
 
 
