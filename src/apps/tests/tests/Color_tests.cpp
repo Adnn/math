@@ -136,7 +136,7 @@ SCENARIO("Conversions between HDR and SDR.")
     GIVEN("A HDR rgb color")
     {
         // Overshoot in blue
-        hdr::Rgb_d rgb_hdr{0.5, 0.001, 1.2};
+        hdr::Rgb_d rgb_hdr{0.499, 0.001, 1.2};
 
         THEN("It can be converted to SDR rgb")
         {
@@ -157,7 +157,7 @@ SCENARIO("Conversions between HDR and SDR.")
         {
             sdr::Rgba rgba_sdr{to_sdr(rgba_hdr)};
 
-            REQUIRE(rgba_sdr.r() == 127);
+            REQUIRE(rgba_sdr.r() == 128); // midway rounds away from zero
             REQUIRE(rgba_sdr.g() == 0);
             REQUIRE(rgba_sdr.b() == 255);
             REQUIRE(rgba_sdr.a() == 1);

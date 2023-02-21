@@ -250,9 +250,9 @@ template <class T_hdrNumber>
 sdr::Rgb to_sdr(hdr::Rgb<T_hdrNumber> aHdr)
 {
     return {
-        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.r(), 0., 1.) * 255),
-        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.g(), 0., 1.) * 255),
-        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.b(), 0., 1.) * 255),
+        static_cast<sdr::Rgb::value_type>(std::round(std::clamp<T_hdrNumber>(aHdr.r(), 0., 1.) * 255)),
+        static_cast<sdr::Rgb::value_type>(std::round(std::clamp<T_hdrNumber>(aHdr.g(), 0., 1.) * 255)),
+        static_cast<sdr::Rgb::value_type>(std::round(std::clamp<T_hdrNumber>(aHdr.b(), 0., 1.) * 255)),
     };
 }
 
@@ -260,10 +260,10 @@ template <class T_hdrNumber>
 sdr::Rgba to_sdr(hdr::Rgba<T_hdrNumber> aHdr)
 {
     return {
-        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.r(), 0., 1.) * 255),
-        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.g(), 0., 1.) * 255),
-        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.b(), 0., 1.) * 255),
-        static_cast<sdr::Rgb::value_type>(std::clamp<T_hdrNumber>(aHdr.a(), 0., 1.) * 255),
+        static_cast<sdr::Rgb::value_type>(std::round(std::clamp<T_hdrNumber>(aHdr.r(), 0., 1.) * 255)),
+        static_cast<sdr::Rgb::value_type>(std::round(std::clamp<T_hdrNumber>(aHdr.g(), 0., 1.) * 255)),
+        static_cast<sdr::Rgb::value_type>(std::round(std::clamp<T_hdrNumber>(aHdr.b(), 0., 1.) * 255)),
+        static_cast<sdr::Rgb::value_type>(std::round(std::clamp<T_hdrNumber>(aHdr.a(), 0., 1.) * 255)),
     };
 }
 
