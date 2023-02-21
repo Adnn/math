@@ -95,6 +95,9 @@ public:
         base_type{aRgb.r(), aRgb.g(), aRgb.b(), aOpacity}
     {}
 
+    explicit operator Rgb_base<T_number> ()
+    { return {r(), g(), b()}; }
+
     ACCESSOR_DIMENSION(r, 1)
     ACCESSOR_DIMENSION(g, 2)
     ACCESSOR_DIMENSION(b, 3)
@@ -133,6 +136,9 @@ public:
     ACCESSOR_DIMENSION(v, 1)
 };
 #undef BASE
+
+
+#undef ACCESSOR_DIMENSION
 
 
 template <class T_number>
@@ -289,7 +295,44 @@ hdr::Rgba<T_hdrNumber> to_hdr(sdr::Rgba aSdr)
 }
 
 
-#undef ACCESSOR_DIMENSION
+template <class T_number>
+    requires std::is_floating_point_v<T_number>
+T_number decode_sRGBChannel(T_number aValue)
+{
+    if(aValue <= T_number{0.04045})
+    {
+        return aValue/T_number{12.92};
+    }
+    else
+    {
+        return std::pow((aValue + T_number{0.055}) / T_number{1.055}, T_number{2.4});
+    }
+}
+
+
+inline sdr::Rgb decode_sRGB(sdr::Rgb aSdr)
+{
+    auto floating = to_hdr<float>(aSdr);
+    floating = {
+        decode_sRGBChannel(floating.r()),
+        decode_sRGBChannel(floating.g()),
+        decode_sRGBChannel(floating.b()),
+    };
+    return to_sdr(floating);
+}
+
+
+inline sdr::Rgba decode_sRGB(sdr::Rgba aSdr)
+{
+    auto floating = to_hdr<float>(aSdr);
+    floating = {
+        decode_sRGBChannel(floating.r()),
+        decode_sRGBChannel(floating.g()),
+        decode_sRGBChannel(floating.b()),
+        floating.a(),
+    };
+    return to_sdr(floating);
+}
 
 
 } // namespace math

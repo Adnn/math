@@ -55,6 +55,11 @@ SCENARIO("RGBA colors constructions")
                     REQUIRE_FALSE(rgba == rgb);
                     REQUIRE(rgb != rgba);
                     REQUIRE_FALSE(rgb == rgba);
+
+                    THEN("RGBA can be swizzled to RGB, and compares equal to RGB")
+                    {
+                        CHECK(sdr::Rgb{rgba} == rgb);
+                    }
                 }
             }
         }
@@ -161,6 +166,44 @@ SCENARIO("Conversions between HDR and SDR.")
             REQUIRE(rgba_sdr.g() == 0);
             REQUIRE(rgba_sdr.b() == 255);
             REQUIRE(rgba_sdr.a() == 1);
+        }
+    }
+}
+
+
+SCENARIO("Conversions from sRGB color space.")
+{
+    GIVEN("A SDR RGB color in sRGB color space.")
+    {
+        sdr::Rgb sRgb{0, 127, 255};
+
+        WHEN("It is decoded to linear space.")
+        {
+            sdr::Rgb linearRgb = decode_sRGB(sRgb);
+            THEN("The values are as expected.")
+            {
+                sdr::Rgb expected(0, 54, 255);
+                CHECK(linearRgb == expected);
+            }
+        }
+    }
+    
+    GIVEN("A SDR RGBA color in sRGB color space.")
+    {
+        sdr::Rgba sRgba{100, 200, 10, 127};
+
+        WHEN("It is decoded to linear space.")
+        {
+            sdr::Rgba linearRgba = decode_sRGB(sRgba);
+            THEN("The color channels values are as expected.")
+            {
+                sdr::Rgb expected(32, 147, 1);
+                CHECK(sdr::Rgb{linearRgba} == expected);
+            }
+            THEN("The opacity channel is not affected.")
+            {
+                CHECK(linearRgba.a() == sRgba.a());
+            }
         }
     }
 }
