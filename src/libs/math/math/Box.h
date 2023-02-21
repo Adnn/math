@@ -93,7 +93,7 @@ struct Box
     { return mPosition + Vec<3, T_number>{mDimension.width(), mDimension.height(), mDimension.depth()}; }
 
     constexpr Position<3, T_number> center() const
-    { return mPosition + (mDimension.as<Vec>() / 2); }
+    { return mPosition + (mDimension.template as<Vec>() / 2); }
 
     bool operator==(const Box &aRhs) const
     { return mPosition == aRhs.mPosition && mDimension == aRhs.mDimension; }
