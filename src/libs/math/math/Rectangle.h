@@ -66,7 +66,7 @@ struct Rectangle
     //{ return mPosition + mDimension.as<Vec>(); }
     { return mPosition + static_cast<Vec<2, T_number>>(mDimension); }
 
-    Position<2, T_number> center() const
+    constexpr Position<2, T_number> center() const
     { return mPosition + static_cast<Vec<2, T_number>>(mDimension / 2); }
 
     bool operator==(const Rectangle &aRhs) const
@@ -74,6 +74,7 @@ struct Rectangle
     bool operator!=(const Rectangle &aRhs) const
     { return !(*this == aRhs); }
 
+    // TODO rename
     Rectangle centered() const
     { return { {mPosition - static_cast<Vec<2, T_number>>(mDimension/T_number{2})},
                 mDimension }; }
