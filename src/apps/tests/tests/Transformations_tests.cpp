@@ -154,6 +154,16 @@ SCENARIO("2D scaling")
         }
     }
 
+    GIVEN("A uniform scaling matrix")
+    {
+        Matrix<2, 2> uniform = trans2d::scaleUniform(8.6);
+
+        THEN("It is equivalent to a scaling matrix with the same value on both dimensions.")
+        {
+            CHECK(uniform == trans2d::scale(8.6, 8.6));
+        }
+    }
+
     GIVEN("Diagonal vectors")
     {
         Vec<2> zero{0., 0.};
@@ -640,6 +650,16 @@ SCENARIO("3D scaling")
             {
                 REQUIRE(scaling == trans3d::scale(Size<3, double>{3., 2., -0.5}));
             }
+        }
+    }
+
+    GIVEN("A uniform scaling matrix")
+    {
+        Matrix<3, 3, int> uniform = trans3d::scaleUniform(5);
+
+        THEN("It is equivalent to a scaling matrix with the same value on both dimensions.")
+        {
+            CHECK(uniform == trans3d::scale(5, 5, 5));
         }
     }
 

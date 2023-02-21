@@ -36,7 +36,6 @@ namespace trans2d {
     template <class T_number>
     constexpr LinearMatrix<2, 2, T_number> scale(const T_number aFactor, const UnitVec<2, T_number> aAxis);
 
-
     /// \brief Non-uniform non-axis-aligned scale.
     ///
     /// The scaling axis are X and Y, but rotated counter-clockwise by `aCounterClockwise`.
@@ -47,6 +46,8 @@ namespace trans2d {
     scale(const T_number aFactorHorizontal, const T_number aFactorVertical,
           const Angle<T_angleRepresentation, T_angleUnitTag> aCounterClockwise);
 
+    template <class T_number>
+    constexpr LinearMatrix<2, 2, T_number> scaleUniform(const T_number aFactor);
 
     /// \brief Projects \b onto X
     template <class T_number=real_number>
@@ -155,6 +156,8 @@ namespace trans3d {
     template <class T_number>
     constexpr LinearMatrix<3, 3, T_number> scale(const T_number aFactor, const UnitVec<3, T_number> aAxis);
 
+    template <class T_number>
+    constexpr LinearMatrix<3, 3, T_number> scaleUniform(const T_number aFactor);
 
     /// \brief Projects \b onto XY plane
     template <class T_number=real_number>

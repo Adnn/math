@@ -76,6 +76,11 @@ namespace trans2d {
         };
     }
 
+    template <class T_number>
+    constexpr LinearMatrix<2, 2, T_number> scaleUniform(const T_number aFactor)
+    {
+        return scale(aFactor, aFactor);
+    }
 
     template <class T_number>
     constexpr LinearMatrix<2, 2, T_number> projectOrthographicOntoX()
@@ -337,6 +342,13 @@ namespace trans3d {
                        (k-1) * n.x()*n.y(),     1 + (k-1) * std::pow(n.y(), 2),                (k-1) * n.y()*n.z(),
                        (k-1) * n.x()*n.z(),                (k-1) * n.y()*n.z(),     1 + (k-1) * std::pow(n.z(), 2),
         };
+    }
+
+
+    template <class T_number>
+    constexpr LinearMatrix<3, 3, T_number> scaleUniform(const T_number aFactor)
+    {
+        return scale(aFactor, aFactor, aFactor);
     }
 
 
