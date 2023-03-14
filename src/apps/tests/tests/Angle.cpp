@@ -135,6 +135,29 @@ SCENARIO("Angles heterogeneous operations.")
             REQUIRE(deg - rad == Radian<double>{0.});
         }
     }
+    GIVEN("An angle in Radian, another in Turn.")
+    {
+        Radian<double> rad{pi<double>};
+        Turn<double> turn{.5};
+
+        THEN("They can be added.")
+        {
+            REQUIRE(rad + turn == Turn<double>{1.});
+            REQUIRE(rad + turn == Radian<double>{2 * pi<double>});
+
+            REQUIRE(turn + rad == Turn<double>{1.});
+            REQUIRE(turn + rad == Radian<double>{2 * pi<double>});
+        }
+
+        THEN("They can be substracted.")
+        {
+            REQUIRE(rad - turn == Turn<double>{0.});
+            REQUIRE(rad - turn == Radian<double>{0.});
+
+            REQUIRE(turn - rad == Turn<double>{0.});
+            REQUIRE(turn - rad == Radian<double>{0.});
+        }
+    }
 }
 
 
@@ -156,9 +179,25 @@ SCENARIO("Angles conversions and io")
             }
         }
 
+        THEN("It can be casted to turns")
+        {
+            Turn<double> circle_turn = circle_deg.as<Turn>();
+            REQUIRE(circle_turn.value() == 1.);
+
+            THEN("Converting back to degrees gives the same value")
+            {
+                REQUIRE(circle_turn.as<Degree>().value() == 360.0);
+            }
+        }
+
         THEN("It can be implicitly converted to radians")
         {
             REQUIRE(std::is_convertible<Degree<double>, Radian<double>>::value);
+        }
+
+        THEN("It can*not* be implicitly converted to turns")
+        {
+            REQUIRE_FALSE(std::is_convertible<Degree<double>, Turn<double>>::value);
         }
 
         THEN("It can be output to formatted stream")
@@ -186,7 +225,24 @@ SCENARIO("Angles conversions and io")
             }
         }
 
-        THEN("It can*not* be implicitly converted to radians")
+        THEN("It can be casted to turns")
+        {
+            Turn<float> half_turn = half_rad.as<Turn>();
+            REQUIRE(half_turn.value() == 0.5f);
+
+            THEN("Converting back to degrees gives the same value")
+            {
+                REQUIRE(half_turn.as<Radian>().value() == pi<float>);
+            }
+        }
+
+
+        THEN("It can*not* be implicitly converted to degrees")
+        {
+            REQUIRE_FALSE(std::is_convertible<Radian<float>, Degree<float>>::value);
+        }
+
+        THEN("It can*not* be implicitly converted to turns")
         {
             REQUIRE_FALSE(std::is_convertible<Radian<float>, Degree<float>>::value);
         }
@@ -198,6 +254,55 @@ SCENARIO("Angles conversions and io")
 
             std::ostringstream expected;
             expected << pi<float> << " rad";
+
+            REQUIRE(oss.str() == expected.str());
+        }
+    }
+
+    GIVEN("An angle in turns")
+    {
+        Turn<float> half_turn{0.5f};
+        REQUIRE(half_turn.value() == 0.5f);
+
+        THEN("It can be casted to degrees")
+        {
+            Degree<float> half_deg = half_turn.as<Degree>();
+            REQUIRE(half_deg.value() == 180.0f);
+
+            THEN("Converting back to radians gives the same value")
+            {
+                REQUIRE(half_deg.as<Turn>().value() == 0.5f);
+            }
+        }
+
+        THEN("It can be casted to radians")
+        {
+            Radian<float> half_rad = half_turn.as<Radian>();
+            REQUIRE(half_rad.value() == pi<float>);
+
+            THEN("Converting back to degrees gives the same value")
+            {
+                REQUIRE(half_rad.as<Turn>().value() == 0.5f);
+            }
+        }
+
+        THEN("It can be implicitly converted to radians")
+        {
+            REQUIRE(std::is_convertible<Turn<float>, Radian<float>>::value);
+        }
+
+        THEN("It can*not* be implicitly converted to degrees")
+        {
+            REQUIRE_FALSE(std::is_convertible<Turn<float>, Degree<float>>::value);
+        }
+
+        THEN("It can be output to formatted stream")
+        {
+            std::ostringstream oss;
+            oss << half_turn;
+
+            std::ostringstream expected;
+            expected << 0.5 << " turn";
 
             REQUIRE(oss.str() == expected.str());
         }
@@ -233,6 +338,19 @@ SCENARIO("Angle literals")
         REQUIRE(twoFloat.value()  == 36.0f);
         REQUIRE(twoLD.value()     == 36.0l);
         REQUIRE(twoInt.value()    == 36);
+    }
+
+    THEN("Literals are available for Turn")
+    {
+        Turn<double> twoDouble  = 1.0_turn;
+        Turn<float> twoFloat    = 1.0_turnf;
+        Turn<long double> twoLD = 1.0_turnl;
+        Turn<int> twoInt        = 1_turn;
+
+        REQUIRE(twoDouble.value() == 1.0);
+        REQUIRE(twoFloat.value()  == 1.0f);
+        REQUIRE(twoLD.value()     == 1.0l);
+        REQUIRE(twoInt.value()    == 1);
     }
 }
 
@@ -276,6 +394,25 @@ SCENARIO("Angle canonical form")
         }
     }
 
+    GIVEN("Angles in turns in range ]-0.5, +0.5]")
+    {
+        Turn<double> zero{0.};
+        Turn<double> half{0.5};
+        Turn<double> minusHalf{-0.499999};
+
+        THEN("They are already reduced")
+        {
+            REQUIRE(reduce(zero) == zero);
+            REQUIRE(reduce(half) == half);
+            REQUIRE(reduce(minusHalf) == minusHalf);
+
+            using Canon = Canonical<Turn<double>>;
+            REQUIRE(Canon{zero} == zero);
+            REQUIRE(Canon{half} == half);
+            REQUIRE(Canon{minusHalf} == minusHalf);
+        }
+    }
+
     GIVEN("An angle in radian out of ]-pi, +pi]")
     {
         Radian<double> minusPi = -pi<Radian<double>>;
@@ -311,6 +448,29 @@ SCENARIO("Angle canonical form")
             using Canon = Canonical<Degree<double>>;
             CHECK(Canon{minusHalf} == Degree<double>{180.});
             CHECK(Canon{full} == Degree<double>{0.});
+            CHECK(Canon{expanded} == reduced);
+        }
+    }
+
+    GIVEN("An angle in turns out of ]-0.5, +0.5]")
+    {
+        Turn<double> minusHalf{-0.5};
+        Turn<double> full{1.};
+
+        // Unfortunately direct comparison does not work with a lot of different
+        // value
+        Turn<double> reduced{0.5};
+        Turn<double> expanded = reduced - (7 * full);
+
+        THEN("It can be reduced")
+        {
+            CHECK(reduce(minusHalf) == Turn<double>{0.5});
+            CHECK(reduce(full) == Turn<double>{0.});
+            CHECK(reduce(expanded).value() == reduced.value());
+
+            using Canon = Canonical<Turn<double>>;
+            CHECK(Canon{minusHalf} == Turn<double>{0.5});
+            CHECK(Canon{full} == Turn<double>{0.});
             CHECK(Canon{expanded} == reduced);
         }
     }

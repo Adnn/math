@@ -1,0 +1,6 @@
+editables:
+    math/local:
+        path: ../../conan
+layout: linux_layout
+workspace_generator: cmake
+root: math/local

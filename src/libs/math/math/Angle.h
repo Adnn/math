@@ -13,6 +13,7 @@ namespace math {
 
 struct Radian_tag {};
 struct Degree_tag {};
+struct Turn_tag {};
 
 
 // Forward declaration to define the usings, so they are available in Angle definition
@@ -28,6 +29,9 @@ using Radian = Angle<T_representation, Radian_tag>;
 
 template <class T_representation>
 using Degree = Angle<T_representation, Degree_tag>;
+
+template <class T_representation>
+using Turn = Angle<T_representation, Turn_tag>;
 
 
 //
@@ -278,6 +282,22 @@ namespace angle_literals
     inline Degree<int> operator"" _deg(unsigned long long aValue)
     { return Degree<int>(static_cast<int>(aValue)); }
 
+    inline Turn<double> operator"" _turn(long double aValue)
+    { return Turn<double>(aValue); }
+
+    inline Turn<float> operator"" _turnf(long double aValue)
+    { return Turn<float>(static_cast<float>(aValue)); }
+    inline Turn<float> operator"" _turnF(long double aValue)
+    { return operator"" _turnf(aValue); }
+
+    inline Turn<long double> operator"" _turnl(long double aValue)
+    { return Turn<long double>(aValue); }
+    inline Turn<long double> operator"" _turnL(long double aValue)
+    { return operator"" _turnl(aValue); }
+
+    inline Turn<int> operator"" _turn(unsigned long long aValue)
+    { return Turn<int>(static_cast<int>(aValue)); }
+
 } // namespace angle_literals
 
 
@@ -303,6 +323,16 @@ public:
     // Would be nice to use T_representation here to match the floating point
     // yet that would break for integral types
     static constexpr double radian_factor = 2*pi<double>/360.0;
+};
+
+template <class T_representation>
+class Angle_trait<Turn<T_representation>>
+{
+public:
+    static constexpr const char * const suffix = "turn";
+    // Would be nice to use T_representation here to match the floating point
+    // yet that would break for integral types
+    static constexpr double radian_factor = 2*pi<double>;
 };
 
 
