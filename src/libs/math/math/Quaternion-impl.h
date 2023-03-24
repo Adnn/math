@@ -97,7 +97,7 @@ constexpr T_number Quaternion<T_number>::w() const noexcept(should_noexcept)
 
 template <class T_number>
 constexpr Quaternion<T_number> Quaternion<T_number>::operator-() 
-noexcept(should_noexcept)
+const noexcept(should_noexcept)
 {
     return {-mVector, -mW};
 }

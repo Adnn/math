@@ -48,7 +48,7 @@ public:
     constexpr T_number z() const noexcept(should_noexcept);
     constexpr T_number w() const noexcept(should_noexcept);
 
-    constexpr Quaternion operator-() noexcept(should_noexcept);
+    constexpr Quaternion operator-() const noexcept(should_noexcept);
 
     constexpr Quaternion & operator*=(const Quaternion & aRhs) noexcept(should_noexcept);
 
