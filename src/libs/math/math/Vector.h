@@ -172,7 +172,7 @@ class UnitVec : public Vec<N_dimension, T_number>
     explicit UnitVec() = delete;
 
     struct already_normalized {};
-    UnitVec(base_type aNormalizedVec, already_normalized) : base_type{std::move(aNormalizedVec)}
+    constexpr UnitVec(base_type aNormalizedVec, already_normalized) : base_type{std::move(aNormalizedVec)}
     {}
 
 public:
