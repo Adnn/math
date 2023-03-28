@@ -148,9 +148,9 @@ makeVec(VT_elements && ... aElements)
 }
 
 template<int N_lowerDimension, class T_number = real_number>
-Vec<N_lowerDimension+1, T_number> makeVec(const Vec<N_lowerDimension, T_number> & aPosition)
+Vec<N_lowerDimension+1, T_number> makeVec(const Vec<N_lowerDimension, T_number> & aVector)
 {
-    return Vec<N_lowerDimension+1, T_number>{aPosition, T_number{0}};
+    return Vec<N_lowerDimension+1, T_number>{aVector, T_number{0}};
 }
 
 
