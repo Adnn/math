@@ -69,7 +69,7 @@ public:
 
     template <class T_derived> 
     //requires (is_position_v<T_derived> || is_vec_v<T_derived>)
-    T_derived rotate(const Vector<T_derived, 3, T_number> & aVector) noexcept(should_noexcept);
+    T_derived rotate(const Vector<T_derived, 3, T_number> & aVector) const noexcept(should_noexcept);
 
     constexpr LinearMatrix<3, 3, T_number> toRotationMatrix() const noexcept(should_noexcept);
 

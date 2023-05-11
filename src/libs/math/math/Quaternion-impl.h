@@ -132,7 +132,7 @@ constexpr Quaternion<T_number> Quaternion<T_number>::inverse() const noexcept(sh
 template <class T_number>
 template <class T_derived> 
 //requires (is_position_v<T_derived> || is_vec_v<T_derived>)
-T_derived Quaternion<T_number>::rotate(const Vector<T_derived, 3, T_number> & aVector) 
+T_derived Quaternion<T_number>::rotate(const Vector<T_derived, 3, T_number> & aVector) const
 noexcept(should_noexcept)
 {
     return static_cast<T_derived>(
