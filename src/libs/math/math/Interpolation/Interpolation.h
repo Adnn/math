@@ -50,42 +50,27 @@ public:
         mAnimation{std::move(aAnimation)}
     {}
 
-
-    T_value advance(T_parameter aIncrement)
-    {
-        return lerp(mFirst, mLast, mAnimation.advance(aIncrement));
-    }
-
-
     T_value at(T_parameter aInput) const
     {
         return lerp(mFirst, mLast, mAnimation.at(aInput));
     }
 
-
-    void reset()
+    bool isCompleted(T_parameter aInput) const
     {
-        mAnimation.reset();
+        return mAnimation.isCompleted(aInput);
     }
 
-
-    bool isCompleted() const
+    T_parameter getOvershoot(T_parameter aInput) const
     {
-        return mAnimation.isCompleted();
+        return mAnimation.getOvershoot(aInput);
     }
-
-
-    T_parameter getOvershoot() const
-    {
-        return mAnimation.getOvershoot();
-    }
-
 
 private:
     T_value mFirst;
     T_value mLast;
     Animation_type mAnimation;
 };
+
 
 /// \brief Helper factory for Interpolation.
 ///

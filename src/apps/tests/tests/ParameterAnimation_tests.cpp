@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include <math/Interpolation/Interpolation.h>
+#include <math/Interpolation/ParameterAnimation.h>
 #include <math/Vector.h>
 
 
@@ -18,48 +18,15 @@ SCENARIO("ParameterAnimation class")
 
         THEN("The values are linearly animated")
         {
+            CHECK_FALSE(animation.isCompleted(0));
             CHECK(animation.at(0.) == 0.);
             CHECK(animation.at(50.) == 0.5);
             CHECK(animation.at(100.) == 1);
 
             CHECK(animation.at(-10.) == 0.);
+            CHECK_FALSE(animation.isCompleted(-10.));
             CHECK(animation.at(1000.) == 1.);
-        }
-
-        THEN("The animation can be advanced, the advance is cumulative")
-        {
-            CHECK(animation.advance(0.) == 0.);
-            CHECK(animation.advance(10.) == Approx(0.1));
-            CHECK(animation.advance(10.) == Approx(0.2));
-            CHECK(animation.advance(10.) == Approx(0.3));
-
-            CHECK_FALSE(animation.isCompleted());
-
-            CHECK(animation.advance(70.) == 1.);
-            CHECK(animation.isCompleted());
-
-            CHECK(animation.advance(70.) == 1.);
-            CHECK(animation.isCompleted());
-
-            THEN("The animation can be reset.")
-            {
-                // Sanity check
-                REQUIRE(animation.advance(0.) != 0.);
-
-                animation.reset(); 
-                CHECK_FALSE(animation.isCompleted());
-                CHECK(animation.advance(0.) == 0.);
-            }
-
-            THEN("Random values can still be queried")
-            {
-                CHECK(animation.at(0.) == 0.);
-                CHECK(animation.at(50.) == 0.5);
-                CHECK(animation.at(100.) == 1);
-
-                CHECK(animation.at(-10.) == 0.);
-                CHECK(animation.at(1000.) == 1.);
-            }
+            CHECK(animation.isCompleted(100.));
         }
     }
 }
@@ -76,7 +43,7 @@ SCENARIO("Clamped ParameterAnimation combinations.")
         THEN("It is finite, but not completed.")
         {
             REQUIRE(animation.IsFinite());
-            REQUIRE_FALSE(animation.isCompleted());
+            REQUIRE_FALSE(animation.isCompleted(0));
         }
 
         THEN("It can be sampled along the period.")
@@ -95,26 +62,20 @@ SCENARIO("Clamped ParameterAnimation combinations.")
             CHECK(animation.at(2 * period) == 1.);
         }
 
-        WHEN("The animation is advanced.")
+        THEN("Over-shoot and completion can be queried")
         {
-            THEN("The sampled values are found back.")
-            {
-                CHECK(animation.advance(0.) == animation.at(0.));
-                CHECK_FALSE(animation.isCompleted());
-                CHECK(animation.getOvershoot() == 0.f);
+            CHECK_FALSE(animation.isCompleted(0.));
+            CHECK(animation.getOvershoot(0.) == 0.f);
 
-                CHECK(animation.advance(period / 2.) == animation.at(period / 2.));
-                CHECK_FALSE(animation.isCompleted());
-                CHECK(animation.getOvershoot() == 0.f);
+            CHECK_FALSE(animation.isCompleted(period / 2.));
+            CHECK(animation.getOvershoot(period / 2.) == 0.f);
 
-                CHECK(animation.advance(period / 2.) == animation.at(period));
-                CHECK(animation.isCompleted());
-                CHECK(animation.getOvershoot() == 0.f);
+            CHECK(animation.isCompleted(period));
+            CHECK(animation.getOvershoot(period) == 0.f);
 
-                // Overshoot by two periods
-                CHECK(animation.advance(2 * period) == animation.at(period));
-                CHECK(animation.getOvershoot() == 2 * period);
-            }
+            // Overshoot by two periods
+            CHECK(animation.at(2 * period) == animation.at(period));
+            CHECK(animation.getOvershoot(2 * period) == period);
         }
     }
 
@@ -126,7 +87,7 @@ SCENARIO("Clamped ParameterAnimation combinations.")
         THEN("It is finite, but not completed.")
         {
             REQUIRE(animation.IsFinite());
-            REQUIRE_FALSE(animation.isCompleted());
+            REQUIRE_FALSE(animation.isCompleted(0.));
         }
 
         THEN("It can be sampled along the period.")
@@ -145,24 +106,20 @@ SCENARIO("Clamped ParameterAnimation combinations.")
             CHECK(animation.at(2 * period) == 1.);
         }
 
-        WHEN("The animation is advanced.")
+        THEN("Over-shoot and completion can be queried")
         {
-            THEN("The sampled values are found back.")
-            {
-                CHECK(animation.advance(0.) == animation.at(0.));
-                CHECK_FALSE(animation.isCompleted());
+            CHECK_FALSE(animation.isCompleted(0.));
+            CHECK(animation.getOvershoot(0.) == 0.f);
 
-                CHECK(animation.advance(period / 2.) == animation.at(period / 2.));
-                CHECK_FALSE(animation.isCompleted());
+            CHECK_FALSE(animation.isCompleted(period / 2.));
+            CHECK(animation.getOvershoot(period / 2.) == 0.f);
 
-                CHECK(animation.advance(period / 2.) == animation.at(period));
-                CHECK(animation.isCompleted());
-                CHECK(animation.getOvershoot() == 0.f);
+            CHECK(animation.isCompleted(period));
+            CHECK(animation.getOvershoot(period) == 0.f);
 
-                // Overshoot by half period
-                CHECK(animation.advance(period / 2.) == animation.at(period));
-                CHECK(animation.getOvershoot() == period / 2.);
-            }
+            // Overshoot by half period
+            CHECK(animation.at(3./2. * period) == animation.at(period));
+            CHECK(animation.getOvershoot(3./2. * period) == period / 2.);
         }
     }
 
@@ -174,7 +131,7 @@ SCENARIO("Clamped ParameterAnimation combinations.")
         THEN("It is not finite.")
         {
             REQUIRE_FALSE(animation.IsFinite());
-            REQUIRE_FALSE(animation.isCompleted());
+            REQUIRE_FALSE(animation.isCompleted(0));
         }
 
         THEN("It can be sampled along the period.")
@@ -208,7 +165,7 @@ SCENARIO("Clamped ParameterAnimation combinations.")
         THEN("It is not finite.")
         {
             REQUIRE_FALSE(animation.IsFinite());
-            REQUIRE_FALSE(animation.isCompleted());
+            REQUIRE_FALSE(animation.isCompleted(0));
         }
 
         THEN("It can be sampled along the period.")
@@ -241,7 +198,6 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
     double period = 10.;
     double speed = 2.;
 
-
     GIVEN("A full-range (non-periodic non-easing) animation (i.e. a trivial animation).")
     {
         double targetOutput = 56.3;
@@ -254,7 +210,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
             THEN("It is not finite.")
             {
                 REQUIRE_FALSE(animation.IsFinite());
-                REQUIRE_FALSE(animation.isCompleted());
+                REQUIRE_FALSE(animation.isCompleted(0.));
             }
 
             THEN("It can be sampled along the period.")
@@ -273,21 +229,17 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
                 CHECK(animation.at(3 * reachValue) == 3 * targetOutput);
             }
 
-            WHEN("The animation is advanced.")
+            THEN("Over-shoot and completion can be queried")
             {
-                THEN("The sampled values are found back.")
-                {
-                    CHECK(animation.advance(0.) == animation.at(0.));
-                    CHECK_FALSE(animation.isCompleted());
+                CHECK_FALSE(animation.isCompleted(0.));
+                CHECK(animation.getOvershoot(0.) == 0.f);
 
-                    CHECK(animation.advance(reachValue / 2.) == animation.at(reachValue / 2.));
-                    CHECK_FALSE(animation.isCompleted());
+                CHECK_FALSE(animation.isCompleted(reachValue / 2.));
+                CHECK(animation.getOvershoot(reachValue / 2.) == 0.f);
 
-                    CHECK(animation.advance(reachValue / 2.) == animation.at(reachValue));
-                    // It is not finite.
-                    CHECK_FALSE(animation.isCompleted());
-                    CHECK(animation.getOvershoot() == 0.f);
-                }
+                // It is not finite
+                CHECK_FALSE(animation.isCompleted(reachValue));
+                CHECK(animation.getOvershoot(reachValue) == 0.f);
             }
         }
     }
@@ -302,7 +254,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
             THEN("It is finite.")
             {
                 REQUIRE(animation.IsFinite());
-                REQUIRE_FALSE(animation.isCompleted());
+                REQUIRE_FALSE(animation.isCompleted(0.));
             }
 
             THEN("It can be sampled along the period.")
@@ -321,24 +273,20 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
                 CHECK(animation.at(2 * period) == period);
             }
 
-            WHEN("The animation is advanced.")
+            THEN("Over-shoot and completion can be queried")
             {
-                THEN("The sampled values are found back.")
-                {
-                    CHECK(animation.advance(0.) == animation.at(0.));
-                    CHECK_FALSE(animation.isCompleted());
+                CHECK_FALSE(animation.isCompleted(0.));
+                CHECK(animation.getOvershoot(0.) == 0.f);
 
-                    CHECK(animation.advance(period / 2.) == animation.at(period / 2.));
-                    CHECK_FALSE(animation.isCompleted());
+                CHECK_FALSE(animation.isCompleted(period / 2.));
+                CHECK(animation.getOvershoot(period / 2.) == 0.f);
 
-                    CHECK(animation.advance(period / 2.) == animation.at(period));
-                    CHECK(animation.isCompleted());
-                    CHECK(animation.getOvershoot() == 0.f);
+                CHECK(animation.isCompleted(period));
+                CHECK(animation.getOvershoot(period) == 0.f);
 
-                    // Overshoot by one periods
-                    CHECK(animation.advance(period) == animation.at(period));
-                    CHECK(animation.getOvershoot() == period);
-                }
+                // Overshoot by one period
+                CHECK(animation.at(2. * period) == animation.at(period));
+                CHECK(animation.getOvershoot(2. * period) == period);
             }
         } 
         
@@ -351,7 +299,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
             THEN("It is finite.")
             {
                 REQUIRE(animation.IsFinite());
-                REQUIRE_FALSE(animation.isCompleted());
+                REQUIRE_FALSE(animation.isCompleted(0.));
             }
 
             THEN("It can be sampled along the period.")
@@ -371,24 +319,20 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
                 CHECK(animation.at(2 * completionValue) == period);
             }
 
-            WHEN("The animation is advanced.")
+            THEN("Over-shoot and completion can be queried")
             {
-                THEN("The sampled values are found back.")
-                {
-                    CHECK(animation.advance(0.) == animation.at(0.));
-                    CHECK_FALSE(animation.isCompleted());
+                CHECK_FALSE(animation.isCompleted(0.));
+                CHECK(animation.getOvershoot(0.) == 0.f);
 
-                    CHECK(animation.advance(completionValue / 2.) == animation.at(completionValue / 2.));
-                    CHECK_FALSE(animation.isCompleted());
+                CHECK_FALSE(animation.isCompleted(completionValue / 2.));
+                CHECK(animation.getOvershoot(completionValue / 2.) == 0.f);
 
-                    CHECK(animation.advance(completionValue / 2.) == animation.at(completionValue));
-                    CHECK(animation.isCompleted());
-                    CHECK(animation.getOvershoot() == 0.f);
+                CHECK(animation.isCompleted(completionValue));
+                CHECK(animation.getOvershoot(completionValue) == 0.f);
 
-                    // Overshoot by two periods
-                    CHECK(animation.advance(2 * period) == animation.at(period));
-                    CHECK(animation.getOvershoot() == 2 * period);
-                }
+                // Overshoot by two periods
+                CHECK(animation.at(3. * period) == animation.at(period));
+                CHECK(animation.getOvershoot(completionValue + 2. * period) == 2. * period);
             }
         }
     }
@@ -403,7 +347,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
             THEN("It is not finite.")
             {
                 REQUIRE_FALSE(animation.IsFinite());
-                REQUIRE_FALSE(animation.isCompleted());
+                REQUIRE_FALSE(animation.isCompleted(0.));
             }
 
             THEN("It can be sampled along the period.")
@@ -445,7 +389,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
             THEN("It is not finite.")
             {
                 REQUIRE_FALSE(animation.IsFinite());
-                REQUIRE_FALSE(animation.isCompleted());
+                REQUIRE_FALSE(animation.isCompleted(0.));
             }
 
             THEN("It can be sampled along the period.")
@@ -498,7 +442,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
             THEN("It is not finite.")
             {
                 REQUIRE_FALSE(animation.IsFinite());
-                REQUIRE_FALSE(animation.isCompleted());
+                REQUIRE_FALSE(animation.isCompleted(0.));
             }
 
             THEN("It can be sampled along the period.")
@@ -537,7 +481,7 @@ SCENARIO("Full-Range ParameterAnimation combinations.")
             THEN("It is not finite.")
             {
                 REQUIRE_FALSE(animation.IsFinite());
-                REQUIRE_FALSE(animation.isCompleted());
+                REQUIRE_FALSE(animation.isCompleted(0.));
             }
 
             THEN("It can be sampled along the period.")

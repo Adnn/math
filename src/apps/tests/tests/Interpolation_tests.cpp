@@ -80,29 +80,31 @@ SCENARIO("Interpolation class")
 
         double duration = 10;
         auto linear = makeInterpolation(a, b, duration);
-        auto smoothstep = makeInterpolation<None ,ease::SmoothStep>(a, b, duration);
+        auto smoothstep = makeInterpolation<None, ease::SmoothStep>(a, b, duration);
+
+        double rawInputLinear = 0., rawInputSmooth = 0.;
 
         WHEN("The interpolations advances")
         {
-            Vec<2> interpolatedHalf = linear.advance(duration/2.);
+            Vec<2> interpolatedHalf = linear.at(rawInputLinear += duration/2.);
             // Note that this advance will be on top of previous advance
-            Vec<2> interpolatedThreeQuarter = linear.advance(duration/4.);
+            Vec<2> interpolatedThreeQuarter = linear.at(rawInputLinear += duration/4.);
 
-            Vec<2> smoothHalf = smoothstep.advance(duration/2.);
+            Vec<2> smoothHalf = smoothstep.at(rawInputSmooth += duration/2.);
             // Note that this advance will be on top of previous advance
-            Vec<2> smoothThreeQuarter = smoothstep.advance(duration/4.);
+            Vec<2> smoothThreeQuarter = smoothstep.at(rawInputSmooth += duration/4.);
 
-            REQUIRE_FALSE(linear.isCompleted());
-            REQUIRE_FALSE(smoothstep.isCompleted());
-            REQUIRE(linear.getOvershoot() == 0.);
-            REQUIRE(smoothstep.getOvershoot() == 0.);
+            REQUIRE_FALSE(linear.isCompleted(rawInputLinear));
+            REQUIRE_FALSE(smoothstep.isCompleted(rawInputSmooth));
+            REQUIRE(linear.getOvershoot(rawInputLinear) == 0.);
+            REQUIRE(smoothstep.getOvershoot(rawInputSmooth) == 0.);
 
-            THEN("They can be reset")
+            THEN("The interpolation is reproducible")
             {
-                linear.reset();
-                REQUIRE(linear.advance(0.) == a);
-                smoothstep.reset();
-                REQUIRE(smoothstep.advance(0.) == a);
+                rawInputLinear = 0.;
+                REQUIRE(linear.at(rawInputLinear) == a);
+                rawInputSmooth = 0.;
+                REQUIRE(linear.at(rawInputSmooth) == a);
             }
 
             THEN("The result is interpolated")
@@ -115,26 +117,24 @@ SCENARIO("Interpolation class")
                 REQUIRE(interpolatedThreeQuarter.y() <  smoothThreeQuarter.y());
             }
 
-            WHEN("They are advanced to or past the end.")
+            WHEN("The raw input is advanced to or past the end.")
             {
-                linear.advance(duration/4.);
-                smoothstep.advance(duration);
+                rawInputLinear += duration/4.;
+                rawInputSmooth += duration;
 
                 THEN("They indicate completion")
                 {
-                    REQUIRE(linear.isCompleted());
-                    REQUIRE(linear.getOvershoot() == 0.);
-                    REQUIRE(smoothstep.isCompleted());
-                    REQUIRE(smoothstep.getOvershoot() == 3./4. * duration);
+                    REQUIRE(linear.isCompleted(rawInputLinear));
+                    REQUIRE(linear.getOvershoot(rawInputLinear) == 0.);
+                    REQUIRE(smoothstep.isCompleted(rawInputSmooth));
+                    REQUIRE(smoothstep.getOvershoot(rawInputSmooth) == 3./4. * duration);
 
                     THEN("They can be reset")
                     {
-                        linear.reset();
-                        REQUIRE_FALSE(linear.isCompleted());
-                        REQUIRE(linear.advance(0.) == a);
-                        smoothstep.reset();
-                        REQUIRE_FALSE(smoothstep.isCompleted());
-                        REQUIRE(smoothstep.advance(0.) == a);
+                        rawInputLinear = 0.;
+                        REQUIRE_FALSE(linear.isCompleted(rawInputLinear));
+                        rawInputSmooth = 0.;
+                        REQUIRE_FALSE(smoothstep.isCompleted(rawInputSmooth));
                     }
                 }
             }

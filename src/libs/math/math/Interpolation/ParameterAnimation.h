@@ -21,7 +21,7 @@ namespace ease
             return std::pow(x, 2) * (3 - 2 * x);
         }
     } ;
-} // namespae ease
+} // namespace ease
 
 
 /// \brief Namespace containing all the peridicity functions.
@@ -79,6 +79,8 @@ namespace detail
             mSpeed{std::move(aSpeed)}
         {}
 
+        // Note: it is intended to remain constant, because the "accumulated" input is multiplied by speed
+        // (so a change of speed would be "retro-active")
         T_parameter mSpeed;
     };
 
@@ -96,7 +98,9 @@ namespace detail
 } // namespace detail
 
 
-// TODO potential optimization (only speed or period member) for no-easing/no-periodicity
+// TODO Implement a "dynamic" version (non-templated, having data members to control behaviour)
+
+// TODO Find a more descriptive type name.
 /// \brief Animate a 1D parameter value, with speed factor, and optional easing and periodicity.
 /// The output might be clamped to [0 1] (notably useful for lerp()), or full range.
 /// 
@@ -185,18 +189,6 @@ public:
     }
 
 
-    Result_type advance(T_parameter aIncrement)
-    {
-        return at(mAccumulatedInput += aIncrement);
-    }
-
-
-    void reset()
-    {
-        mAccumulatedInput = 0;
-    }
-
-
     /// \brief Indicates if this animation can reach completion (or if it goes on forever).
     static constexpr bool IsFinite()
     {
@@ -205,16 +197,16 @@ public:
         return !IsPeriodic() && !IsTrivial();
     }
 
-
-    /// \brief Indicate whether this animation is done.
+    /// \brief Indicate whether the animation is done at `aInput`.
+    /// \note If this is **not** finite, the call will always return `false`.
     /// 
-    /// When it is done, it is guaranteed that advancing by non-negative values
-    /// will keep on producing the same parameter output.
-    bool isCompleted() const
+    /// When it is done, it is guaranteed that any input >= `aInput` 
+    /// will produce the same parameter output, which is the final value.
+    bool isCompleted(T_parameter aInput) const
     {
         if constexpr(IsFinite())
         {
-            return (mAccumulatedInput * mSpeed) >= mPeriod;
+            return (aInput * mSpeed) >= mPeriod;
         }
         else
         {
@@ -224,13 +216,14 @@ public:
 
 
     /// \brief Returns how much excess advance is left after completion.
+    /// \note If this is **not** finite, the call will always return zero.
     ///
     /// This is usefull to chain parameter animations, to carry-over the overshoot.
-    T_parameter getOvershoot() const
+    T_parameter getOvershoot(T_parameter aInput) const
     {
         if constexpr(IsFinite())
         {
-            return std::max<T_parameter>(0, mAccumulatedInput - (mPeriod / mSpeed));
+            return std::max<T_parameter>(0, aInput - (mPeriod / mSpeed));
         }
         else
         {
@@ -241,7 +234,6 @@ public:
 
 private:
     T_parameter mPeriod;
-    T_parameter mAccumulatedInput{0};
     TT_periodicity<T_parameter> mPeriodicBehaviour; // empty class for basic initial cases (Repeat, PingPong)
                                                     // but leaves room for more potential other scenarios.
 
@@ -270,32 +262,21 @@ public:
         return aInput * mSpeed;
     }
 
-    typename Base_t::Result_type advance(T_parameter aIncrement)
-    {
-        return at(mAccumulatedInput += aIncrement);
-    }
-
-    void reset()
-    {
-        mAccumulatedInput = 0;
-    }
-
     static constexpr bool HasSpeed()
     { return true; }
 
     static constexpr bool IsFinite()
     { return false; }
 
-    bool isCompleted() const
-    { return false; }
+    constexpr bool isCompleted(T_parameter aInput) const
+    {
+        return false;
+    }
 
-    T_parameter getOvershoot() const
+    constexpr T_parameter getOvershoot(T_parameter aInput) const
     {
         return T_parameter{0};
     }
-
-private:
-    T_parameter mAccumulatedInput{0};
 };
 
 
