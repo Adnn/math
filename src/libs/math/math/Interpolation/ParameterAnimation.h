@@ -3,6 +3,8 @@
 
 #include "../Clamped.h"
 
+#include <cmath>
+
 
 namespace ad {
 namespace math {
