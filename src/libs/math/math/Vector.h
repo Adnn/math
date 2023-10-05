@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "MatrixBase.h"
+#include "MatrixBase.h" // IWYU pragma: export
 #include "Matrix.h"
 
 
