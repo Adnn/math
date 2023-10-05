@@ -7,7 +7,6 @@
 #include <cassert>
 #include <cmath>
 #include <cstddef>
-#include <variant>
 #include <vector>
 
 namespace ad {
