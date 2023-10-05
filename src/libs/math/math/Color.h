@@ -4,6 +4,8 @@
 
 #include <iomanip>
 
+#include <cstdint>
+
 
 namespace ad {
 namespace math {
