@@ -239,12 +239,12 @@ struct Bezier
             {
                 result.at(index++) = root;
             }
-            root = (t1 * std::cos((phi + 2.f * M_PIf) / 3.f)) - (b / 3.f);
+            root = (t1 * std::cos((phi + 2.f * (float)M_PI) / 3.f)) - (b / 3.f);
             if (root >= 0.f && root <= 1.f)
             {
                 result.at(index++) = root;
             }
-            root = (t1 * std::cos((phi + 4.f * M_PIf) / 3.f)) - (b / 3.f);
+            root = (t1 * std::cos((phi + 4.f * (float)M_PI) / 3.f)) - (b / 3.f);
             if (root >= 0.f && root <= 1.f)
             {
                 result.at(index++) = root;
