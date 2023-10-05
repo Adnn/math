@@ -2,6 +2,7 @@
 
 #include "../Clamped.h"
 #include "../Vector.h"
+#include "../Constants.h"
 
 #include <cassert>
 #include <cmath>
@@ -239,12 +240,12 @@ struct Bezier
             {
                 result.at(index++) = root;
             }
-            root = (t1 * std::cos((phi + 2.f * (float)M_PI) / 3.f)) - (b / 3.f);
+            root = (t1 * std::cos((phi + 2.f * pi<float>) / 3.f)) - (b / 3.f);
             if (root >= 0.f && root <= 1.f)
             {
                 result.at(index++) = root;
             }
-            root = (t1 * std::cos((phi + 4.f * (float)M_PI) / 3.f)) - (b / 3.f);
+            root = (t1 * std::cos((phi + 4.f * pi<float>) / 3.f)) - (b / 3.f);
             if (root >= 0.f && root <= 1.f)
             {
                 result.at(index++) = root;
@@ -531,15 +532,6 @@ public:
 
 protected:
     static constexpr T_parameter mSpeed{1};
-};
-template <typename>
-struct PM_traits
-{};
-
-template <class T, class U>
-struct PM_traits<U T::*>
-{
-    using member_type = U;
 };
 } // namespace detail
 
