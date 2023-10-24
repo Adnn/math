@@ -560,8 +560,11 @@ namespace trans3d {
         const T_number v1 = T_number{1};
 
         // IMPORTANT: Negate the perspective matrix from p152, this way -Z is copied into W.
-        // It respects common OpenGL convention that the clipping test is -w < x, y, z < +w.
-        // This does **not** change handed-ness, but negates the whole transformed vector.
+        // Assuming a right handed frame where camera looks along negative Z axis, 
+        // this copies a positive value in W for vertices **in front** of the camera (having negative Z coordinates).
+        // Thus vertices between near and far plane can pass the OpenGL clipping test -w < x, y, z < +w.
+        // This does **not** change handed-ness, but negates the whole transformed vector:
+        // the transformed homogeneous coordinates are strictly equivalent.
         return {
             -n,  v0,  v0,    v0,
             v0,  -n,  v0,    v0,
