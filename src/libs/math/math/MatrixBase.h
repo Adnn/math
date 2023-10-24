@@ -18,6 +18,10 @@ namespace math {
 #define TMA_RIGHT T_derivedRight, N_rows, N_cols, T_number
 
 
+// Forward declaration
+template <class, int, class> class Vector;
+
+
 namespace detail {
 
 
@@ -25,6 +29,27 @@ class CastTag
 {
     template <TMP>
     friend class MatrixBase;
+};
+
+
+// Required to be able to deduce Row template parameters in the Vector ctor taking a Row(Base).
+// see: https://stackoverflow.com/a/12640996/1027706
+template <int N_cols, class T_data>
+class RowBase
+{
+    template <class, int, class> 
+    friend class Vector;
+
+protected:
+    constexpr RowBase(T_data * aData) noexcept :
+        mRow{aData}
+    {}
+
+    // The const member function return pointer to non-const, since it is modeled after iterators.
+    constexpr T_data * data() const noexcept
+    { return mRow; }
+
+    T_data * mRow;
 };
 
 
@@ -48,13 +73,15 @@ public:
     static constexpr std::size_t Rows{N_rows};
     static constexpr std::size_t Cols{N_cols};
 
-private:
-    class Row
+public:
+    class Row : public detail::RowBase<Cols, T_number>
     {
         friend class MatrixBase;
 
+        using BaseType = detail::RowBase<Cols, T_number>;
+
         constexpr explicit Row(T_number *aRow) noexcept:
-            mRow(aRow)
+            BaseType{aRow}
         {}
 
         // Only allow move-construction, required to return from Matrix::operator[]
@@ -65,18 +92,17 @@ private:
 
     public:
         constexpr T_number & operator[](std::size_t aColumn)
-        { return mRow[aColumn]; }
-
-    private:
-        T_number *mRow;
+        { return BaseType::data()[aColumn]; }
     };
 
-    class const_Row
+    class const_Row : public detail::RowBase<Cols, const T_number>
     {
         friend class MatrixBase;
 
+        using BaseType = detail::RowBase<Cols, const T_number>;
+
         constexpr explicit const_Row(const T_number *aRow) noexcept:
-            mRow(aRow)
+            BaseType{aRow}
         {}
 
         // Only allow move-construction, required to return from Matrix::operator[]
@@ -87,10 +113,7 @@ private:
 
     public:
         constexpr T_number operator[](std::size_t aColumn)
-        { return mRow[aColumn]; }
-
-    private:
-        const T_number *mRow;
+        { return BaseType::data()[aColumn]; }
     };
 
 protected:

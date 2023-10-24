@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <span>
 
 
 using namespace ad;
@@ -90,7 +91,6 @@ SCENARIO("Matrix conversion")
             REQUIRE(std::equal(source.begin(), source.end(), converted.begin()));
         }
     }
-
 }
 
 
@@ -678,6 +678,92 @@ SCENARIO("Matrix determinants.")
             };
             expected /= 4210604.;
             REQUIRE(base.inverse() == expected);
+        }
+    }
+}
+
+
+SCENARIO("Vector extraction from matrices.")
+{
+    GIVEN("A non-const 2x4 matrix.")
+    {
+        Matrix<2, 4, int> matrix2x4{
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+        };
+
+        WHEN("Vectors are constructed form rows")
+        {
+            Vec<4, int> row0{matrix2x4[0]};
+            Vec<4, int> row1{matrix2x4[1]};
+            
+            THEN("They do match the row values")
+            {
+                CHECK(row0 == Vec<4, int>{1, 2, 3, 4});
+                CHECK(row1 == Vec<4, int>{5, 6, 7, 8});
+            }
+        }
+    }
+    
+    GIVEN("A const 2x3 matrix.")
+    {
+        const Matrix<2, 3, int> matrix2x3{
+            1, 2, 3,
+            5, 6, 7,
+        };
+
+        WHEN("Sizes are constructed form rows")
+        {
+            Size<3, int> row0{matrix2x3[0]};
+            Size<3, int> row1{matrix2x3[1]};
+            
+            THEN("They do match the row values")
+            {
+                CHECK(row0 == Size<3, int>{1, 2, 3});
+                CHECK(row1 == Size<3, int>{5, 6, 7});
+            }
+        }
+    }
+}
+
+
+SCENARIO("Matrices to std::span")
+{
+    GIVEN("A non-const 3x3 matrix.")
+    {
+        Matrix<3, 3, int> matrix{
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9,
+        };
+
+        WHEN("It is converted to a std::span")
+        {
+            std::span spanFromMat{matrix};
+
+            THEN("The span has expected size")
+            {
+                CHECK(spanFromMat.size() == 3 * 3);
+                CHECK(spanFromMat.size_bytes() == matrix.size_value * sizeof(decltype(matrix)::value_type));
+            }
+
+            THEN("The span iteration matches the matrix iteration.")
+            {
+                REQUIRE(std::equal(spanFromMat.begin(), spanFromMat.end(),
+                                   matrix.cbegin(), matrix.cend()));
+            }
+
+            WHEN("The span is used to modify elements")
+            {
+                spanFromMat[0] = 100;
+                *(spanFromMat.data() + 3) = 1000;
+
+                THEN("The matrix is modified.")
+                {
+                    CHECK(matrix.at(0) == 100);
+                    CHECK(matrix.at(3) == 1000);
+                }
+            }
         }
     }
 }

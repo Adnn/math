@@ -48,6 +48,15 @@ public:
             Vector{aLarger, std::make_index_sequence<N_dimension>()}
     {}
 
+
+    /// @brief Constructor from a matrix row.
+    template <int N_cols, class T_rowNumber>
+    requires std::is_same_v<std::remove_const_t<T_rowNumber>, T_number>
+    explicit Vector(const detail::RowBase<N_cols, T_rowNumber> & aRow) noexcept(should_noexcept) :
+        Vector{aRow.data(), std::make_index_sequence<N_dimension>()}
+    {}
+
+
     template <template <int, class> class TT_derivedVector, class T_targetNumber=T_number>
     constexpr TT_derivedVector<N_dimension, T_targetNumber> as() const;
 
