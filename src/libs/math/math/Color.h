@@ -150,8 +150,8 @@ class is_color<Grayscale_base<T_number>> : public std::true_type
 
 namespace sdr {
 
-
-    using Rgb = ::ad::math::Rgb_base<std::uint8_t>;
+    using Value_t = std::uint8_t;
+    using Rgb = ::ad::math::Rgb_base<Value_t>;
 
     constexpr const Rgb gBlack{0,   0,   0};
     constexpr const Rgb gWhite{255, 255, 255};
@@ -164,12 +164,12 @@ namespace sdr {
     constexpr const Rgb gCyan   {gGreen + gBlue};
     constexpr const Rgb gMagenta{gBlue  + gRed};
 
-    using Rgba = ::ad::math::RgbAlpha_base<std::uint8_t>;
+    using Rgba = ::ad::math::RgbAlpha_base<Value_t>;
     // Please use implicit ctor from Rgb to get Rgba constants.
     constexpr const Rgba gTransparent{gBlack, 0};
 
 
-    using Grayscale = ::ad::math::Grayscale_base<std::uint8_t>;
+    using Grayscale = ::ad::math::Grayscale_base<Value_t>;
 
 
 } // namespace sdr
@@ -212,7 +212,11 @@ namespace hdr {
     using Rgba_d = Rgba<double>;
     using Rgba_f = Rgba<float>;
 
-    using Grayscale = ::ad::math::Grayscale_base<double>;
+    template <class T_number = double>
+    using Grayscale = ::ad::math::Grayscale_base<T_number>;
+
+    using Grayscale_d = Grayscale<double>;
+    using Grayscale_f = Grayscale<float>;
 
 
 } // namespace hdr

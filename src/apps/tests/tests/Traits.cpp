@@ -275,7 +275,7 @@ SCENARIO("Color type traits.")
 
             REQUIRE(is_color_v<hdr::Rgb_d>);
             REQUIRE(is_color_v<hdr::Rgba_d>);
-            REQUIRE(is_color_v<hdr::Grayscale>);
+            REQUIRE(is_color_v<hdr::Grayscale_d>);
 
 
             REQUIRE(is_color_v<Rgb_base<int>>);
