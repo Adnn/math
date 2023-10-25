@@ -107,6 +107,8 @@ struct Box
     /// \brief Construct a Box of provided dimension, centered on origin (0, 0, 0).
     static Box CenterOnOrigin(Size<3, T_number> aDimension);
 
+    Box & operator*=(T_number aScalarFactor);
+
     Box & operator*=(const LinearMatrix<3, 3, T_number> & aTransform);
     Box & operator*=(const AffineMatrix<4, T_number> & aTransform);
 
@@ -128,6 +130,12 @@ struct Box
     Size<3, T_number> mDimension;
 };
 
+
+template <class T_number>
+Box<T_number> operator*(Box<T_number> aBox, T_number aScalarFactor);
+
+template <class T_number>
+Box<T_number> operator*(T_number aScalarFactor, Box<T_number> aBox);
 
 template <class T_number>
 Box<T_number> operator*(Box<T_number> aBox, const LinearMatrix<3, 3, T_number> & aTransform);
@@ -159,6 +167,15 @@ template <class T_number>
 Box<T_number> Box<T_number>::CenterOnOrigin(Size<3, T_number> aDimension)
 {
     return Box{ {T_number{0}, T_number{0}, T_number{0} }, aDimension }.centered();
+}
+
+
+template <class T_number>
+Box<T_number> & Box<T_number>::operator*=(T_number aScalarFactor)
+{
+    mPosition *= aScalarFactor;
+    mDimension *= aScalarFactor;
+    return *this;
 }
 
 
@@ -213,6 +230,20 @@ Box<T_number> & Box<T_number>::operator*=(const AffineMatrix<4, T_number> & aTra
     mPosition += aTransform.getAffine();
 
     return *this;
+}
+
+
+template <class T_number>
+Box<T_number> operator*(Box<T_number> aBox, T_number aScalarFactor)
+{
+    return aBox *= aScalarFactor;
+}
+
+
+template <class T_number>
+Box<T_number> operator*(T_number aScalarFactor, Box<T_number> aBox)
+{
+    return aBox * aScalarFactor;
 }
 
 

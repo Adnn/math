@@ -13,7 +13,7 @@ set(${TARGET_NAME}_SOURCES
     Barycentric.cpp
     Base.cpp
     Bezier_tests.cpp
-    Box.cpp
+    Box_tests.cpp
     Canonical_tests.cpp
     CardinalCubic_tests.cpp
     Color_tests.cpp

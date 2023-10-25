@@ -310,10 +310,25 @@ SCENARIO("Box transformations.")
             THEN("The box can be transformed.")
             {
                 Box<double> transformed = base * transformation;
-                //CHECK(transformed.origin() == Position<3>{10., -20., 5.});
-                //CHECK(transformed.dimension() == base.dimension().cwMul(scaling));
                 CHECK(transformed.origin() == Position<3>{10., -30., 5.});
                 CHECK(transformed.dimension() == Size<3>{40., 10., 10.});
+            }
+        }
+
+        GIVEN("The box is scaled by an uniform scalar factor")
+        {
+            constexpr double scaleFactor = 16.3;
+            Box<double> scaledBox = base * scaleFactor;
+
+            THEN("The box size is scaled by the factor, and its origin is moved accordingly")
+            {
+                CHECK(scaledBox.mDimension == scaleFactor * base.mDimension);
+                CHECK(scaledBox.mPosition.as<Vec>() == base.mPosition.as<Vec>() * scaleFactor);
+            }
+
+            THEN("The scaled box is equivalent to scaling by pre-multiplication")
+            {
+                CHECK(scaledBox == scaleFactor * base);
             }
         }
     }
