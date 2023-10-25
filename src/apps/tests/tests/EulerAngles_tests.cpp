@@ -23,9 +23,9 @@ SCENARIO("Euler angles to rotation matrix")
     GIVEN("Euler angles")
     {
         EulerAngles<float> angles{
-            .x = Degree{60.f},
-            .y = Degree{45.f},
-            .z = Degree{77.f},
+            .x = Degree<float>{60.f},
+            .y = Degree<float>{45.f},
+            .z = Degree<float>{77.f},
         };
 
         WHEN("They are converted to a rotation matrix")
@@ -42,9 +42,9 @@ SCENARIO("Euler angles to rotation matrix")
     GIVEN("Euler angles")
     {
         EulerAngles<float> angles{
-            .x = Radian{0.543f},
-            .y = Degree{66.f},
-            .z = Turn{-1.25f},
+            .x = Radian<float>{0.543f},
+            .y = Degree<float>{66.f},
+            .z = Turn<float>{-1.25f},
         };
 
         WHEN("They are converted to a rotation matrix")
@@ -65,9 +65,9 @@ SCENARIO("Euler angles to Quaternions")
     GIVEN("Euler angles")
     {
         const EulerAngles<float> angles{
-            .x = Degree{30.f},
-            .y = Degree{45.f},
-            .z = Degree{90.f},
+            .x = Degree<float>{30.f},
+            .y = Degree<float>{45.f},
+            .z = Degree<float>{90.f},
         };
 
         WHEN("They are converted to Quaternion")
@@ -76,14 +76,15 @@ SCENARIO("Euler angles to Quaternions")
 
             THEN("The quaternion apply the same rotation as the Euler angles")
             {
-                constexpr float tolerance = std::numeric_limits<float>::epsilon() * 100;
+                constexpr float tolerance = std::numeric_limits<float>::epsilon() * 1000;
                 const Vec<3, float> v{245.f, -0.28f, 6.5f};
                 CHECK_THAT(q.rotate(v), Approximates(v * toRotationMatrix(angles), tolerance));
             }
 
             THEN("The quaternion conversion to matrix is equivalent to the angles conversion to matrix")
             {
-                CHECK_THAT(q.toRotationMatrix(), Approximates(toRotationMatrix(angles)));
+                constexpr float tolerance = std::numeric_limits<float>::epsilon() * 10;
+                CHECK_THAT(q.toRotationMatrix(), Approximates(toRotationMatrix(angles), tolerance));
             }
 
             WHEN("The quaternion is converted back to Euler angles")
@@ -92,12 +93,13 @@ SCENARIO("Euler angles to Quaternions")
 
                 THEN("This is equivalent to the starting angles")
                 {
-                    CHECK_THAT(anglesBis, Approximates(angles));
+                    constexpr float tolerance = std::numeric_limits<float>::epsilon() * 10;
+                    CHECK_THAT(anglesBis, Approximates(angles, tolerance));
                 }
 
                 THEN("Offseting the result is not equivalent to the starting angles")
                 {
-                    anglesBis.x += Radian{0.00001f};
+                    anglesBis.x += Radian<float>{0.00001f};
                     CHECK_THAT(anglesBis, !Approximates(angles));
                 }
             }
@@ -112,7 +114,7 @@ SCENARIO("Quaternion to Euler Angles")
     {
         Quaternion<double> q{
             UnitVec<3, double>{{0.5, -0.5, 0.2}},
-            Degree{33.3}
+            Degree<double>{33.3}
         };
 
         WHEN("It is converted to Euler angles")

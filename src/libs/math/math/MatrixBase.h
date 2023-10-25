@@ -38,7 +38,7 @@ template <int N_cols, class T_data>
 class RowBase
 {
     template <class, int, class> 
-    friend class Vector;
+    friend class ::ad::math::Vector;
 
 protected:
     constexpr RowBase(T_data * aData) noexcept :

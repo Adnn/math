@@ -231,9 +231,9 @@ constexpr ANGLE operator/(ANGLE aLhs, const T_factor aFactor)
 template <class T_representation, class T_unitTag>
 constexpr ANGLE reduce(ANGLE aLhs)
 {
-    static constexpr T_representation halfRevolution =
+    constexpr T_representation halfRevolution =
         Radian<T_representation>{pi<T_representation>}.template as<ANGLE::template unit>().value();
-    static constexpr T_representation revolution = 2 * halfRevolution;
+    constexpr T_representation revolution = 2 * halfRevolution;
     // Note: 3D Math Primer (2nd) p. 241 listing 8.1 uses std::floor(angle + pi).
     // Yet, this would reduce to the range [-180, 180[ instead of ]-180, 180].
     return aLhs - ANGLE{std::ceil((aLhs.value() - halfRevolution) / revolution) * revolution};
