@@ -8,6 +8,14 @@ namespace ad {
 namespace math {
 
 
+// TODO Ad 2023/10/25: maybe also implement relative comparison?
+template <std::floating_point T>
+constexpr bool absoluteTolerance(const T aLhs, const T aRhs, const T aTolerance) noexcept
+{
+    return std::abs(aLhs - aRhs) <= aTolerance;
+}
+
+
 namespace detail {
 
 

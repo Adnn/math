@@ -10,6 +10,7 @@ set(${TARGET_NAME}_HEADERS
     Color.h
     commons.h
     Constants.h
+    EulerAngles.h
     Homogeneous.h
     Homogeneous-impl.h
     LinearMatrix.h

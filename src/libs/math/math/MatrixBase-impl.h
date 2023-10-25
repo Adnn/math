@@ -1,3 +1,5 @@
+#include "Utilities.h"
+
 #include <cmath>
 
 
@@ -398,7 +400,7 @@ constexpr bool MatrixBase<TMA>::equalsWithinTolerance(const MatrixBase & aRhs, T
                       aRhs.begin(), aRhs.end(),
                       [aEpsilon](const T_number & a, const T_number & b)
                       {
-                           return std::abs(a-b) <= aEpsilon;
+                           return absoluteTolerance(a, b, aEpsilon);
                       });
 }
 

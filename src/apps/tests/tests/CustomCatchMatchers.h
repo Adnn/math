@@ -3,19 +3,23 @@
 #include <sstream>
 
 
-template <class T_matrix>
-class MatrixApprox : public Catch::MatcherBase<T_matrix>
+template <class T_math>
+requires requires(T_math lhs, T_math rhs, typename T_math::value_type v)
+    {
+        {lhs.equalsWithinTolerance(rhs, v)} -> std::same_as<bool>;
+    }
+class MathApprox : public Catch::MatcherBase<T_math>
 {
-    using tolerance_type = typename T_matrix::value_type;
+    using tolerance_type = typename T_math::value_type;
 
 public:
-    MatrixApprox(T_matrix aExpected, tolerance_type aTolerance) :
+    MathApprox(T_math aExpected, tolerance_type aTolerance) :
         mExpected{std::move(aExpected)},
         mTolerance{std::move(aTolerance)}
     {}
 
     // Performs the test for this matcher
-    bool match(const T_matrix & aMatrix) const override
+    bool match(const T_math & aMatrix) const override
     {
         return aMatrix.equalsWithinTolerance(mExpected, mTolerance);
     }
@@ -29,17 +33,18 @@ public:
     }
 
 private:
-    T_matrix mExpected;
-    typename T_matrix::value_type mTolerance;
+    T_math mExpected;
+    tolerance_type mTolerance;
 };
 
 
 // The builder function
-template <class T_matrix>
-MatrixApprox<T_matrix> Approximates(
-        T_matrix && aExpected,
-        typename T_matrix::value_type aTolerance = std::numeric_limits<typename T_matrix::value_type>::epsilon())
+template <class T_math>
+MathApprox<std::remove_cvref_t<T_math>> Approximates(
+        T_math && aExpected,
+        typename std::remove_cvref_t<T_math>::value_type aTolerance = 
+            std::numeric_limits<typename std::remove_cvref_t<T_math>::value_type>::epsilon())
 {
-    return MatrixApprox(std::forward<T_matrix>(aExpected),
-                        aTolerance);
+    return MathApprox<std::remove_cvref_t<T_math>>{
+        std::forward<T_math>(aExpected), aTolerance};
 }
