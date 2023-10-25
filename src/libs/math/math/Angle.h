@@ -38,6 +38,8 @@ using Turn = Angle<T_representation, Turn_tag>;
 // Angle definition
 //
 template <class T_representation, class T_unitTag>
+// TODO Ad 2023/10/25: Apply requirements on the representation type
+//requires std::floating_point<T_representation> // Open question: is there any reason to support integral types? Or custom types?
 class Angle
 {
 public:
@@ -51,57 +53,57 @@ public:
         mValue{aValue}
     {}
 
-    /*implicit*/ constexpr operator Angle<T_representation, Radian_tag>() const;
+    /*implicit*/ constexpr operator Angle<T_representation, Radian_tag>() const noexcept;
 
     template <template <class> class TT_angle>
-    constexpr TT_angle<T_representation> as() const;
+    constexpr TT_angle<T_representation> as() const noexcept;
 
-    constexpr T_representation value() const
+    constexpr T_representation value() const noexcept
     {
         return mValue;
     }
 
-    T_representation & data()
+    T_representation & data() noexcept
     {
         return mValue;
     }
 
-    constexpr Angle & operator+=(const Angle aRhs);
-    constexpr Angle & operator-=(const Angle aRhs);
+    constexpr Angle & operator+=(const Angle aRhs) noexcept;
+    constexpr Angle & operator-=(const Angle aRhs) noexcept;
     template <class T_factor>
-    constexpr Angle & operator*=(const T_factor aFactor);
+    constexpr Angle & operator*=(const T_factor aFactor) noexcept;
     template <class T_factor>
     constexpr Angle & operator/=(const T_factor aFactor);
 
     // Comparison operations should work for types implicitly convertible to Angle,
     // which would not be the case for a template free function defined outside the class.
     // see: https://stackoverflow.com/a/9789036/1027706
-    constexpr friend bool operator==(const Angle aLhs, const Angle aRhs)
+    constexpr friend bool operator==(const Angle aLhs, const Angle aRhs) noexcept
     {
         return aLhs.value() == aRhs.value();
     }
 
-    constexpr friend bool operator!=(const Angle aLhs, const Angle aRhs)
+    constexpr friend bool operator!=(const Angle aLhs, const Angle aRhs) noexcept
     {
         return !(aLhs == aRhs);
     }
 
-    constexpr friend bool operator<(const Angle aLhs, const Angle aRhs)
+    constexpr friend bool operator<(const Angle aLhs, const Angle aRhs) noexcept
     {
         return aLhs.value() < aRhs.value();
     }
 
-    constexpr friend bool operator>(const Angle aLhs, const Angle aRhs)
+    constexpr friend bool operator>(const Angle aLhs, const Angle aRhs) noexcept
     {
         return aLhs.value() > aRhs.value();
     }
 
-    constexpr friend bool operator<=(const Angle aLhs, const Angle aRhs)
+    constexpr friend bool operator<=(const Angle aLhs, const Angle aRhs) noexcept
     {
         return aLhs.value() <= aRhs.value();
     }
 
-    constexpr friend bool operator>=(const Angle aLhs, const Angle aRhs)
+    constexpr friend bool operator>=(const Angle aLhs, const Angle aRhs) noexcept
     {
         return aLhs.value() >= aRhs.value();
     }
@@ -119,7 +121,7 @@ private:
 #define ANGLE_RIGHT Angle<T_representation, T_rightUnitTag>
 
 template <class T_representation, class T_unitTag>
-constexpr ANGLE abs(const ANGLE aAngle)
+constexpr ANGLE abs(const ANGLE aAngle) noexcept
 {
     return ANGLE{std::abs(aAngle.value())};
 }
@@ -161,53 +163,53 @@ ANGLE atan(const T_representation aTangent)
 }
 
 template <class T_representation, class T_unitTag>
-constexpr ANGLE operator-(const ANGLE aAngle)
+constexpr ANGLE operator-(const ANGLE aAngle) noexcept
 {
     return ANGLE{-aAngle.value()};
 }
 
 template <class T_representation, class T_unitTag>
-constexpr ANGLE & ANGLE::operator+=(const Angle aRhs)
+constexpr ANGLE & ANGLE::operator+=(const Angle aRhs) noexcept
 {
     mValue += aRhs.mValue;
     return *this;
 }
 
 template <class T_representation, class T_leftUnitTag, class T_rightUnitTag>
-constexpr ANGLE_LEFT operator+(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs)
+constexpr ANGLE_LEFT operator+(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs) noexcept
 {
     return aLhs += aRhs.template as<decltype(aLhs)::template unit>();
 }
 
 template <class T_representation, class T_unitTag>
-constexpr ANGLE & ANGLE::operator-=(const Angle aRhs)
+constexpr ANGLE & ANGLE::operator-=(const Angle aRhs) noexcept
 {
     mValue -= aRhs.mValue;
     return *this;
 }
 
 template <class T_representation, class T_leftUnitTag, class T_rightUnitTag>
-constexpr ANGLE_LEFT operator-(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs)
+constexpr ANGLE_LEFT operator-(ANGLE_LEFT aLhs, const ANGLE_RIGHT aRhs) noexcept
 {
     return aLhs -= aRhs.template as<decltype(aLhs)::template unit>();
 }
 
 template <class T_representation, class T_unitTag>
 template <class T_factor>
-constexpr ANGLE & ANGLE::operator*=(const T_factor aFactor)
+constexpr ANGLE & ANGLE::operator*=(const T_factor aFactor) noexcept
 {
     mValue *= aFactor;
     return *this;
 }
 
 template <class T_representation, class T_unitTag, class T_factor>
-constexpr ANGLE operator*(ANGLE aLhs, const T_factor aFactor)
+constexpr ANGLE operator*(ANGLE aLhs, const T_factor aFactor) noexcept
 {
     return aLhs *= aFactor;
 }
 
 template <class T_representation, class T_unitTag, class T_factor>
-constexpr ANGLE operator*(const T_factor aFactor, ANGLE aRhs)
+constexpr ANGLE operator*(const T_factor aFactor, ANGLE aRhs) noexcept
 {
     return aRhs *= aFactor;
 }
@@ -352,14 +354,14 @@ std::ostream & operator<<(std::ostream & aOs, Angle<T_representation, T_unitTag>
 // Implementation
 //
 template <class T_representation, class T_unitTag>
-constexpr Angle<T_representation, T_unitTag>::operator Angle<T_representation, Radian_tag> () const
+constexpr Angle<T_representation, T_unitTag>::operator Angle<T_representation, Radian_tag> () const noexcept
 {
     return this->as<Radian>();
 }
 
 template <class T_representation, class T_unitTag>
 template <template <class> class TT_angle>
-constexpr TT_angle<T_representation> Angle<T_representation, T_unitTag>::as() const
+constexpr TT_angle<T_representation> Angle<T_representation, T_unitTag>::as() const noexcept
 {
     // Note: allows narrowing
     return TT_angle<T_representation>(static_cast<T_representation>(
