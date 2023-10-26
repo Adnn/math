@@ -12,13 +12,6 @@
 namespace ad {
 namespace math {
 
-template <class T_number>
-T_number cubeRoot(const T_number & a)
-{
-    return std::copysign(std::pow(std::abs(a), 1 / 3.f), a);
-}
-
-
 /// \brief Namespace containing all the easing functions.
 namespace ease
 {
