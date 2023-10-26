@@ -603,13 +603,13 @@ public:
     {}
 
     template <bool N_hasSpeed = HasSpeed()>
-    explicit ParameterAnimation(TT_easeFunctor<T_parameter> aEaseFunctor,
+    explicit ParameterAnimation(TT_easeFunctor<T_parameter> aEaser,
                                 T_parameter aPeriod = T_parameter{1},
                                 T_parameter aSpeed = T_parameter{1},
                                 std::enable_if_t<N_hasSpeed> * = nullptr) :
         Base_t{std::move(aSpeed)},
-        mPeriod{std::move(aPeriod)},
-        mEaseFunctor{aEaseFunctor}
+        mEaser{aEaser},
+        mPeriod{std::move(aPeriod)}
     {}
 
     template <bool N_isEasing = IsEasing()>
@@ -642,7 +642,7 @@ public:
                           "normalization.");
 
             // Need to normalize the easing input
-            aInput = mEaseFunctor.ease(aInput / mPeriod);
+            aInput = mEaser.ease(aInput / mPeriod);
 
             if constexpr (N_resultRange == FullRange)
             {
@@ -722,6 +722,7 @@ public:
     {
         mEaseFunctor.changePoint(index, aPoint);
     }
+    TT_easeFunctor<T_parameter> mEaser;
 
 private:
     T_parameter mPeriod;
@@ -729,7 +730,6 @@ private:
         mPeriodicBehaviour; // empty class for basic initial cases (Repeat,
                             // PingPong) but leaves room for more potential
                             // other scenarios.
-    TT_easeFunctor<T_parameter> mEaseFunctor;
 
     // Would be better to have the asseration at the beginning, but the static
     // member functions must be defined.
