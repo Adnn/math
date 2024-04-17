@@ -8,11 +8,19 @@ namespace ad {
 namespace math {
 
 
-// TODO Ad 2023/10/25: maybe also implement relative comparison?
 template <std::floating_point T>
 constexpr bool absoluteTolerance(const T aLhs, const T aRhs, const T aTolerance) noexcept
 {
     return std::abs(aLhs - aRhs) <= aTolerance;
+}
+
+
+template <std::floating_point T>
+constexpr bool relativeTolerance(const T aLhs, const T aRhs, const T aToleranceFactor,
+                                 const T aMinAbsoluteTolerance = std::numeric_limits<T>::epsilon()) noexcept
+{
+    T maxMagnitude = std::max(std::abs(aLhs), std::abs(aRhs));
+    return absoluteTolerance(aLhs, aRhs, std::max(aToleranceFactor * maxMagnitude, aMinAbsoluteTolerance));
 }
 
 
