@@ -239,12 +239,18 @@ namespace trans3d {
 
     /// \brief Perspective matrix.
     /// \see FoCG 3rd - 7.3 Perspective Projection (p 151)
-    /// \important: The matrix is negated compared to what is presented in FoCG
-    /// because otherwise the homogeneous (w) values of multiplied vectors will be negative,
-    /// which prevents the usual clipping test -w < x, y, z< w.
     template <class T_number>
     constexpr Matrix<4, 4, T_number>
     perspective(const T_number aNearPlaneZ, const T_number aFarPlaneZ);
+
+    /// \brief Perspective matrix with each element negated (gives equivalent homogeneous vectors).
+    /// \see FoCG 3rd - 7.3 Perspective Projection (p 151)
+    /// \important: The matrix is negated compared to what is presented in FoCG
+    /// otherwise, assuming a right-handed frame, the homogeneous (w) values of multiplied vectors will be negative,
+    /// which prevents the usual clipping test (at least in OpenGL): -w < x, y, z< w.
+    template <class T_number>
+    constexpr Matrix<4, 4, T_number>
+    perspectiveNegated(const T_number aNearPlaneZ, const T_number aFarPlaneZ);
 
 
     /// \brief The inverse of the perspective matrix.

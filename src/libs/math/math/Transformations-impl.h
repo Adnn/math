@@ -559,18 +559,27 @@ namespace trans3d {
         const T_number v0 = T_number{0};
         const T_number v1 = T_number{1};
 
+        return {
+            n,   v0,  v0,    v0,
+            v0,  n,   v0,    v0,
+            v0,  v0,  n+f,   v1,
+            v0,  v0,  -f*n,  v0
+        };
+    }
+
+
+
+    template <class T_number>
+    constexpr Matrix<4, 4, T_number>
+    perspectiveNegated(const T_number aNearPlaneZ, const T_number aFarPlaneZ)
+    {
         // IMPORTANT: Negate the perspective matrix from p152, this way -Z is copied into W.
         // Assuming a right handed frame where camera looks along negative Z axis, 
         // this copies a positive value in W for vertices **in front** of the camera (having negative Z coordinates).
         // Thus vertices between near and far plane can pass the OpenGL clipping test -w < x, y, z < +w.
         // This does **not** change handed-ness, but negates the whole transformed vector:
         // the transformed homogeneous coordinates are strictly equivalent.
-        return {
-            -n,  v0,  v0,    v0,
-            v0,  -n,  v0,    v0,
-            v0,  v0,  -n-f, -v1,
-            v0,  v0,  f*n,   v0
-        };
+        return -1 * perspective(aNearPlaneZ, aFarPlaneZ);
     }
 
 
