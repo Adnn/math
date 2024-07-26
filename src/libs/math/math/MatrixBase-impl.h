@@ -471,6 +471,36 @@ noexcept(T_derived::should_noexcept)
 }
 
 
+template <TMP>
+T_derived floor(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept)
+{
+    return unaryOp(aMatrix,
+                   static_cast<T_number(*)(T_number)>(std::floor),
+                   std::make_index_sequence<N_rows * N_cols>());
+}
+
+
+template <TMP>
+T_derived ceil(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept)
+{
+    return unaryOp(aMatrix,
+                   static_cast<T_number(*)(T_number)>(std::ceil),
+                   std::make_index_sequence<N_rows * N_cols>());
+}
+
+
+template <TMP>
+T_derived round(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept)
+{
+    return unaryOp(aMatrix,
+                   static_cast<T_number(*)(T_number)>(std::round),
+                   std::make_index_sequence<N_rows * N_cols>());
+}
+
+
 /*
  * Output operator
  */

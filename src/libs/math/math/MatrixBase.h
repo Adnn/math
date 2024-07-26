@@ -402,6 +402,21 @@ T_derived abs(const MatrixBase<TMA> & aMatrix)
 noexcept(T_derived::should_noexcept);
 
 
+template <TMP>
+T_derived floor(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept);
+
+
+template <TMP>
+T_derived ceil(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept);
+
+
+template <TMP>
+T_derived round(const MatrixBase<TMA> & aMatrix)
+noexcept(T_derived::should_noexcept);
+
+
 /*
  * Output operator
  */

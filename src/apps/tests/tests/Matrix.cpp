@@ -456,13 +456,28 @@ SCENARIO("Matrix operations on components.")
     GIVEN("A 2x2 Matrices")
     {
         Matrix<2, 2> matrix{
-            1.,     -1., 
-            -28.,   100.,
+            1.9,     -1.1, 
+            -28.,   100.3,
         };
 
         THEN("A matrix of absolute values can be obtained.")
         {
-            REQUIRE(abs(matrix) == Matrix<2, 2>{1., 1., 28., 100.});
+            REQUIRE(abs(matrix) == Matrix<2, 2>{1.9, 1.1, 28., 100.3});
+        }
+
+        THEN("A matrix of floored values can be obtained.")
+        {
+            REQUIRE(floor(matrix) == Matrix<2, 2>{1., -2., -28., 100.});
+        }
+
+        THEN("A matrix of ceiled values can be obtained.")
+        {
+            REQUIRE(ceil(matrix) == Matrix<2, 2>{2., -1., -28., 101.});
+        }
+
+        THEN("A matrix of rounded values can be obtained.")
+        {
+            REQUIRE(round(matrix) == Matrix<2, 2>{2., -1., -28., 100.});
         }
     }
 }
