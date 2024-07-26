@@ -47,6 +47,21 @@ struct EulerAngles
     // x: roll
     // y: pitch
     // z: yaw
+    // WARNING: This is not the common OpenGL Y-is-up basis
+    TT_angle<T_number> & roll()
+    { return x; }
+    TT_angle<T_number> & pitch()
+    { return y; }
+    TT_angle<T_number> & yaw()
+    { return z; }
+
+    const TT_angle<T_number> & roll() const
+    { return x; }
+    const TT_angle<T_number> & pitch() const
+    { return y; }
+    const TT_angle<T_number> & yaw() const
+    { return z; }
+
     TT_angle<T_number> x, y, z;
 };
 
