@@ -8,6 +8,7 @@ namespace ad {
 namespace math {
 
 
+// TODO constexpr this class
 /// \important The origin is the bottom left **back** in a right handed frame.
 template <class T_number>
 struct Box

@@ -579,6 +579,7 @@ namespace trans3d {
         // Thus vertices between near and far plane can pass the OpenGL clipping test -w < x, y, z < +w.
         // This does **not** change handed-ness, but negates the whole transformed vector:
         // the transformed homogeneous coordinates are strictly equivalent.
+        // (-x/-w, -y/-w, -z/-w == x/w, y/w, z/w)
         return -1 * perspective(aNearPlaneZ, aFarPlaneZ);
     }
 
