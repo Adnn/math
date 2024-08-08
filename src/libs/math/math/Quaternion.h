@@ -81,6 +81,11 @@ public:
 
     constexpr Vec<4, T_number> asVec() const noexcept(should_noexcept);
 
+    /// @brief Compute the norm of the quaternion, which should be equal to 1!
+    /// @warning It is intended for debugging and assertions, 
+    /// since this class should always represent rotation quaternions whose norm has to be 1.
+    T_number getNormSquared() const;
+
 private:
     constexpr Quaternion(Vec<3, T_number> aVector, T_number aW)  noexcept(should_noexcept);
 
@@ -113,6 +118,11 @@ noexcept(decltype(aLhs)::should_noexcept);
 /// \brief Formatted output operation
 template <class T_number>
 std::ostream & operator<<(std::ostream & aOut, const Quaternion<T_number> & aQuaternion);
+
+
+/// \brief Convert a rotation matrix to a quaternion representation.
+template <class T_number>
+Quaternion<T_number> toQuaternion(const LinearMatrix<3, 3, T_number> & aRotationMatrix);
 
 
 } // namespace math

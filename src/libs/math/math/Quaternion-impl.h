@@ -34,6 +34,13 @@ noexcept(should_noexcept) :
 
 
 template <class T_number>
+T_number Quaternion<T_number>::getNormSquared() const
+{
+    return asVec().getNormSquared();
+}
+
+
+template <class T_number>
 constexpr Quaternion<T_number> Quaternion<T_number>::Identity() noexcept(should_noexcept)
 {
     return {T_number{0}, T_number{0}, T_number{0}, T_number{1}};
@@ -210,6 +217,63 @@ std::ostream & operator<<(std::ostream & aOut, const Quaternion<T_number> & aQua
         << aQuaternion.w()
         << "}"
         ;
+}
+
+
+template <class T_number>
+Quaternion<T_number> toQuaternion(const LinearMatrix<3, 3, T_number> & m)
+{
+    // See: 3dmpfgagd 2nd p286 listing 8.5
+    std::array<T_number, 4> fourTimesSquaredMinusOne = {{
+        m.at(0, 0) + m.at(1, 1) + m.at(2, 2),
+        m.at(0, 0) - m.at(1, 1) - m.at(2, 2),
+        m.at(1, 1) - m.at(0, 0) - m.at(2, 2),
+        m.at(2, 2) - m.at(0, 0) - m.at(1, 1),
+    }};
+
+    auto maxElementIt = 
+        std::max_element(std::begin(fourTimesSquaredMinusOne),
+                         std::end(fourTimesSquaredMinusOne));
+
+    std::size_t maxIdx = maxElementIt - std::begin(fourTimesSquaredMinusOne);
+    T_number maxVal = std::sqrt(*maxElementIt + 1) / T_number(2);
+    T_number d = 4 * maxVal;
+
+    T_number x, y, z, w;
+    switch(maxIdx)
+    {
+        case 0:
+            w = maxVal;
+            x = (m.at(1, 2) - m.at(2, 1)) / d;
+            y = (m.at(2, 0) - m.at(0, 2)) / d;
+            z = (m.at(0, 1) - m.at(1, 0)) / d;
+            break;
+        case 1:
+            x = maxVal;
+            w = (m.at(1, 2) - m.at(2, 1)) / d;
+            y = (m.at(0, 1) + m.at(1, 0)) / d;
+            z = (m.at(2, 0) + m.at(0, 2)) / d;
+            break;
+        case 2:
+            y = maxVal;
+            w = (m.at(2, 0) - m.at(0, 2)) / d;
+            x = (m.at(0, 1) + m.at(1, 0)) / d;
+            z = (m.at(1, 2) + m.at(2, 1)) / d;
+            break;
+        case 3:
+            z = maxVal;
+            w = (m.at(0, 1) - m.at(1, 0)) / d;
+            x = (m.at(2, 0) + m.at(0, 2)) / d;
+            y = (m.at(1, 2) + m.at(2, 1)) / d;
+            break;
+    }
+
+    Quaternion<T_number> result{x, y, z, w};
+    // Ensure the resulting quaternion does represent a rotation, with a tolerance.
+    assert(absoluteTolerance(result.getNormSquared(),
+                             T_number{1},
+                             std::numeric_limits<T_number>::epsilon() * T_number{1E1}));
+    return result;
 }
 
 

@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "CustomCatchMatchers.h"
 
 #include <math/LinearMatrix.h>
 #include <math/Quaternion.h>
@@ -228,6 +229,11 @@ SCENARIO("Quaternion rotation.")
                 REQUIRE(q.toRotationMatrix().equalsWithinTolerance(rotation, gEpsilon));
             }
 
+            THEN("The rotation matrix can be converted to the quaternion form.")
+            {
+                CHECK(toQuaternion(rotation).equalsWithinTolerance(q, gEpsilon));
+            }
+
             GIVEN("Vectors and positions.")
             {
                 Vec<3> vec{1.2, 0.6, -8.};
@@ -406,5 +412,70 @@ SCENARIO("Quaternion interpolation.")
             double parameter = 0.5;
             CHECK(slerp(q, q, Clamped{parameter}).equalsWithinTolerance(q, gEpsilon));
         }
+    }
+}
+
+
+SCENARIO("Quaternion conversions")
+{
+    constexpr float epsilon = 10E-7f;
+
+    auto procedure = [epsilon](Radian<float> halfTheta, UnitVec<3, float> axis, std::size_t maxIdx)
+    {
+        float s = sin(halfTheta);
+        float c = cos(halfTheta);
+        const Quaternion<float> q{s * axis.x(), s * axis.y(), s * axis.z(), c};
+
+        //// Sanity checks
+        {
+            REQUIRE(q.getNormSquared() == 1.f);
+            auto v = q.asVec();
+            REQUIRE(v.getMaxMagnitudeElement() == (v.begin() + maxIdx));
+        }
+
+        WHEN("It is converted to rotation matrix")
+        {
+            const LinearMatrix<3, 3, float> matrix = q.toRotationMatrix();
+
+            THEN("Rotation from quaternion matches rotation from matrix")
+            {
+                Vec<3, float> vec{0.2f, -0.6f, -8.8f};
+                Position<3, float> pos{5.f, 10.f, -0.1f};
+
+                CHECK_THAT(q.rotate(vec), Approximates(vec * matrix, epsilon));
+                CHECK_THAT(q.rotate(pos), Approximates(pos * matrix, epsilon));
+            }
+
+            WHEN("The matrix is converted back to a quaternion")
+            {
+                const Quaternion<float> qBack = toQuaternion(matrix);
+
+                THEN("The converted quaternion matches the initial quaternion.")
+                {
+                    // A quaternion and its negation represent the same rotation, allow both.
+                    CHECK_THAT(q, Approximates(qBack) || Approximates(-qBack));
+                }
+            }
+        }
+    };
+
+    GIVEN("A quaternion whose maximal value is on x")
+    {
+        procedure(Radian<float>{pi<float>/3}, UnitVec<3, float>{{1.f, 1.f, 1.f}}, 0);
+    }
+
+    GIVEN("A quaternion whose maximal value is on y")
+    {
+        procedure(Radian<float>{pi<float>/3}, UnitVec<3, float>{{-1.f, 2.f, 0.f}}, 1);
+    }
+
+    GIVEN("A quaternion whose maximal value is on z")
+    {
+        procedure(Radian<float>{pi<float>/3}, UnitVec<3, float>{{0.f, 2.f, -4.f}}, 2);
+    }
+
+    GIVEN("A quaternion whose maximal value is on w")
+    {
+        procedure(Radian<float>{pi<float>/5}, UnitVec<3, float>{{1.f, 0.f, 0.f}}, 3);
     }
 }
