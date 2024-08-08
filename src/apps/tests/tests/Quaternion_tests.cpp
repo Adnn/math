@@ -418,10 +418,10 @@ SCENARIO("Quaternion interpolation.")
 
 SCENARIO("Quaternion conversions")
 {
-    constexpr float epsilon = 10E-7f;
-
-    auto procedure = [epsilon](Radian<float> halfTheta, UnitVec<3, float> axis, std::size_t maxIdx)
+    auto procedure = [](Radian<float> halfTheta, UnitVec<3, float> axis, std::size_t maxIdx)
     {
+        constexpr float epsilon = 10E-7f;
+
         float s = sin(halfTheta);
         float c = cos(halfTheta);
         const Quaternion<float> q{s * axis.x(), s * axis.y(), s * axis.z(), c};
