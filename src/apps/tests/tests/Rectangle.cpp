@@ -99,6 +99,13 @@ SCENARIO("Rectangle usage")
         Rectangle<double> expected{Position<2>::Zero(), dimension};
         REQUIRE(Rectangle<double>::CenterOnOrigin(dimension) == expected.centered());
     }
+
+    THEN("A rectangle extending from the origin can be constructed")
+    {
+        Size<2, double> dimension{15., 200.};
+        Rectangle<double> expected{Position<2>::Zero(), dimension};
+        REQUIRE(Rectangle<double>::AtOrigin(dimension) == expected);
+    }
 }
 
 

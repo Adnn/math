@@ -79,6 +79,10 @@ struct Rectangle
     { return { {mPosition - static_cast<Vec<2, T_number>>(mDimension/T_number{2})},
                 mDimension }; }
 
+    
+    /// \brief Construct a Rectangle of provided dimension at the origin, i.e. mPosition == (0, 0).
+    static Rectangle AtOrigin(Size<2, T_number> aDimension);
+
     /// \brief Construct a Rectangle of provided dimension, centered on origin (0, 0).
     static Rectangle CenterOnOrigin(Size<2, T_number> aDimension);
 
@@ -96,9 +100,16 @@ struct Rectangle
 
 
 template <class T_number>
+Rectangle<T_number> Rectangle<T_number>::AtOrigin(Size<2, T_number> aDimension)
+{
+    return Rectangle{ {T_number{0}, T_number{0}}, aDimension };
+}
+
+
+template <class T_number>
 Rectangle<T_number> Rectangle<T_number>::CenterOnOrigin(Size<2, T_number> aDimension)
 {
-    return Rectangle{ {T_number{0}, T_number{0}}, aDimension }.centered();
+    return AtOrigin(aDimension).centered();
 }
 
 

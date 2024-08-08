@@ -105,6 +105,9 @@ struct Box
 
     Box centered() const;
 
+    /// \brief Construct a Box of provided dimension at the origin, i.e. mPosition == (0, 0, 0).
+    static Box AtOrigin(Size<3, T_number> aDimension);
+
     /// \brief Construct a Box of provided dimension, centered on origin (0, 0, 0).
     static Box CenterOnOrigin(Size<3, T_number> aDimension);
 
@@ -165,9 +168,16 @@ Box<T_number> Box<T_number>::centered() const
 
 
 template <class T_number>
+Box<T_number> Box<T_number>::AtOrigin(Size<3, T_number> aDimension)
+{
+    return Box{ {T_number{0}, T_number{0}, T_number{0}}, aDimension };
+}
+
+
+template <class T_number>
 Box<T_number> Box<T_number>::CenterOnOrigin(Size<3, T_number> aDimension)
 {
-    return Box{ {T_number{0}, T_number{0}, T_number{0} }, aDimension }.centered();
+    return AtOrigin(aDimension).centered();
 }
 
 

@@ -125,6 +125,13 @@ SCENARIO("Box usage")
         Box<double> expected{Position<3>::Zero(), dimension};
         REQUIRE(Box<double>::CenterOnOrigin(dimension) == expected.centered());
     }
+
+    THEN("A box extending from the origin can be constructed")
+    {
+        Size<3, double> dimension{10., 100., 1000.01};
+        Box<double> expected{Position<3>::Zero(), dimension};
+        REQUIRE(Box<double>::AtOrigin(dimension) == expected);
+    }
 }
 
 
