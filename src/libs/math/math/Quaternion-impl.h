@@ -266,6 +266,8 @@ Quaternion<T_number> toQuaternion(const LinearMatrix<3, 3, T_number> & m)
             x = (m.at(2, 0) + m.at(0, 2)) / d;
             y = (m.at(1, 2) + m.at(2, 1)) / d;
             break;
+        default:
+            throw std::logic_error{"Panic, the element index of a quaternion has to be in [0, 3]."};
     }
 
     Quaternion<T_number> result{x, y, z, w};
