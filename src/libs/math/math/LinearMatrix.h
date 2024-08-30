@@ -35,6 +35,8 @@ public:
 
     constexpr LinearMatrix inverse() const noexcept(should_noexcept);
 
+    constexpr LinearMatrix transpose() const noexcept(should_noexcept);
+
 private:
     // Even though the conversion ctor is explicit and private
     // it is detected via is_staticcastable_t. Adding a dummy tag fixes that.
@@ -63,6 +65,13 @@ template <TMP>
 constexpr LinearMatrix<TMA> LinearMatrix<TMA>::inverse() const noexcept(should_noexcept)
 {
     return LinearMatrix<TMA>{this->base_type::inverse(), Dummy{}};
+}
+ 
+
+template <TMP>
+constexpr LinearMatrix<TMA> LinearMatrix<TMA>::transpose() const noexcept(should_noexcept)
+{
+    return LinearMatrix<TMA>{this->base_type::transpose(), Dummy{}};
 }
  
 
