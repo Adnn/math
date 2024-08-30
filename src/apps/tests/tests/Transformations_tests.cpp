@@ -967,14 +967,14 @@ SCENARIO("3D windowing transformation.")
         Box<double> source{{-5., 2., 0.5}, {10., 8., 0.5}};
 
         using namespace homogeneous;
-        Position<4> bottomLeftFront  = makePosition(source.bottomLeftFront());
-        Position<4> bottomLeftBack   = makePosition(source.bottomLeftBack());
-        Position<4> bottomRightFront = makePosition(source.bottomRightFront());
-        Position<4> bottomRightBack  = makePosition(source.bottomRightBack());
-        Position<4> topLeftFront     = makePosition(source.topLeftFront());
-        Position<4> topLeftBack      = makePosition(source.topLeftBack());
-        Position<4> topRightFront    = makePosition(source.topRightFront());
-        Position<4> topRightBack     = makePosition(source.topRightBack());
+        Position<4> leftBottomZMax  = makePosition(source.leftBottomZMax());
+        Position<4> leftBottomZMin   = makePosition(source.leftBottomZMin());
+        Position<4> rightBottomZMax = makePosition(source.rightBottomZMax());
+        Position<4> rightBottomZMin  = makePosition(source.rightBottomZMin());
+        Position<4> leftTopZMax     = makePosition(source.leftTopZMax());
+        Position<4> leftTopZMin      = makePosition(source.leftTopZMin());
+        Position<4> rightTopZMax    = makePosition(source.rightTopZMax());
+        Position<4> rightTopZMin     = makePosition(source.rightTopZMin());
 
         GIVEN("A windowing transformation to a destination box.")
         {
@@ -983,14 +983,14 @@ SCENARIO("3D windowing transformation.")
 
             THEN("The 8 source corners are moved to the 8 destination corners by the transformation.")
             {
-                REQUIRE(bottomLeftFront * windowing  == makePosition(destination.bottomLeftFront()));
-                REQUIRE(bottomLeftBack * windowing   == makePosition(destination.bottomLeftBack()));
-                REQUIRE(bottomRightFront * windowing == makePosition(destination.bottomRightFront()));
-                REQUIRE(bottomRightBack * windowing  == makePosition(destination.bottomRightBack()));
-                REQUIRE(topLeftFront * windowing     == makePosition(destination.topLeftFront()));
-                REQUIRE(topLeftBack * windowing      == makePosition(destination.topLeftBack()));
-                REQUIRE(topRightFront * windowing    == makePosition(destination.topRightFront()));
-                REQUIRE(topRightBack * windowing     == makePosition(destination.topRightBack()));
+                REQUIRE(leftBottomZMax * windowing  == makePosition(destination.leftBottomZMax()));
+                REQUIRE(leftBottomZMin * windowing   == makePosition(destination.leftBottomZMin()));
+                REQUIRE(rightBottomZMax * windowing == makePosition(destination.rightBottomZMax()));
+                REQUIRE(rightBottomZMin * windowing  == makePosition(destination.rightBottomZMin()));
+                REQUIRE(leftTopZMax * windowing     == makePosition(destination.leftTopZMax()));
+                REQUIRE(leftTopZMin * windowing      == makePosition(destination.leftTopZMin()));
+                REQUIRE(rightTopZMax * windowing    == makePosition(destination.rightTopZMax()));
+                REQUIRE(rightTopZMin * windowing     == makePosition(destination.rightTopZMin()));
             }
         }
 
@@ -1000,14 +1000,14 @@ SCENARIO("3D windowing transformation.")
 
             THEN("The 4 source corners are moved to the 4 destination corners by the transformation.")
             {
-                REQUIRE(bottomLeftFront  * projection == Position<4>{-1., -1.,  1.,  1.});
-                REQUIRE(bottomLeftBack   * projection == Position<4>{-1., -1., -1.,  1.});
-                REQUIRE(bottomRightFront * projection == Position<4>{ 1., -1.,  1.,  1.});
-                REQUIRE(bottomRightBack  * projection == Position<4>{ 1., -1., -1.,  1.});
-                REQUIRE(topLeftFront     * projection == Position<4>{-1.,  1.,  1.,  1.});
-                REQUIRE(topLeftBack      * projection == Position<4>{-1.,  1., -1.,  1.});
-                REQUIRE(topRightFront    * projection == Position<4>{ 1.,  1.,  1.,  1.});
-                REQUIRE(topRightBack     * projection == Position<4>{ 1.,  1., -1.,  1.});
+                REQUIRE(leftBottomZMax  * projection == Position<4>{-1., -1.,  1.,  1.});
+                REQUIRE(leftBottomZMin   * projection == Position<4>{-1., -1., -1.,  1.});
+                REQUIRE(rightBottomZMax * projection == Position<4>{ 1., -1.,  1.,  1.});
+                REQUIRE(rightBottomZMin  * projection == Position<4>{ 1., -1., -1.,  1.});
+                REQUIRE(leftTopZMax     * projection == Position<4>{-1.,  1.,  1.,  1.});
+                REQUIRE(leftTopZMin      * projection == Position<4>{-1.,  1., -1.,  1.});
+                REQUIRE(rightTopZMax    * projection == Position<4>{ 1.,  1.,  1.,  1.});
+                REQUIRE(rightTopZMin     * projection == Position<4>{ 1.,  1., -1.,  1.});
             }
         }
     }
@@ -1018,14 +1018,14 @@ SCENARIO("3D windowing transformation.")
 
         Box<double> normalized{{-1., -1., 1.}, {2., 2., 2.}};
 
-        Position<4> bottomLeftFront  = makePosition(normalized.bottomLeftFront());
-        Position<4> bottomLeftBack   = makePosition(normalized.bottomLeftBack());
-        Position<4> bottomRightFront = makePosition(normalized.bottomRightFront());
-        Position<4> bottomRightBack  = makePosition(normalized.bottomRightBack());
-        Position<4> topLeftFront     = makePosition(normalized.topLeftFront());
-        Position<4> topLeftBack      = makePosition(normalized.topLeftBack());
-        Position<4> topRightFront    = makePosition(normalized.topRightFront());
-        Position<4> topRightBack     = makePosition(normalized.topRightBack());
+        Position<4> leftBottomZMax  = makePosition(normalized.leftBottomZMax());
+        Position<4> leftBottomZMin   = makePosition(normalized.leftBottomZMin());
+        Position<4> rightBottomZMax = makePosition(normalized.rightBottomZMax());
+        Position<4> rightBottomZMin  = makePosition(normalized.rightBottomZMin());
+        Position<4> leftTopZMax     = makePosition(normalized.leftTopZMax());
+        Position<4> leftTopZMin      = makePosition(normalized.leftTopZMin());
+        Position<4> rightTopZMax    = makePosition(normalized.rightTopZMax());
+        Position<4> rightTopZMin     = makePosition(normalized.rightTopZMin());
 
         GIVEN("A viewport and both near and far planes")
         {
@@ -1040,14 +1040,14 @@ SCENARIO("3D windowing transformation.")
                 AffineMatrix<4> viewportTransform = trans3d::ndcToViewport(viewport, near, far);
                 THEN("The normalized device coordinates of the 8 corners maps to extremas of the viewport.")
                 {
-                    REQUIRE(bottomLeftFront  * viewportTransform == makePosition(destination.bottomLeftFront()));
-                    REQUIRE(bottomLeftBack   * viewportTransform == makePosition(destination.bottomLeftBack()));
-                    REQUIRE(bottomRightFront * viewportTransform == makePosition(destination.bottomRightFront()));
-                    REQUIRE(bottomRightBack  * viewportTransform == makePosition(destination.bottomRightBack()));
-                    REQUIRE(topLeftFront     * viewportTransform == makePosition(destination.topLeftFront()));
-                    REQUIRE(topLeftBack      * viewportTransform == makePosition(destination.topLeftBack()));
-                    REQUIRE(topRightFront    * viewportTransform == makePosition(destination.topRightFront()));
-                    REQUIRE(topRightBack     * viewportTransform == makePosition(destination.topRightBack()));
+                    REQUIRE(leftBottomZMax  * viewportTransform == makePosition(destination.leftBottomZMax()));
+                    REQUIRE(leftBottomZMin   * viewportTransform == makePosition(destination.leftBottomZMin()));
+                    REQUIRE(rightBottomZMax * viewportTransform == makePosition(destination.rightBottomZMax()));
+                    REQUIRE(rightBottomZMin  * viewportTransform == makePosition(destination.rightBottomZMin()));
+                    REQUIRE(leftTopZMax     * viewportTransform == makePosition(destination.leftTopZMax()));
+                    REQUIRE(leftTopZMin      * viewportTransform == makePosition(destination.leftTopZMin()));
+                    REQUIRE(rightTopZMax    * viewportTransform == makePosition(destination.rightTopZMax()));
+                    REQUIRE(rightTopZMin     * viewportTransform == makePosition(destination.rightTopZMin()));
                 }
             }
         }

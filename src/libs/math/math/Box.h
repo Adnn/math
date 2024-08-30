@@ -15,6 +15,9 @@ namespace math {
 template <class T_number>
 struct Box
 {
+    static constexpr std::size_t gCornerCount = 8;
+    static constexpr std::size_t gBorderCount = 6;
+
     T_number & x()
     { return mPosition.x(); }
     T_number & y()
@@ -71,29 +74,43 @@ struct Box
     Position<3, T_number> origin() const
     { return mPosition; }
 
-    Position<3, T_number> bottomLeftBack() const
+    // Note: There is the ambiguity of handedness on the near/far distinction
+    // OpenGL clipping space is left-handed, we might adhere to left-handedness (i.e. near = zMin)
+    // But we prefer to be explicit and use ZMin / ZMax for this dimension.
+
+    constexpr Position<3, T_number> leftBottomZMin() const
     { return origin(); }
 
-    Position<3, T_number> topLeftBack() const
-    { return mPosition + Vec<3, T_number>{T_number(0), mDimension.height(), T_number{0}}; }
-
-    Position<3, T_number> bottomRightBack() const
+    constexpr Position<3, T_number> rightBottomZMin() const
     { return mPosition + Vec<3, T_number>{mDimension.width(), T_number{0}, T_number{0}}; }
 
-    Position<3, T_number> topRightBack() const
+    constexpr Position<3, T_number> leftTopZMin() const
+    { return mPosition + Vec<3, T_number>{T_number(0), mDimension.height(), T_number{0}}; }
+    
+    constexpr Position<3, T_number> rightTopZMin() const
     { return mPosition + Vec<3, T_number>{mDimension.width(), mDimension.height(), T_number{0}}; }
 
-    Position<3, T_number> bottomLeftFront() const
+    constexpr Position<3, T_number> leftBottomZMax() const
     { return mPosition + Vec<3, T_number>{T_number{0}, T_number{0}, mDimension.depth()}; }
 
-    Position<3, T_number> topLeftFront() const
-    { return mPosition + Vec<3, T_number>{T_number{0}, mDimension.height(), mDimension.depth()}; }
-
-    Position<3, T_number> bottomRightFront() const
+    constexpr Position<3, T_number> rightBottomZMax() const
     { return mPosition + Vec<3, T_number>{mDimension.width(), T_number{0}, mDimension.depth()}; }
 
-    Position<3, T_number> topRightFront() const
+    constexpr Position<3, T_number> leftTopZMax() const
+    { return mPosition + Vec<3, T_number>{T_number{0}, mDimension.height(), mDimension.depth()}; }
+
+    constexpr Position<3, T_number> rightTopZMax() const
     { return mPosition + Vec<3, T_number>{mDimension.width(), mDimension.height(), mDimension.depth()}; }
+
+    /// \return Corner position in the same order as the declarations above
+    /// i.e. [l, r] x [b, t] x [zMin, zMax]
+    constexpr Position<3, T_number> cornerAt(std::size_t aCornerIdx) const;
+
+    /// \return The plane border component along its natural axis, in the order l, r, b, t, n, f.
+    ///
+    /// Since the Box is implicitly axis aligned, each plane is entirely defined by its position along the axis.
+    /// Each plane defines a **border** between the inside and the outside of the Box.
+    constexpr T_number borderAt(std::size_t aBorderIdx) const;
 
     constexpr Position<3, T_number> center() const
     { return mPosition + (mDimension.template as<Vec>() / 2); }
@@ -342,8 +359,8 @@ Box<T_number> Box<T_number>::unite(Box aOther) const
 template <class T_number>
 Box<T_number> & Box<T_number>::uniteAssign(const Box & aOther)
 {
-    extendTo(aOther.bottomLeftFront());
-    extendTo(aOther.topRightBack());
+    extendTo(aOther.leftBottomZMax());
+    extendTo(aOther.rightTopZMin());
     return *this;
 }
 
@@ -367,6 +384,55 @@ constexpr Rectangle<T_number> Box<T_number>::frontRectangle() const
     };
 }
 
+
+template <class T_number>
+constexpr Position<3, T_number> Box<T_number>::cornerAt(std::size_t aCornerIdx) const
+{
+    switch(aCornerIdx)
+    {
+        case 0:
+            return leftBottomZMin();
+        case 1:
+            return rightBottomZMin();
+        case 2:
+            return leftTopZMin();
+        case 3:
+            return rightTopZMin();
+        case 4:
+            return leftBottomZMax();
+        case 5:
+            return rightBottomZMax();
+        case 6:
+            return leftTopZMax();
+        case 7:
+            return rightTopZMax();
+        default:
+            throw std::domain_error{__func__ + std::string{": box corners are indexed (0, 7)."}};
+    }
+}
+
+
+template <class T_number>
+constexpr T_number Box<T_number>::borderAt(std::size_t aBorderIdx) const
+{
+    switch(aBorderIdx)
+    {
+        case 0:
+            return xMin();
+        case 1:
+            return xMax();
+        case 2:
+            return yMin();
+        case 3:
+            return yMax();
+        case 4:
+            return zMin();
+        case 5:
+            return zMax();
+        default:
+            throw std::domain_error{__func__ + std::string{": box corners are indexed (0, 7)."}};
+    }
+}
 
 template <class T_number>
 std::ostream & operator<<(std::ostream & os, const Box<T_number> &aBox)

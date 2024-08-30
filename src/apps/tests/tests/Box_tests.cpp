@@ -39,14 +39,14 @@ SCENARIO("Box usage")
         {
             REQUIRE(box.origin() == Position<3>{0., 5., -30.});
 
-            REQUIRE(box.bottomLeftFront()  == Position<3>{ 0.,  5.,  10.});
-            REQUIRE(box.bottomLeftBack()   == Position<3>{ 0.,  5., -30.});
-            REQUIRE(box.bottomRightFront() == Position<3>{20.,  5.,  10.});
-            REQUIRE(box.bottomRightBack()  == Position<3>{20.,  5., -30.});
-            REQUIRE(box.topLeftFront()     == Position<3>{ 0., 35.,  10.});
-            REQUIRE(box.topLeftBack()      == Position<3>{ 0., 35., -30.});
-            REQUIRE(box.topRightFront()    == Position<3>{20., 35.,  10.});
-            REQUIRE(box.topRightBack()     == Position<3>{20., 35., -30.});
+            REQUIRE(box.leftBottomZMax()  == Position<3>{ 0.,  5.,  10.});
+            REQUIRE(box.leftBottomZMin()   == Position<3>{ 0.,  5., -30.});
+            REQUIRE(box.rightBottomZMax() == Position<3>{20.,  5.,  10.});
+            REQUIRE(box.rightBottomZMin()  == Position<3>{20.,  5., -30.});
+            REQUIRE(box.leftTopZMax()     == Position<3>{ 0., 35.,  10.});
+            REQUIRE(box.leftTopZMin()      == Position<3>{ 0., 35., -30.});
+            REQUIRE(box.rightTopZMax()    == Position<3>{20., 35.,  10.});
+            REQUIRE(box.rightTopZMin()     == Position<3>{20., 35., -30.});
             REQUIRE(box.center()           == Position<3>{10., 20., -10.});
         }
 
@@ -163,45 +163,45 @@ SCENARIO("Box growing from points.")
         //
         GIVEN("A point outside the box")
         {
-            const Position<3> topLeftFront{-10., 0., 5.};
+            const Position<3> leftTopZMax{-10., 0., 5.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(topLeftFront);
-                REQUIRE(growing.topLeftFront() == topLeftFront);
-                REQUIRE(growing.bottomRightBack() == base.bottomRightBack());
+                growing.extendTo(leftTopZMax);
+                REQUIRE(growing.leftTopZMax() == leftTopZMax);
+                REQUIRE(growing.rightBottomZMin() == base.rightBottomZMin());
             }
         }
 
         GIVEN("A point outside the box")
         {
-            const Position<3> topRightFront{100., 10., 5.};
+            const Position<3> rightTopZMax{100., 10., 5.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(topRightFront);
-                REQUIRE(growing.topRightFront() == topRightFront);
-                REQUIRE(growing.bottomLeftBack() == base.bottomLeftBack());
+                growing.extendTo(rightTopZMax);
+                REQUIRE(growing.rightTopZMax() == rightTopZMax);
+                REQUIRE(growing.leftBottomZMin() == base.leftBottomZMin());
             }
         }
 
         GIVEN("A point outside the box")
         {
-            const Position<3> bottomRightFront{100., -100., 5.};
+            const Position<3> rightBottomZMax{100., -100., 5.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(bottomRightFront);
-                REQUIRE(growing.bottomRightFront() == bottomRightFront);
-                REQUIRE(growing.topLeftBack() == base.topLeftBack());
+                growing.extendTo(rightBottomZMax);
+                REQUIRE(growing.rightBottomZMax() == rightBottomZMax);
+                REQUIRE(growing.leftTopZMin() == base.leftTopZMin());
             }
         }
 
         GIVEN("A point outside the box")
         {
-            const Position<3> bottomLeftFront{6., -50., 5.};
+            const Position<3> leftBottomZMax{6., -50., 5.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(bottomLeftFront);
-                REQUIRE(growing.bottomLeftFront() == bottomLeftFront);
-                REQUIRE(growing.topRightBack() == base.topRightBack());
+                growing.extendTo(leftBottomZMax);
+                REQUIRE(growing.leftBottomZMax() == leftBottomZMax);
+                REQUIRE(growing.rightTopZMin() == base.rightTopZMin());
             }
         }
 
@@ -210,45 +210,45 @@ SCENARIO("Box growing from points.")
         //
         GIVEN("A point outside the box")
         {
-            const Position<3> topLeftBack{-10., 0., -15.};
+            const Position<3> leftTopZMin{-10., 0., -15.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(topLeftBack);
-                REQUIRE(growing.topLeftBack() == topLeftBack);
-                REQUIRE(growing.bottomRightFront() == base.bottomRightFront());
+                growing.extendTo(leftTopZMin);
+                REQUIRE(growing.leftTopZMin() == leftTopZMin);
+                REQUIRE(growing.rightBottomZMax() == base.rightBottomZMax());
             }
         }
 
         GIVEN("A point outside the box")
         {
-            const Position<3> topRightBack{100., 10., -15.};
+            const Position<3> rightTopZMin{100., 10., -15.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(topRightBack);
-                REQUIRE(growing.topRightBack() == topRightBack);
-                REQUIRE(growing.bottomLeftFront() == base.bottomLeftFront());
+                growing.extendTo(rightTopZMin);
+                REQUIRE(growing.rightTopZMin() == rightTopZMin);
+                REQUIRE(growing.leftBottomZMax() == base.leftBottomZMax());
             }
         }
 
         GIVEN("A point outside the box")
         {
-            const Position<3> bottomRightBack{100., -100., -15.};
+            const Position<3> rightBottomZMin{100., -100., -15.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(bottomRightBack);
-                REQUIRE(growing.bottomRightBack() == bottomRightBack);
-                REQUIRE(growing.topLeftFront() == base.topLeftFront());
+                growing.extendTo(rightBottomZMin);
+                REQUIRE(growing.rightBottomZMin() == rightBottomZMin);
+                REQUIRE(growing.leftTopZMax() == base.leftTopZMax());
             }
         }
 
         GIVEN("A point outside the box")
         {
-            const Position<3> bottomLeftBack{6., -50., -15.};
+            const Position<3> leftBottomZMin{6., -50., -15.};
             THEN("It grows the box just enough.")
             {
-                growing.extendTo(bottomLeftBack);
-                REQUIRE(growing.bottomLeftBack() == bottomLeftBack);
-                REQUIRE(growing.topRightFront() == base.topRightFront());
+                growing.extendTo(leftBottomZMin);
+                REQUIRE(growing.leftBottomZMin() == leftBottomZMin);
+                REQUIRE(growing.rightTopZMax() == base.rightTopZMax());
             }
         }
     }
