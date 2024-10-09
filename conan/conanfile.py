@@ -26,7 +26,7 @@ class MathConan(ConanFile):
     }
 
     requires = (
-        ("reflexion/b2aa059210@adnn/develop"),
+        ("reflexion/57198786a6@adnn/develop"),
     )
 
     build_policy = "missing"
