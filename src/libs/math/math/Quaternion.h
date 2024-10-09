@@ -5,6 +5,7 @@
 #include "Clamped.h"
 #include "LinearMatrix.h"
 #include "Vector.h"
+#include "reflexion/NameValuePair.h"
 
 
 namespace ad {
@@ -85,6 +86,13 @@ public:
     /// @warning It is intended for debugging and assertions, 
     /// since this class should always represent rotation quaternions whose norm has to be 1.
     T_number getNormSquared() const;
+
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+        aWitness.witness(NVP(mVector));
+        aWitness.witness(NVP(mW));
+    }
 
 private:
     constexpr Quaternion(Vec<3, T_number> aVector, T_number aW)  noexcept(should_noexcept);

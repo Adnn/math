@@ -1,5 +1,6 @@
 #pragma once
 
+#include "reflexion/NameValuePair.h"
 #include "../Clamped.h"
 #include "../Vector.h"
 #include "../Constants.h"
@@ -721,6 +722,20 @@ public:
     void changePoint(size_t index, math::Position<2, T_parameter> aPoint)
     {
         mEaseFunctor.changePoint(index, aPoint);
+    }
+    
+    template<class T_witness>
+    void describeTo(T_witness && w)
+    {
+        w.witness(NVP(mPeriod));
+        if constexpr (!std::is_same_v<TT_periodicity<T_parameter>, None<T_parameter>>)
+        {
+            w.witness(NVP(mPeriodicBehaviour));
+        }
+        if constexpr (!std::is_same_v<TT_easeFunctor<T_parameter>, None<T_parameter>>)
+        {
+            w.witness(NVP(mEaseFunctor));
+        }
     }
 
 private:

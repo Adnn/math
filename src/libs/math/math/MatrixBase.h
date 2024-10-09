@@ -6,6 +6,8 @@
 #include <array>
 #include <iostream>
 
+#include <reflexion/NameValuePair.h>
+
 
 namespace ad {
 namespace math {
@@ -349,6 +351,12 @@ public:
 
     constexpr MatrixBase(detail::CastTag, store_type aData)
             noexcept(std::is_nothrow_move_constructible<value_type>::value);
+
+    template<class T_witness>
+    void describeTo(T_witness && w)
+    {
+        w.witness(NVP(mStore));
+    }
 
 private:
     store_type mStore;

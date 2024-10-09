@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Constants.h"
+#include "reflexion/NameValuePair.h"
 
 #include <string>
 
@@ -106,6 +107,12 @@ public:
     constexpr friend bool operator>=(const Angle aLhs, const Angle aRhs) noexcept
     {
         return aLhs.value() >= aRhs.value();
+    }
+
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+        aWitness.witness(NVP(mValue));
     }
 
 private:

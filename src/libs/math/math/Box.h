@@ -4,6 +4,8 @@
 #include "Rectangle.h"
 #include "Vector.h"
 
+#include <reflexion/NameValuePair.h>
+
 namespace ad {
 namespace math {
 
@@ -132,6 +134,13 @@ struct Box
 
     Position<3, T_number>  mPosition;
     Size<3, T_number> mDimension;
+
+    template<class T_witness>
+    void describeTo(T_witness && w)
+    {
+        w.witness(NVP(mPosition));
+        w.witness(NVP(mDimension));
+    }
 };
 
 

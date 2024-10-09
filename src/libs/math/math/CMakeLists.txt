@@ -63,6 +63,17 @@ add_library(ad::${TARGET_NAME} ALIAS ${TARGET_NAME})
 
 cmc_target_current_include_directory(${TARGET_NAME})
 
+##
+## Dependencies
+##
+
+cmc_find_dependencies(FILE CMakeFinds.cmake.in)
+
+target_link_libraries(${TARGET_NAME}
+    INTERFACE
+        ad::reflexion
+)
+
 # Some constexpr functions rely on the current CPP version to select their implementation
 # and MSVC requires a compiler option to define _cplusplus macro.
 if(MSVC)
