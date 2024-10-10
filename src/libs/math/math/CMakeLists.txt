@@ -67,7 +67,7 @@ cmc_target_current_include_directory(${TARGET_NAME})
 ## Dependencies
 ##
 
-cmc_find_dependencies(FILE CMakeFinds.cmake.in)
+cmc_find_dependencies()
 
 target_link_libraries(${TARGET_NAME}
     INTERFACE
