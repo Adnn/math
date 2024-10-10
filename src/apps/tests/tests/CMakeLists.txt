@@ -52,7 +52,6 @@ find_package(Reflexion CONFIG REQUIRED COMPONENTS reflexion)
 
 target_link_libraries(${TARGET_NAME} PRIVATE
     ad::math
-    ad::reflexion
 )
 
 cmc_cpp_all_warnings_as_errors(${TARGET_NAME} ENABLED ${BUILD_CONF_WarningAsError})
