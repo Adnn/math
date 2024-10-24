@@ -134,7 +134,7 @@ public:
     { setZero(); }
 
     // Implementer note:
-    // I don't feel confident enought with my understanding of aggregate initialization
+    // I don't feel confident enough with my understanding of aggregate initialization
     // (see: https://en.cppreference.com/w/cpp/language/aggregate_initialization)
     // to know when it can and cannot throw exceptions. So be conservative and noexcept(false).
     //
@@ -157,9 +157,12 @@ public:
               std::enable_if_t<sizeof...(T_element) == N_rows*N_cols && (N_rows*N_cols > 1), int> = 0>
     constexpr MatrixBase(T_element... vaElements) /*noexcept (see note)*/;
 
-    // Note: split because of a complication with explicit handling
+    // Note: split because of a complication with explicit handling of the ctor above (see comments).
     // (C++ 20 introduce conditional explicit, which could be used instead)
-    constexpr explicit MatrixBase(T_number aSingleElement) /*noexcept (see note)*/;
+    // This constructor is restricted to the case where the matrix is 1 element exactly.
+    // Note: Without `requires` clause, one could rely on SFINAE, by templating the method with
+    //       <typename = std::enable_if_t<(N_rows*N_cols == 1)>>
+    constexpr explicit MatrixBase(T_number aSingleElement) requires (N_rows*N_cols == 1) /*noexcept (see note)*/;
 
     /// \brief Explicit cast to another derived type of same dimensions and scalar type
     template <class T_otherDerived,

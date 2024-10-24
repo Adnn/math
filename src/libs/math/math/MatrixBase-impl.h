@@ -16,7 +16,7 @@ constexpr MatrixBase<TMA>::MatrixBase(T_element... vaElements) :
 
 
 template<TMP>
-constexpr MatrixBase<TMA>::MatrixBase(T_number aSingleElement) :
+constexpr MatrixBase<TMA>::MatrixBase(T_number aSingleElement) requires (N_rows*N_cols == 1) :
     mStore{ {aSingleElement} }
 {}
 
