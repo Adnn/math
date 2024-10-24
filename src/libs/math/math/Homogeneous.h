@@ -154,9 +154,12 @@ Vec<N_lowerDimension+1, T_number> makeVec(const Vec<N_lowerDimension, T_number> 
 }
 
 
-//template<int N_dimension, class T_number = real_number, template <N_dimension, T_number> TT_derivedVector>
+/// @brief Apply the normalization (perspective division) process,
+/// to obtain Cartesian coordinates from the homogeneous coordinates.
+/// @note `homogenize` has been preferred to `normalize` which might be confused
+/// with vector normalization (scaling to unit length).
 template<class T_derived, int N_dimension, class T_number = real_number>
-T_derived normalize(const Vector<T_derived, N_dimension, T_number> & aHomogeneous)
+T_derived homogenize(const Vector<T_derived, N_dimension, T_number> & aHomogeneous)
 {
     T_derived result{typename T_derived::UninitializedTag{}};
     for (std::size_t i = 0; i != (N_dimension - 1); ++i)

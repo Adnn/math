@@ -1117,12 +1117,12 @@ SCENARIO("3D perspective transformation.")
         {
             Matrix<4, 4> perspective = trans3d::perspective(-2., -10.);
 
-            auto nearPlane_a_transformed = normalize(nearPlane_a * perspective);
-            auto nearPlane_b_transformed = normalize(nearPlane_b * perspective);
-            auto mid_a_transformed = normalize(mid_a * perspective);
-            auto mid_b_transformed = normalize(mid_b * perspective);
-            auto farPlane_a_transformed = normalize(farPlane_a * perspective);
-            auto farPlane_b_transformed = normalize(farPlane_b * perspective);
+            auto nearPlane_a_transformed = homogenize(nearPlane_a * perspective);
+            auto nearPlane_b_transformed = homogenize(nearPlane_b * perspective);
+            auto mid_a_transformed = homogenize(mid_a * perspective);
+            auto mid_b_transformed = homogenize(mid_b * perspective);
+            auto farPlane_a_transformed = homogenize(farPlane_a * perspective);
+            auto farPlane_b_transformed = homogenize(farPlane_b * perspective);
 
             THEN("The near plane positions are not changed by the transformation.")
             {
@@ -1174,12 +1174,12 @@ SCENARIO("3D perspective transformation.")
 
                 THEN("It allows to find the original positions back.")
                 {
-                    REQUIRE(normalize(nearPlane_a_transformed * inverse) == nearPlane_a);
-                    REQUIRE(normalize(nearPlane_b_transformed * inverse) == nearPlane_b);
-                    REQUIRE(normalize(mid_a_transformed * inverse) == mid_a);
-                    REQUIRE(normalize(mid_b_transformed * inverse) == mid_b);
-                    REQUIRE(normalize(farPlane_a_transformed * inverse) == farPlane_a);
-                    REQUIRE(normalize(farPlane_b_transformed * inverse) == farPlane_b);
+                    REQUIRE(homogenize(nearPlane_a_transformed * inverse) == nearPlane_a);
+                    REQUIRE(homogenize(nearPlane_b_transformed * inverse) == nearPlane_b);
+                    REQUIRE(homogenize(mid_a_transformed * inverse) == mid_a);
+                    REQUIRE(homogenize(mid_b_transformed * inverse) == mid_b);
+                    REQUIRE(homogenize(farPlane_a_transformed * inverse) == farPlane_a);
+                    REQUIRE(homogenize(farPlane_b_transformed * inverse) == farPlane_b);
                 }
             }
         }

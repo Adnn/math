@@ -59,13 +59,13 @@ SCENARIO("Homogeneous Vectors normalization.")
 
         THEN("They can be normalized")
         {
-            REQUIRE(normalizedPos2D == homogeneous::normalize(normalizedPos2D));
-            REQUIRE_FALSE(pos2D == homogeneous::normalize(pos2D));
-            REQUIRE(homogeneous::normalize(pos2D) == pos2D/pos2D.z());
+            REQUIRE(normalizedPos2D == homogeneous::homogenize(normalizedPos2D));
+            REQUIRE_FALSE(pos2D == homogeneous::homogenize(pos2D));
+            REQUIRE(homogeneous::homogenize(pos2D) == pos2D/pos2D.z());
 
-            REQUIRE(normalizedVec3D == homogeneous::normalize(normalizedVec3D));
-            REQUIRE_FALSE(vec3D == homogeneous::normalize(vec3D));
-            REQUIRE(homogeneous::normalize(vec3D) == vec3D/vec3D.w());
+            REQUIRE(normalizedVec3D == homogeneous::homogenize(normalizedVec3D));
+            REQUIRE_FALSE(vec3D == homogeneous::homogenize(vec3D));
+            REQUIRE(homogeneous::homogenize(vec3D) == vec3D/vec3D.w());
         }
     }
 }
