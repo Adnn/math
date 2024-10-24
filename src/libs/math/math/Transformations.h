@@ -219,14 +219,22 @@ namespace trans3d {
     // 
     // Coordinate transformations
     //
+    
+    /// \brief Transform coordinates expressed in `aFrame` to coordinates in the canonical frame of reference.
+    /// (Or actively move the canonical frame onto aFrame.)
+    /// \param aFrame expressed in the canonical frame of reference.
     template <class T_number>
     constexpr AffineMatrix<4, T_number>
     frameToCanonical(const Frame<3, T_number> aFrame);
 
 
+    /// \brief Transform coordinates expressed in the canonical frame of reference to coordinates in aFrame.
+    /// (Or actively move aFrame onto the canonical frame.)
+    /// \param aFrame expressed in the canonical frame of reference.
     template <class T_number>
     constexpr AffineMatrix<4, T_number>
     canonicalToFrame(const Frame<3, T_number> aFrame);
+
 
     //
     // Viewing (higher level) transformations
