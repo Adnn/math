@@ -301,9 +301,10 @@ hdr::Rgba<T_hdrNumber> to_hdr(sdr::Rgba aSdr)
 }
 
 
+// Will not be constexpr until c++26 because of std::pow...
 template <class T_number>
     requires std::is_floating_point_v<T_number>
-T_number decode_sRGBChannel(T_number aValue)
+constexpr T_number decode_sRGBChannel(T_number aValue)
 {
     if(aValue <= T_number{0.04045})
     {
@@ -316,14 +317,33 @@ T_number decode_sRGBChannel(T_number aValue)
 }
 
 
+template <class T_number>
+constexpr hdr::Rgb<T_number> decode_sRGB(hdr::Rgb<T_number> aHdr)
+{
+    return {
+        decode_sRGBChannel(aHdr.r()),
+        decode_sRGBChannel(aHdr.g()),
+        decode_sRGBChannel(aHdr.b()),
+    };
+}
+
+
+template <class T_number>
+constexpr hdr::Rgba<T_number> decode_sRGB(hdr::Rgba<T_number> aHdr)
+{
+    return {
+        decode_sRGBChannel(aHdr.r()),
+        decode_sRGBChannel(aHdr.g()),
+        decode_sRGBChannel(aHdr.b()),
+        aHdr.a(),
+    };
+}
+
+
 inline sdr::Rgb decode_sRGB(sdr::Rgb aSdr)
 {
     auto floating = to_hdr<float>(aSdr);
-    floating = {
-        decode_sRGBChannel(floating.r()),
-        decode_sRGBChannel(floating.g()),
-        decode_sRGBChannel(floating.b()),
-    };
+    floating = decode_sRGB(floating);
     return to_sdr(floating);
 }
 
@@ -331,12 +351,7 @@ inline sdr::Rgb decode_sRGB(sdr::Rgb aSdr)
 inline sdr::Rgba decode_sRGB(sdr::Rgba aSdr)
 {
     auto floating = to_hdr<float>(aSdr);
-    floating = {
-        decode_sRGBChannel(floating.r()),
-        decode_sRGBChannel(floating.g()),
-        decode_sRGBChannel(floating.b()),
-        floating.a(),
-    };
+    floating = decode_sRGB(floating);
     return to_sdr(floating);
 }
 

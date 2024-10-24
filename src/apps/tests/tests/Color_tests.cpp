@@ -206,4 +206,42 @@ SCENARIO("Conversions from sRGB color space.")
             }
         }
     }
+
+    GIVEN("A HDR RGB color in sRGB color space.")
+    {
+        hdr::Rgb_f sRgb{0.f, 0.5f, 1.f};
+
+        WHEN("It is decoded to linear space.")
+        {
+            hdr::Rgb_f linearRgb = decode_sRGB(sRgb);
+            THEN("The values are as expected.")
+            {
+                hdr::Rgb_f expected(0.f, decode_sRGBChannel(sRgb.g()), 1.f);
+                CHECK(linearRgb == expected);
+            }
+        }
+    }
+    
+    GIVEN("A SDR RGBA color in sRGB color space.")
+    {
+        hdr::Rgba_f sRgba{100/255.f, 200/255.f, 10/255.f, 0.321f};
+
+        WHEN("It is decoded to linear space.")
+        {
+            hdr::Rgba_f linearRgba = decode_sRGB(sRgba);
+            THEN("The color channels values are as expected.")
+            {
+                hdr::Rgb_f expected{
+                    decode_sRGBChannel(sRgba.r()), 
+                    decode_sRGBChannel(sRgba.g()), 
+                    decode_sRGBChannel(sRgba.b()), 
+                };
+                CHECK(hdr::Rgb_f{linearRgba} == expected);
+            }
+            THEN("The opacity channel is not affected.")
+            {
+                CHECK(linearRgba.a() == sRgba.a());
+            }
+        }
+    }
 }
