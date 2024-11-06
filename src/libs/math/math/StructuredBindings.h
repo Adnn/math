@@ -42,7 +42,6 @@ using MatrixTuple_t = typename MatrixTuple<T_matrix>::type;
 } // namespace math
 } // namespace ad
 
-using namespace ad::math;
 
 namespace std {
 
@@ -53,7 +52,7 @@ class tuple_size<T_matrix> : public integral_constant<size_t, T_matrix::size_val
 
 template <size_t I, class T_matrix> requires from_matrix_v<T_matrix>
 class tuple_element<I, T_matrix>
-    : public tuple_element<I, detail::MatrixTuple_t<T_matrix>>
+    : public tuple_element<I, ::ad::math::detail::MatrixTuple_t<T_matrix>>
 {
 };
 
