@@ -30,7 +30,8 @@ struct Bezier
 {
     // One start point with a handle 18 points with two handles and an end
     // point with one handle
-    constexpr static size_t sMaxStageSize = 2 + 18 * 3 + 2;
+    constexpr static size_t sMaxOnCurve = 20;
+    constexpr static size_t sMaxStageSize = sMaxOnCurve * 3 + 2;
 
     // NFFNFFNFFNFFN
     // indices for on curve are 0, 3, 6, 9, 12
