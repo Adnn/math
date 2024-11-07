@@ -1,13 +1,16 @@
 #pragma once
 
-#include "reflexion/NameValuePair.h"
 #include "../Clamped.h"
-#include "../Vector.h"
 #include "../Constants.h"
+#include "../Vector.h"
+#include "../Utilities.h"
+
+#include <reflexion/NameValuePair.h>
 
 #include <cassert>
 #include <cmath>
 #include <cstddef>
+#include <limits>
 #include <vector>
 
 namespace ad {
@@ -192,11 +195,11 @@ struct Bezier
         T_parameter c = (-3.f * pa) + (3.f * pb);
         T_parameter d = pa;
 
-        if (epsilonCompare(a, 0.f))
+        if (math::absoluteTolerance(a, T_parameter(0), std::numeric_limits<T_parameter>::epsilon()))
         {
-            if (epsilonCompare(b, 0.f))
+            if (math::absoluteTolerance(a, T_parameter(0), std::numeric_limits<T_parameter>::epsilon()))
             {
-                if (epsilonCompare(c, 0.f))
+                if (math::absoluteTolerance(a, T_parameter(0), std::numeric_limits<T_parameter>::epsilon()))
                 {
                     return {};
                 }
@@ -280,6 +283,14 @@ struct Bezier
 
         return result;
     }
+
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+        aWitness.witness(NVP(mXValues));
+        aWitness.witness(NVP(mYValues));
+        aWitness.witness(NVP(mOnCurveCount));
+    }
 };
 /// \see https://en.wikipedia.org/wiki/Smoothstep
 template <class T_parameter>
@@ -294,6 +305,11 @@ struct SmoothStep
     std::vector<math::Position<2, float>> getKnots() const
     {
         return {{0.f, 0.f}, {1.f, 1.f}};
+    }
+
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
     }
 };
 
