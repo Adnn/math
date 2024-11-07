@@ -314,6 +314,55 @@ struct SmoothStep
 };
 
 template <class T_parameter>
+struct MassSpringDamper
+{
+    MassSpringDamper(
+        T_parameter aMass,
+        T_parameter aSpringStrength,
+        T_parameter aDampening,
+        T_parameter aInitialVelocity = 10.f) :
+        mInitialVelocity{aInitialVelocity},
+        mMass{aMass},
+        mSpringStrength{aSpringStrength},
+        mDampening{aDampening}
+    {
+        assert(mDampening < std::sqrt(T_parameter{4} * mSpringStrength * mMass));
+        assert(mMass > T_parameter{0});
+    }
+
+    T_parameter ease(T_parameter aInput) const
+    {
+        T_parameter mDecayRate = mDampening / (2 * mMass);
+        T_parameter mAngularFreq =
+            sqrt((4 * mSpringStrength * mMass) - std::pow(mDampening, 2)) / (2 * mMass);
+        // This 10 times log(2)/mDecayRate this wait for the decay to reach 1/1024
+        T_parameter mLifetime =
+        T_parameter{10} * (T_parameter{0.69314718056} / mDecayRate);
+        T_parameter t = aInput * mLifetime;
+        T_parameter value =
+            1 + (-1 * std::exp(-mDecayRate * t) * std::cos(mAngularFreq * t))
+            + (((mInitialVelocity + mDecayRate * -1.) / mAngularFreq)
+                  * std::exp(-mDecayRate * t) * std::sin(mAngularFreq * t));
+        return value;
+    }
+
+    T_parameter mInitialVelocity;
+    T_parameter mMass;
+    T_parameter mSpringStrength;
+    T_parameter mDampening;
+
+    
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+        aWitness.witness(NVP(mInitialVelocity));
+        aWitness.witness(NVP(mMass));
+        aWitness.witness(NVP(mSpringStrength));
+        aWitness.witness(NVP(mDampening));
+    }
+};
+
+template <class T_parameter>
 struct CubicSpline
 {
     CubicSpline(std::vector<T_parameter> && aXValues,
