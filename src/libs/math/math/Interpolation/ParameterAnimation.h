@@ -24,8 +24,7 @@ T_number cubeRoot(const T_number & a)
 
 
 /// \brief Namespace containing all the easing functions.
-namespace ease
-{
+namespace ease {
 template <class T_parameter>
 struct Bezier
 {
@@ -653,9 +652,17 @@ public:
 
     /// \brief Constructor from a period (i.e. duration). Available for clamped
     /// output.
-    template <bool N_hasSpeed = HasSpeed()>
+    template <bool N_isClamped = IsClamped()>
     explicit ParameterAnimation(T_parameter aPeriod,
-                                std::enable_if_t<!N_hasSpeed> * = nullptr) :
+                                std::enable_if_t<N_isClamped> * = nullptr) :
+        mPeriod{std::move(aPeriod)}
+    {}
+
+    template <bool N_isClamped = IsClamped()>
+    explicit ParameterAnimation(TT_easeFunctor<T_parameter> aEaseFunctor,
+                                T_parameter aPeriod = T_parameter{1},
+                                std::enable_if_t<N_isClamped> * = nullptr) :
+        mEaser{aEaseFunctor},
         mPeriod{std::move(aPeriod)}
     {}
 
@@ -674,15 +681,15 @@ public:
                                 T_parameter aSpeed = T_parameter{1},
                                 std::enable_if_t<N_hasSpeed> * = nullptr) :
         Base_t{std::move(aSpeed)},
-        mPeriod{std::move(aPeriod)},
-        mEaseFunctor{aEaseFunctor}
+        mEaser{aEaseFunctor},
+        mPeriod{std::move(aPeriod)}
     {}
 
     template <bool N_isEasing = IsEasing()>
     std::vector<math::Position<2, float>>
     getKnots(std::enable_if_t<N_isEasing> * = nullptr)
     {
-        return mEaseFunctor.getKnots();
+        return mEaser.getKnots();
     }
 
     Result_type at(T_parameter aInput) const
@@ -708,7 +715,7 @@ public:
                           "normalization.");
 
             // Need to normalize the easing input
-            aInput = mEaseFunctor.ease(aInput / mPeriod);
+            aInput = mEaser.ease(aInput / mPeriod);
 
             if constexpr (N_resultRange == FullRange)
             {
@@ -774,34 +781,43 @@ public:
     template <bool N_hasModification = IsModifiable()>
     int addPoint(T_parameter aValue)
     {
-        return mEaseFunctor.addPoint(aValue);
+        return mEaser.addPoint(aValue);
     }
 
     template <bool N_hasModification = IsModifiable()>
     void removePoint(size_t aIndex)
     {
-        mEaseFunctor.removePoint(aIndex);
+        mEaser.removePoint(aIndex);
     }
 
     template <bool N_hasModification = IsModifiable()>
     void changePoint(size_t index, math::Position<2, T_parameter> aPoint)
     {
-        mEaseFunctor.changePoint(index, aPoint);
+        mEaser.changePoint(index, aPoint);
     }
-    
-    template<class T_witness>
+
+    template <class T_witness>
     void describeTo(T_witness && w)
     {
         w.witness(NVP(mPeriod));
-        if constexpr (!std::is_same_v<TT_periodicity<T_parameter>, None<T_parameter>>)
+        if constexpr (!std::is_same_v<TT_periodicity<T_parameter>,
+                                      None<T_parameter>>)
         {
             w.witness(NVP(mPeriodicBehaviour));
         }
-        if constexpr (!std::is_same_v<TT_easeFunctor<T_parameter>, None<T_parameter>>)
+        if constexpr (!std::is_same_v<TT_easeFunctor<T_parameter>,
+                                      None<T_parameter>>)
         {
-            w.witness(NVP(mEaseFunctor));
+            w.witness(NVP(mEaser));
         }
     }
+
+    const T_parameter & getPeriod()
+    {
+        return mPeriod;
+    }
+
+    TT_easeFunctor<T_parameter> mEaser;
 
 private:
     T_parameter mPeriod;
@@ -809,7 +825,6 @@ private:
         mPeriodicBehaviour; // empty class for basic initial cases (Repeat,
                             // PingPong) but leaves room for more potential
                             // other scenarios.
-    TT_easeFunctor<T_parameter> mEaseFunctor;
 
     // Would be better to have the asseration at the beginning, but the static
     // member functions must be defined.
