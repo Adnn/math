@@ -5,8 +5,6 @@
 #include "../Vector.h"
 #include "../Utilities.h"
 
-#include <reflexion/NameValuePair.h>
-
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -287,9 +285,9 @@ struct Bezier
     template<class T_witness>
     void describeTo(T_witness && aWitness)
     {
-        aWitness.witness(NVP(mXValues));
-        aWitness.witness(NVP(mYValues));
-        aWitness.witness(NVP(mOnCurveCount));
+        aWitness.witness(std::make_pair("mXValues", &mXValues));
+        aWitness.witness(std::make_pair("mYValues", &mYValues));
+        aWitness.witness(std::make_pair("mOnCurveCount", &mOnCurveCount));
     }
 };
 /// \see https://en.wikipedia.org/wiki/Smoothstep
@@ -355,10 +353,10 @@ struct MassSpringDamper
     template<class T_witness>
     void describeTo(T_witness && aWitness)
     {
-        aWitness.witness(NVP(mInitialVelocity));
-        aWitness.witness(NVP(mMass));
-        aWitness.witness(NVP(mSpringStrength));
-        aWitness.witness(NVP(mDampening));
+        aWitness.witness(std::make_pair("mInitialVelocity", &mInitialVelocity));
+        aWitness.witness(std::make_pair("mMass", &mMass));
+        aWitness.witness(std::make_pair("mSpringStrength", &mSpringStrength));
+        aWitness.witness(std::make_pair("mDampening", &mDampening));
     }
 };
 
@@ -800,16 +798,16 @@ public:
     template <class T_witness>
     void describeTo(T_witness && w)
     {
-        w.witness(NVP(mPeriod));
+        w.witness(std::make_pair("mPeriod", &mPeriod));
         if constexpr (!std::is_same_v<TT_periodicity<T_parameter>,
                                       None<T_parameter>>)
         {
-            w.witness(NVP(mPeriodicBehaviour));
+            w.witness(std::make_pair("mPeriodicBehaviour", &mPeriodicBehaviour));
         }
         if constexpr (!std::is_same_v<TT_easeFunctor<T_parameter>,
                                       None<T_parameter>>)
         {
-            w.witness(NVP(mEaser));
+            w.witness(std::make_pair("mEaser", &mEaser));
         }
     }
 

@@ -5,7 +5,6 @@
 #include "Clamped.h"
 #include "LinearMatrix.h"
 #include "Vector.h"
-#include "reflexion/NameValuePair.h"
 
 
 namespace ad {
@@ -90,8 +89,8 @@ public:
     template<class T_witness>
     void describeTo(T_witness && aWitness)
     {
-        aWitness.witness(NVP(mVector));
-        aWitness.witness(NVP(mW));
+        aWitness.witness(std::make_pair("mVector", &mVector));
+        aWitness.witness(std::make_pair("mW", &mW));
     }
 
 private:
