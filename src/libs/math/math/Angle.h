@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Constants.h"
-#include "reflexion/NameValuePair.h"
 
 #include <string>
 
@@ -112,7 +111,7 @@ public:
     template<class T_witness>
     void describeTo(T_witness && aWitness)
     {
-        aWitness.witness(NVP(mValue));
+        aWitness.witness(std::make_pair("mValue", &mValue));
     }
 
 private:

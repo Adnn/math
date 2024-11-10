@@ -1,13 +1,14 @@
 #pragma once
 
-#include "reflexion/NameValuePair.h"
 #include "../Clamped.h"
-#include "../Vector.h"
 #include "../Constants.h"
+#include "../Vector.h"
+#include "../Utilities.h"
 
 #include <cassert>
 #include <cmath>
 #include <cstddef>
+#include <limits>
 #include <vector>
 
 namespace ad {
@@ -21,14 +22,14 @@ T_number cubeRoot(const T_number & a)
 
 
 /// \brief Namespace containing all the easing functions.
-namespace ease
-{
+namespace ease {
 template <class T_parameter>
 struct Bezier
 {
     // One start point with a handle 18 points with two handles and an end
     // point with one handle
-    constexpr static size_t sMaxStageSize = 2 + 18 * 3 + 2;
+    constexpr static size_t sMaxOnCurve = 20;
+    constexpr static size_t sMaxStageSize = sMaxOnCurve * 3 + 2;
 
     // NFFNFFNFFNFFN
     // indices for on curve are 0, 3, 6, 9, 12
@@ -192,11 +193,11 @@ struct Bezier
         T_parameter c = (-3.f * pa) + (3.f * pb);
         T_parameter d = pa;
 
-        if (epsilonCompare(a, 0.f))
+        if (math::absoluteTolerance(a, T_parameter(0), std::numeric_limits<T_parameter>::epsilon()))
         {
-            if (epsilonCompare(b, 0.f))
+            if (math::absoluteTolerance(a, T_parameter(0), std::numeric_limits<T_parameter>::epsilon()))
             {
-                if (epsilonCompare(c, 0.f))
+                if (math::absoluteTolerance(a, T_parameter(0), std::numeric_limits<T_parameter>::epsilon()))
                 {
                     return {};
                 }
@@ -280,6 +281,14 @@ struct Bezier
 
         return result;
     }
+
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+        aWitness.witness(std::make_pair("mXValues", &mXValues));
+        aWitness.witness(std::make_pair("mYValues", &mYValues));
+        aWitness.witness(std::make_pair("mOnCurveCount", &mOnCurveCount));
+    }
 };
 /// \see https://en.wikipedia.org/wiki/Smoothstep
 template <class T_parameter>
@@ -294,6 +303,60 @@ struct SmoothStep
     std::vector<math::Position<2, float>> getKnots() const
     {
         return {{0.f, 0.f}, {1.f, 1.f}};
+    }
+
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+    }
+};
+
+template <class T_parameter>
+struct MassSpringDamper
+{
+    MassSpringDamper(
+        T_parameter aMass,
+        T_parameter aSpringStrength,
+        T_parameter aDampening,
+        T_parameter aInitialVelocity = 10.f) :
+        mInitialVelocity{aInitialVelocity},
+        mMass{aMass},
+        mSpringStrength{aSpringStrength},
+        mDampening{aDampening}
+    {
+        assert(mDampening < std::sqrt(T_parameter{4} * mSpringStrength * mMass));
+        assert(mMass > T_parameter{0});
+    }
+
+    T_parameter ease(T_parameter aInput) const
+    {
+        T_parameter mDecayRate = mDampening / (2 * mMass);
+        T_parameter mAngularFreq =
+            sqrt((4 * mSpringStrength * mMass) - std::pow(mDampening, 2)) / (2 * mMass);
+        // This 10 times log(2)/mDecayRate this wait for the decay to reach 1/1024
+        T_parameter mLifetime =
+        T_parameter{10} * (T_parameter{0.69314718056} / mDecayRate);
+        T_parameter t = aInput * mLifetime;
+        T_parameter value =
+            1 + (-1 * std::exp(-mDecayRate * t) * std::cos(mAngularFreq * t))
+            + (((mInitialVelocity + mDecayRate * -1.) / mAngularFreq)
+                  * std::exp(-mDecayRate * t) * std::sin(mAngularFreq * t));
+        return value;
+    }
+
+    T_parameter mInitialVelocity;
+    T_parameter mMass;
+    T_parameter mSpringStrength;
+    T_parameter mDampening;
+
+    
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+        aWitness.witness(std::make_pair("mInitialVelocity", &mInitialVelocity));
+        aWitness.witness(std::make_pair("mMass", &mMass));
+        aWitness.witness(std::make_pair("mSpringStrength", &mSpringStrength));
+        aWitness.witness(std::make_pair("mDampening", &mDampening));
     }
 };
 
@@ -588,9 +651,17 @@ public:
 
     /// \brief Constructor from a period (i.e. duration). Available for clamped
     /// output.
-    template <bool N_hasSpeed = HasSpeed()>
+    template <bool N_isClamped = IsClamped()>
     explicit ParameterAnimation(T_parameter aPeriod,
-                                std::enable_if_t<!N_hasSpeed> * = nullptr) :
+                                std::enable_if_t<N_isClamped> * = nullptr) :
+        mPeriod{std::move(aPeriod)}
+    {}
+
+    template <bool N_isClamped = IsClamped()>
+    explicit ParameterAnimation(TT_easeFunctor<T_parameter> aEaseFunctor,
+                                T_parameter aPeriod = T_parameter{1},
+                                std::enable_if_t<N_isClamped> * = nullptr) :
+        mEaser{aEaseFunctor},
         mPeriod{std::move(aPeriod)}
     {}
 
@@ -609,15 +680,15 @@ public:
                                 T_parameter aSpeed = T_parameter{1},
                                 std::enable_if_t<N_hasSpeed> * = nullptr) :
         Base_t{std::move(aSpeed)},
-        mPeriod{std::move(aPeriod)},
-        mEaseFunctor{aEaseFunctor}
+        mEaser{aEaseFunctor},
+        mPeriod{std::move(aPeriod)}
     {}
 
     template <bool N_isEasing = IsEasing()>
     std::vector<math::Position<2, float>>
     getKnots(std::enable_if_t<N_isEasing> * = nullptr)
     {
-        return mEaseFunctor.getKnots();
+        return mEaser.getKnots();
     }
 
     Result_type at(T_parameter aInput) const
@@ -643,7 +714,7 @@ public:
                           "normalization.");
 
             // Need to normalize the easing input
-            aInput = mEaseFunctor.ease(aInput / mPeriod);
+            aInput = mEaser.ease(aInput / mPeriod);
 
             if constexpr (N_resultRange == FullRange)
             {
@@ -709,34 +780,43 @@ public:
     template <bool N_hasModification = IsModifiable()>
     int addPoint(T_parameter aValue)
     {
-        return mEaseFunctor.addPoint(aValue);
+        return mEaser.addPoint(aValue);
     }
 
     template <bool N_hasModification = IsModifiable()>
     void removePoint(size_t aIndex)
     {
-        mEaseFunctor.removePoint(aIndex);
+        mEaser.removePoint(aIndex);
     }
 
     template <bool N_hasModification = IsModifiable()>
     void changePoint(size_t index, math::Position<2, T_parameter> aPoint)
     {
-        mEaseFunctor.changePoint(index, aPoint);
+        mEaser.changePoint(index, aPoint);
     }
-    
-    template<class T_witness>
+
+    template <class T_witness>
     void describeTo(T_witness && w)
     {
-        w.witness(NVP(mPeriod));
-        if constexpr (!std::is_same_v<TT_periodicity<T_parameter>, None<T_parameter>>)
+        w.witness(std::make_pair("mPeriod", &mPeriod));
+        if constexpr (!std::is_same_v<TT_periodicity<T_parameter>,
+                                      None<T_parameter>>)
         {
-            w.witness(NVP(mPeriodicBehaviour));
+            w.witness(std::make_pair("mPeriodicBehaviour", &mPeriodicBehaviour));
         }
-        if constexpr (!std::is_same_v<TT_easeFunctor<T_parameter>, None<T_parameter>>)
+        if constexpr (!std::is_same_v<TT_easeFunctor<T_parameter>,
+                                      None<T_parameter>>)
         {
-            w.witness(NVP(mEaseFunctor));
+            w.witness(std::make_pair("mEaser", &mEaser));
         }
     }
+
+    const T_parameter & getPeriod()
+    {
+        return mPeriod;
+    }
+
+    TT_easeFunctor<T_parameter> mEaser;
 
 private:
     T_parameter mPeriod;
@@ -744,7 +824,6 @@ private:
         mPeriodicBehaviour; // empty class for basic initial cases (Repeat,
                             // PingPong) but leaves room for more potential
                             // other scenarios.
-    TT_easeFunctor<T_parameter> mEaseFunctor;
 
     // Would be better to have the asseration at the beginning, but the static
     // member functions must be defined.

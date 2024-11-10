@@ -25,10 +25,6 @@ class MathConan(ConanFile):
         "build_tests": False,
     }
 
-    requires = (
-        ("reflexion/57198786a6@adnn/develop"),
-    )
-
     build_policy = "missing"
     generators = "CMakeDeps", "CMakeToolchain"
 

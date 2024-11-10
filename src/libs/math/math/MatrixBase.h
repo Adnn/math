@@ -6,8 +6,6 @@
 #include <array>
 #include <iostream>
 
-#include <reflexion/NameValuePair.h>
-
 
 namespace ad {
 namespace math {
@@ -358,7 +356,7 @@ public:
     template<class T_witness>
     void describeTo(T_witness && w)
     {
-        w.witness(NVP(mStore));
+        w.witness(std::make_pair("mStore", &mStore));
     }
 
 private:
