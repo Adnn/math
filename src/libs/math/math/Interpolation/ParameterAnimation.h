@@ -85,7 +85,7 @@ struct Bezier
         return currentIndex;
     }
 
-    int addPoint(T_parameter aInput)
+    size_t addPoint(T_parameter aInput)
     {
         if (mOnCurveCount < 20)
         {
@@ -93,7 +93,7 @@ struct Bezier
             T_parameter yValue = easeFromIndex(aInput, easingIndex * 3);
             size_t insertIndex = (easingIndex + 1) * 3 - 1;
             mOnCurveCount++;
-            for (int i = mOnCurveCount * 3 - 2; i >= insertIndex + 3; i--)
+            for (size_t i = mOnCurveCount * 3 - 2; i >= insertIndex + 3; i--)
             {
                 mXValues.at(i) = mXValues.at(i - 3);
                 mYValues.at(i) = mYValues.at(i - 3);
@@ -115,7 +115,7 @@ struct Bezier
     {
         if (mOnCurveCount > 2)
         {
-            for (int i = aIndex - 1; i < mOnCurveCount * 3 - 2; i++)
+            for (std::size_t i = aIndex - 1; i < mOnCurveCount * 3 - 2; i++)
             {
                 mXValues.at(i) = mXValues.at(i + 3);
                 mYValues.at(i) = mYValues.at(i + 3);
@@ -171,7 +171,7 @@ struct Bezier
     {
         std::vector<math::Position<2, float>> ret;
 
-        for (int i = 0; i < mOnCurveCount - 1; i++)
+        for (int i = 0; i < (int)mOnCurveCount - 1; i++)
         {
             ret.push_back({mXValues.at(i * 3), mYValues.at(i * 3)});
             ret.push_back({mXValues.at(i * 3 + 1), mYValues.at(i * 3 + 1)});
@@ -512,7 +512,7 @@ struct CubicSpline
         return index;
     }
 
-    int addPoint(T_parameter aValue) {return -1;}
+    size_t addPoint(T_parameter aValue) {return -1;}
 
     void changePoint(size_t index, math::Position<2, T_parameter> aPoint) {}
 
@@ -778,7 +778,7 @@ public:
     }
 
     template <bool N_hasModification = IsModifiable()>
-    int addPoint(T_parameter aValue)
+    size_t addPoint(T_parameter aValue)
     {
         return mEaser.addPoint(aValue);
     }
