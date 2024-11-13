@@ -47,8 +47,6 @@ add_executable(${TARGET_NAME}
     ${${TARGET_NAME}_HEADERS}
 )
 
-find_package(Reflexion CONFIG REQUIRED COMPONENTS reflexion)
-
 
 target_link_libraries(${TARGET_NAME} PRIVATE
     ad::math

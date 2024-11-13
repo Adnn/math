@@ -4,8 +4,6 @@
 #include "Rectangle.h"
 #include "Vector.h"
 
-#include <reflexion/NameValuePair.h>
-
 namespace ad {
 namespace math {
 
@@ -155,8 +153,8 @@ struct Box
     template<class T_witness>
     void describeTo(T_witness && w)
     {
-        w.witness(NVP(mPosition));
-        w.witness(NVP(mDimension));
+        w.witness(std::make_pair("mPosition", &mPosition));
+        w.witness(std::make_pair("mDimension", &mDimension));
     }
 };
 
