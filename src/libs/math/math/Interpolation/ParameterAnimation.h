@@ -232,7 +232,7 @@ struct Bezier
             T_parameter mp33 = mp3 * mp3 * mp3;
             T_parameter r = std::sqrt(mp33);
             T_parameter t = -q2 / r;
-            T_parameter cosphi = t < -1.f ? -1.f : t > 1.f ? 1. : t;
+            T_parameter cosphi = t < -1.f ? -1.f : t > 1.f ? 1.f : t;
             T_parameter phi = std::acos(cosphi);
             T_parameter t1 = cubeRoot(r) * 2.f;
 
@@ -332,14 +332,16 @@ struct MassSpringDamper
     {
         T_parameter mDecayRate = mDampening / (2 * mMass);
         T_parameter mAngularFreq =
-            sqrt((4 * mSpringStrength * mMass) - std::pow(mDampening, 2)) / (2 * mMass);
+            sqrt((T_parameter{4} * mSpringStrength * mMass) - std::pow(mDampening, T_parameter{2})) 
+            / (T_parameter{2} * mMass);
         // This 10 times log(2)/mDecayRate this wait for the decay to reach 1/1024
         T_parameter mLifetime =
         T_parameter{10} * (T_parameter{0.69314718056} / mDecayRate);
         T_parameter t = aInput * mLifetime;
+        const T_parameter g1{1};
         T_parameter value =
-            1 + (-1 * std::exp(-mDecayRate * t) * std::cos(mAngularFreq * t))
-            + (((mInitialVelocity + mDecayRate * -1.) / mAngularFreq)
+            g1 + (-g1 * std::exp(-mDecayRate * t) * std::cos(mAngularFreq * t))
+            + (((mInitialVelocity + mDecayRate * -g1) / mAngularFreq)
                   * std::exp(-mDecayRate * t) * std::sin(mAngularFreq * t));
         return value;
     }
