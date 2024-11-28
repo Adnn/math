@@ -40,6 +40,11 @@ public:
 
     constexpr Frame<3, T_value> computeTangentFrame() const;
 
+    template<class T_witness>
+    void describeTo(T_witness && aWitness)
+    {
+    }
+
 private:
     T_value mRadius{0.};
     // Polar angle measured from Y.
