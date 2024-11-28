@@ -45,12 +45,12 @@ using MatrixTuple_t = typename MatrixTuple<T_matrix>::type;
 
 namespace std {
 
-template <class T_matrix> requires from_matrix_v<T_matrix>
+template <class T_matrix> requires ::ad::math::from_matrix_v<T_matrix>
 class tuple_size<T_matrix> : public integral_constant<size_t, T_matrix::size_value>
 {
 };
 
-template <size_t I, class T_matrix> requires from_matrix_v<T_matrix>
+template <size_t I, class T_matrix> requires ::ad::math::from_matrix_v<T_matrix>
 class tuple_element<I, T_matrix>
     : public tuple_element<I, ::ad::math::detail::MatrixTuple_t<T_matrix>>
 {
